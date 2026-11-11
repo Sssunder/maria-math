@@ -28,8 +28,8 @@
                         },
                         peach: {
                             light: '#FFF0EA',
-                            DEFAULT: '#FF7A50',
-                            hover: '#E8663C',
+                            DEFAULT: '#DC4B22',
+                            hover: '#C23D18',
                         },
                         sage: {
                             light: '#EDF5F0',
@@ -55,21 +55,21 @@
             --bg-card: #FFFFFF;
             --bg-elevated: #FFF0EA;
             --bg-input: #FFFFFF;
-            --color-accent: #FF7A50;
-            --color-accent-hover: #E8663C;
+            --color-accent: #DC4B22;
+            --color-accent-hover: #C23D18;
             --color-accent-text: #FFFFFF;
             --text-heading: #1E2530;
             --text-body: #334155;
             --text-muted: #64748B;
             --border-color: rgba(235, 221, 197, 0.9);
-            --border-subtle: rgba(255, 122, 80, 0.25);
-            --glow: 0 16px 40px -10px rgba(255, 122, 80, 0.16);
+            --border-subtle: rgba(220, 75, 34, 0.25);
+            --glow: 0 16px 40px -10px rgba(220, 75, 34, 0.16);
             --hero-mesh: radial-gradient(at 0% 0%, #FFF3EC 0px, transparent 50%),
                          radial-gradient(at 100% 0%, #F3EDFF 0px, transparent 50%),
                          radial-gradient(at 100% 100%, #EBF7EE 0px, transparent 50%),
                          radial-gradient(at 0% 100%, #FFF7E6 0px, transparent 50%);
             --scrollbar-track: #FDFBF7;
-            --scrollbar-thumb: #FF7A50;
+            --scrollbar-thumb: #DC4B22;
         }
 
         [data-theme="sakura"] {
@@ -381,7 +381,7 @@
             border-color: rgba(6, 182, 212, 0.32) !important;
             color: #F8FAFC !important;
         }
-        [data-theme="cyber"] #teacherView input,
+        [data-theme="cyber"] #teacherView input:not([type="checkbox"]):not([type="radio"]),
         [data-theme="cyber"] #teacherView select,
         [data-theme="cyber"] #teacherView textarea,
         [data-theme="cyber"] #pinModal input,
@@ -438,6 +438,50 @@
             background-color: rgba(244, 63, 94, 0.18) !important;
             color: #FDA4AF !important;
             border-color: rgba(244, 63, 94, 0.45) !important;
+        }
+        .badge-status-visible {
+            background-color: #ECFDF5 !important;
+            color: #065F46 !important;
+            border-color: #A7F3D0 !important;
+        }
+        .badge-status-hidden {
+            background-color: #FFFBEB !important;
+            color: #92400E !important;
+            border-color: #FDE68A !important;
+        }
+        .owner-tips-box {
+            background-color: var(--bg-elevated) !important;
+            border-color: var(--border-color) !important;
+            color: var(--text-body) !important;
+        }
+        .program-card-hidden {
+            opacity: 0.85;
+            border-style: dashed !important;
+        }
+        [data-theme="cyber"] .badge-status-visible {
+            background-color: rgba(16, 185, 129, 0.18) !important;
+            color: #6EE7B7 !important;
+            border-color: rgba(16, 185, 129, 0.45) !important;
+        }
+        [data-theme="cyber"] .badge-status-hidden {
+            background-color: rgba(245, 158, 11, 0.18) !important;
+            color: #FCD34D !important;
+            border-color: rgba(245, 158, 11, 0.45) !important;
+        }
+        [data-theme="cyber"] .owner-tips-box {
+            background-color: #111827 !important;
+            border-color: rgba(6, 182, 212, 0.35) !important;
+            color: #E2E8F0 !important;
+        }
+        [data-theme="cyber"] .text-slate-300 {
+            color: #475569 !important;
+        }
+        [data-theme="cyber"] [class*="text-slateDark/4"] {
+            color: #94A3B8 !important;
+        }
+        [data-theme="cyber"] .bg-peach .text-white,
+        [data-theme="cyber"] .btn-primary .text-white {
+            color: #0B0F19 !important;
         }
         [data-theme="cyber"] #teacherSaveToast,
         [data-theme="cyber"] #teacherSyncBadge,
@@ -612,10 +656,13 @@
         }
 
         /* Inputs */
-        input, select, textarea {
+        input:not([type="checkbox"]):not([type="radio"]), select, textarea {
             background-color: var(--bg-input) !important;
             color: var(--text-heading) !important;
             border-color: var(--border-color) !important;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            accent-color: var(--color-accent);
         }
 
         /* Theme Buttons */
@@ -797,7 +844,7 @@
                     </a>
 
                     <!-- Telegram Button (Apple Pill, Real @mm_kami Handle) -->
-                    <a id="headerTgBtn" href="https://t.me/mm_kami" target="_blank" rel="noopener noreferrer" title="Написать Марии в Telegram (@mm_kami)" class="hidden lg:flex px-3.5 py-1.5 rounded-full bg-sky-50 hover:bg-sky-100 text-[#2AABEE] border border-[#2AABEE]/25 font-bold text-xs items-center gap-1.5 transition-all shadow-sm active:scale-95">
+                    <a id="headerTgBtn" href="https://t.me/mm_kami" target="_blank" rel="noopener noreferrer" title="Написать Марии в Telegram (@mm_kami)" class="hidden lg:flex px-3.5 py-1.5 rounded-full bg-sky-50 hover:bg-sky-100 text-[#0284C7] border border-[#0284C7]/25 font-bold text-xs items-center gap-1.5 transition-all shadow-sm active:scale-95">
                         <i data-lucide="send" class="w-3.5 h-3.5"></i>
                         <span>Telegram</span>
                     </a>
@@ -874,7 +921,7 @@
                                     <span class="w-2 h-2 rounded-full bg-[#0077FF] animate-pulse"></span>
                                     <span>Написать в МАКС</span>
                                 </a>
-                                <a id="heroTgBtn" href="https://t.me/mm_kami" target="_blank" rel="noopener noreferrer" title="Написать в Telegram (@mm_kami)" class="flex-1 sm:flex-initial justify-center px-4 py-3 sm:py-3.5 rounded-2xl bg-sky-50 border border-sky-200 hover:bg-sky-100 text-[#2AABEE] font-bold text-xs flex items-center gap-2 transition-colors">
+                                <a id="heroTgBtn" href="https://t.me/mm_kami" target="_blank" rel="noopener noreferrer" title="Написать в Telegram (@mm_kami)" class="flex-1 sm:flex-initial justify-center px-4 py-3 sm:py-3.5 rounded-2xl bg-sky-50 border border-sky-200 hover:bg-sky-100 text-[#0284C7] font-bold text-xs flex items-center gap-2 transition-colors">
                                     <i data-lucide="send" class="w-3.5 h-3.5"></i>
                                     <span>Telegram</span>
                                 </a>
@@ -1369,13 +1416,17 @@
                         <p class="text-xs sm:text-sm text-slateDark/70">Напишите о своих впечатлениях от уроков — отзыв сразу сохранится на сайте для всех посетителей и его можно продублировать Марии</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2 self-start sm:self-auto flex-shrink-0">
+                        <a id="reviewsChannelLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden btn-secondary px-3.5 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-1.5 shadow-sm transition-all">
+                            <span>💬 Канал с отзывами</span>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5 text-peach"></i>
+                        </a>
                         <a id="reviewsAvitoLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden btn-secondary px-3.5 py-2 rounded-2xl text-xs font-extrabold flex items-center gap-1.5 shadow-sm transition-all">
                             <span>⭐ Отзывы на Авито</span>
                             <i data-lucide="external-link" class="w-3.5 h-3.5 text-peach"></i>
                         </a>
                         <div class="inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl bg-white border border-cream-200 text-xs font-extrabold text-slateDark shadow-sm">
                             <span>⭐</span>
-                            <span>Оценка уроков • <span id="reviewsCountBadge" class="text-peach">0</span> отзывов</span>
+                            <span>Оценка уроков • <span id="reviewsCountBadge" class="text-peach">0 отзывов</span></span>
                         </div>
                     </div>
                 </div>
@@ -1574,6 +1625,7 @@
                     <a id="footerMaxLink" href="https://max.ru/u/+79195784289" target="_blank" rel="noopener noreferrer" class="hover:text-[#0077FF] transition-colors font-bold flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#0077FF]"></span><span>МАКС (+7 919 578 42 89)</span></a>
                     <a id="footerTgLink" href="https://t.me/mm_kami" target="_blank" rel="noopener noreferrer" class="hover:text-[#2AABEE] transition-colors font-bold flex items-center gap-1.5"><i data-lucide="send" class="w-3.5 h-3.5"></i><span>Telegram (@mm_kami)</span></a>
                     <a id="footerPhoneLink" href="tel:+79195784289" class="hover:text-peach transition-colors font-bold flex items-center gap-1.5"><span>📞</span><span>+7 919 578 42 89</span></a>
+                    <a id="footerReviewsChannelLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden hover:text-peach transition-colors font-bold flex items-center gap-1.5"><span>💬</span><span>Канал с отзывами</span></a>
                     <a id="footerAvitoLink" href="#" target="_blank" rel="noopener noreferrer" class="hidden hover:text-peach transition-colors font-bold flex items-center gap-1.5"><span>⭐</span><span>Отзывы на Авито</span></a>
                     <button onclick="requestTeacherAccess()" class="text-slateDark/40 hover:text-slateDark flex items-center gap-1 font-semibold transition-colors">
                         <i data-lucide="lock" class="w-3.5 h-3.5"></i>
@@ -1742,7 +1794,26 @@
                 <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-cream-200">
                     <div>
                         <h3 class="font-display font-extrabold text-lg sm:text-xl text-slateDark">Редактор текстов, цен и контактов</h3>
-                        <p class="text-xs text-slateDark/60">Меняйте любую формулировку — после сохранения текст и цены сразу обновятся на сайте у всех посетителей</p>
+                        <p class="text-xs text-slateDark/60">Меняйте любую формулировку — после сохранения текст, тема и цены сразу обновятся на сайте у всех посетителей</p>
+                    </div>
+                </div>
+
+                <!-- Default Site Theme -->
+                <div class="space-y-3 text-xs pb-4 border-b border-cream-200">
+                    <div class="font-extrabold uppercase tracking-wider text-peach text-[11px]">Оформление сайта по умолчанию</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+                        <div>
+                            <label for="cfgDefaultTheme" class="font-bold text-slateDark block mb-1">Тема сайта для всех новых гостей</label>
+                            <select id="cfgDefaultTheme" class="w-full px-3 py-2.5 rounded-xl border text-xs font-bold">
+                                <option value="cozy-cat">🐱 Уютный Саян (персик и крем)</option>
+                                <option value="sakura">🌸 Нежная Сакура (пастель)</option>
+                                <option value="artek">🏕 Лазурный Артек (изумруд)</option>
+                                <option value="cyber">🌌 Кибер-Неон (тёмный режим)</option>
+                            </select>
+                        </div>
+                        <p class="text-[11px] text-slateDark/65 leading-snug">
+                            Открывается по умолчанию у всех посетителей, если гость не переключил тему вручную, и сразу применяется при нажатии «Сохранить».
+                        </p>
                     </div>
                 </div>
 
@@ -1785,7 +1856,12 @@
 
                 <!-- Programs & Prices -->
                 <div class="space-y-3 text-xs pt-3 border-t border-cream-200">
-                    <div class="font-extrabold uppercase tracking-wider text-peach text-[11px]">Форматы и стоимость занятий</div>
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="font-extrabold uppercase tracking-wider text-peach text-[11px]">Форматы и стоимость занятий</div>
+                        <button type="button" id="addProgramFormatBtn" onclick="addTeacherProgramFormat()" class="btn-secondary px-3.5 py-2 rounded-xl text-xs font-extrabold inline-flex items-center gap-1.5 transition-all">
+                            <span>+ Добавить формат</span>
+                        </button>
+                    </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                             <label class="font-bold text-slateDark block mb-1">Тег раздела форматов</label>
@@ -1805,30 +1881,41 @@
                     </div>
                 </div>
 
-                <!-- Contacts & Avito -->
+                <!-- Contacts, Auto-Sync, Reviews Channel & Avito -->
                 <div class="space-y-3 text-xs pt-3 border-t border-cream-200">
-                    <div class="font-extrabold uppercase tracking-wider text-peach text-[11px]">Контакты и ссылка на отзывы Авито</div>
+                    <div class="font-extrabold uppercase tracking-wider text-peach text-[11px]">Контакты, мессенджеры и площадки отзывов</div>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="font-bold text-slateDark block mb-1">Ссылка на профиль / отзывы Авито</label>
-                            <input type="url" id="cfg_avito_url" placeholder="https://www.avito.ru/..." class="w-full px-3 py-2.5 rounded-xl border text-xs">
-                            <p class="text-[10px] text-slateDark/60 mt-1">Как только вставите ссылку Авито — в разделе отзывов и в подвале сайта появится кнопка «Отзывы на Авито»</p>
+                        <div class="sm:col-span-2">
+                            <label for="cfgPhoneDisplay" class="font-bold text-slateDark block mb-1">Телефон для отображения (авто-синхронизация МАКС и ТГ)</label>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <input type="text" id="cfgPhoneDisplay" oninput="handlePhoneInputSync()" placeholder="+7 919 578 42 89" class="flex-1 min-w-[200px] px-3 py-2.5 rounded-xl border text-xs">
+                                <button type="button" id="syncMessengersFromPhoneBtn" onclick="syncMessengersFromPhone(true)" class="btn-secondary px-3.5 py-2.5 rounded-xl text-xs font-extrabold whitespace-nowrap transition-all">
+                                    Обновить МАКС и ТГ из номера
+                                </button>
+                            </div>
+                            <p class="text-[10px] text-slateDark/60 mt-1">Поддерживаются форматы +7..., 8... и 9... — ссылка МАКС обновится автоматически, а Telegram обновится, если он пуст или привязан к номеру.</p>
                         </div>
                         <div>
-                            <label class="font-bold text-slateDark block mb-1">Телефон для отображения</label>
-                            <input type="text" id="cfgPhoneDisplay" class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                            <label for="cfgTgHandle" class="font-bold text-slateDark block mb-1">Ник в Telegram</label>
+                            <input type="text" id="cfgTgHandle" oninput="handleTgHandleSync()" placeholder="@mm_kami" class="w-full px-3 py-2.5 rounded-xl border text-xs">
                         </div>
                         <div>
-                            <label class="font-bold text-slateDark block mb-1">Ник в Telegram</label>
-                            <input type="text" id="cfgTgHandle" placeholder="@mm_kami" class="w-full px-3 py-2.5 rounded-xl border text-xs">
-                        </div>
-                        <div>
-                            <label class="font-bold text-slateDark block mb-1">Ссылка Telegram</label>
-                            <input type="url" id="cfgTgUrl" class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                            <label for="cfgTgUrl" class="font-bold text-slateDark block mb-1">Ссылка Telegram (@ник, +7... или https://t.me/...)</label>
+                            <input type="text" id="cfgTgUrl" placeholder="https://t.me/mm_kami" class="w-full px-3 py-2.5 rounded-xl border text-xs">
                         </div>
                         <div class="sm:col-span-2">
-                            <label class="font-bold text-slateDark block mb-1">Ссылка МАКС</label>
-                            <input type="url" id="cfgMaxUrl" class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                            <label for="cfgMaxUrl" class="font-bold text-slateDark block mb-1">Ссылка МАКС</label>
+                            <input type="text" id="cfgMaxUrl" placeholder="https://max.ru/u/+79195784289" class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                        </div>
+                        <div>
+                            <label for="cfgReviewsChannelUrl" class="font-bold text-slateDark block mb-1">Канал с отзывами (Telegram / МАКС)</label>
+                            <input type="text" id="cfgReviewsChannelUrl" placeholder="https://t.me/..." class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                            <p class="text-[10px] text-slateDark/60 mt-1">Если ссылка заполнена, в блоке отзывов и подвале появится кнопка «Канал с отзывами».</p>
+                        </div>
+                        <div>
+                            <label for="cfg_avito_url" class="font-bold text-slateDark block mb-1">Ссылка на профиль / отзывы Авито</label>
+                            <input type="text" id="cfg_avito_url" placeholder="https://www.avito.ru/..." class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                            <p class="text-[10px] text-slateDark/60 mt-1">Как только вставите ссылку Авито — в разделе отзывов и в подвале сайта появится кнопка «Отзывы на Авито».</p>
                         </div>
                     </div>
                 </div>
@@ -1842,12 +1929,107 @@
 
         <!-- TAB 3: REVIEWS & PIN -->
         <div id="teacherTabReviews" class="hidden space-y-5">
+            <!-- COMPACT 3-STEP OWNER TIPS BOX -->
+            <div class="owner-tips-box rounded-3xl p-4 sm:p-5 border space-y-2.5 text-xs shadow-sm">
+                <div class="font-display font-extrabold text-sm sm:text-base text-slateDark flex items-center gap-2">
+                    <span>💡</span>
+                    <span>Как быстро наполнить блок отзывов (3 шага)</span>
+                </div>
+                <ol class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                    <li class="teacher-subcard rounded-2xl p-3 space-y-1">
+                        <div class="font-extrabold text-peach">1. Канал TG или МАКС</div>
+                        <p class="text-[11px] text-slateDark/75 leading-snug">Создайте отдельный канал со скриншотами откликов и добавьте ссылку во вкладке «Тексты, цены и ссылки».</p>
+                    </li>
+                    <li class="teacher-subcard rounded-2xl p-3 space-y-1">
+                        <div class="font-extrabold text-peach">2. Ссылка на Авито</div>
+                        <p class="text-[11px] text-slateDark/75 leading-snug">Укажите профиль Авито в конструкторе — рядом с отзывами и в подвале появится кнопка «Отзывы на Авито».</p>
+                    </li>
+                    <li class="teacher-subcard rounded-2xl p-3 space-y-1">
+                        <div class="font-extrabold text-peach">3. Первые 2–3 отзыва</div>
+                        <p class="text-[11px] text-slateDark/75 leading-snug">Добавьте реальные отзывы учеников и родителей через форму ниже с мгновенным предпросмотром.</p>
+                    </li>
+                </ol>
+            </div>
+
+            <!-- MANUAL ADD REVIEW + LIVE PREVIEW -->
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-cream-200">
+                    <div>
+                        <h3 class="font-display font-extrabold text-base sm:text-lg text-slateDark">Добавить отзыв</h3>
+                        <p class="text-[11px] text-slateDark/60">Публикуется от имени преподавателя в облачную базу — можно добавить сразу на сайт или сохранить скрытым</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                    <form id="admReviewForm" onsubmit="submitAdminReview(event)" class="lg:col-span-7 space-y-3 text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label for="admRevAuthor" class="font-bold text-slateDark block mb-1">Автор *</label>
+                                <input type="text" id="admRevAuthor" required maxlength="80" placeholder="Например: Мама Артёма" oninput="updateAdminReviewPreview()" class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                            </div>
+                            <div>
+                                <label for="admRevRole" class="font-bold text-slateDark block mb-1">Класс / роль</label>
+                                <input type="text" id="admRevRole" maxlength="80" list="admRevRoleOptions" value="9 класс • ОГЭ" placeholder="9 класс • ОГЭ" oninput="updateAdminReviewPreview()" class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                                <datalist id="admRevRoleOptions">
+                                    <option value="9 класс • ОГЭ"></option>
+                                    <option value="8 класс"></option>
+                                    <option value="7 класс"></option>
+                                    <option value="5–6 класс"></option>
+                                    <option value="Родитель ученика"></option>
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                                <label for="admRevRating" class="font-bold text-slateDark block mb-1">Оценка (1–5)</label>
+                                <select id="admRevRating" onchange="updateAdminReviewPreview()" class="w-full px-3 py-2.5 rounded-xl border text-xs font-bold">
+                                    <option value="5" selected>★★★★★ (5 из 5)</option>
+                                    <option value="4">★★★★☆ (4 из 5)</option>
+                                    <option value="3">★★★☆☆ (3 из 5)</option>
+                                    <option value="2">★★☆☆☆ (2 из 5)</option>
+                                    <option value="1">★☆☆☆☆ (1 из 5)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="admRevDate" class="font-bold text-slateDark block mb-1">Дата (ДД.ММ.ГГГГ)</label>
+                                <input type="text" id="admRevDate" maxlength="40" oninput="updateAdminReviewPreview()" class="w-full px-3 py-2.5 rounded-xl border text-xs">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="admRevText" class="font-bold text-slateDark block mb-1">Текст отзыва *</label>
+                            <textarea id="admRevText" required rows="3" maxlength="1000" placeholder="Опишите прогресс ученика, баллы ОГЭ или впечатления от занятий..." oninput="updateAdminReviewPreview()" class="w-full px-3 py-2.5 rounded-xl border text-xs resize-y"></textarea>
+                        </div>
+
+                        <label for="admRevVisible" class="flex items-center gap-2 font-bold text-slateDark cursor-pointer select-none">
+                            <input type="checkbox" id="admRevVisible" checked onchange="updateAdminReviewPreview()" class="w-4 h-4 rounded">
+                            <span>Показывать сразу на сайте (is_visible)</span>
+                        </label>
+
+                        <button type="submit" id="admRevSubmitBtn" class="btn-primary w-full py-3 rounded-2xl font-extrabold text-xs uppercase tracking-wider shadow-sm transition-all">
+                            Добавить отзыв
+                        </button>
+                    </form>
+
+                    <div class="lg:col-span-5 space-y-2.5">
+                        <div class="flex items-center justify-between gap-2 text-xs">
+                            <span class="font-extrabold uppercase tracking-wider text-peach text-[11px]">Предпросмотр на сайте</span>
+                            <span id="admReviewPreviewVisBadge" class="badge-status-visible px-2.5 py-0.5 rounded-full border text-[10px] font-bold">Виден гостям</span>
+                        </div>
+                        <div id="admReviewLivePreview">
+                            <!-- Live preview rendered by updateAdminReviewPreview() -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- TEACHER REVIEWS MODERATION -->
             <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-4">
                 <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-cream-200">
                     <div>
-                        <h3 class="font-display font-extrabold text-base sm:text-lg text-slateDark">Отзывы учеников и родителей (<span id="teacherReviewsCount">0</span>)</h3>
-                        <p class="text-[11px] text-slateDark/60">Облачная база Supabase — удалённый отзыв пропадёт у всех посетителей</p>
+                        <h3 class="font-display font-extrabold text-base sm:text-lg text-slateDark">Отзывы в базе (<span id="teacherReviewsCount">0</span>)</h3>
+                        <p class="text-[11px] text-slateDark/60">Управляйте видимостью: можно скрыть отзыв с главной страницы или полностью удалить из списка</p>
                     </div>
                 </div>
                 <div id="teacherReviewsList" class="space-y-2.5">
@@ -2090,7 +2272,13 @@
     <!-- SCRIPTING ENGINE -->
     <script>
         // ================= MULTI-THEME ENGINE =================
-        let currentTheme = localStorage.getItem('maria_theme') || 'cozy-cat';
+        const VALID_THEMES = ['cozy-cat', 'sakura', 'artek', 'cyber'];
+        const THEME_MANUAL_KEY = 'maria_theme_manual';
+        let currentTheme = 'cozy-cat';
+
+        function normalizeThemeName(t) {
+            return VALID_THEMES.includes(t) ? t : 'cozy-cat';
+        }
 
         function toggleMobileThemeDock(show) {
             const trigger = document.getElementById('mobileThemeTrigger');
@@ -2108,13 +2296,28 @@
         }
 
         function initTheme() {
-            setTheme(currentTheme, false);
+            const manualTheme = localStorage.getItem(THEME_MANUAL_KEY);
+            const initial = manualTheme
+                ? (localStorage.getItem('maria_theme') || manualTheme)
+                : (siteConfig?.default_theme || 'cozy-cat');
+            setTheme(initial, false, { manual: false });
         }
 
-        function setTheme(themeName, playSound = true) {
-            currentTheme = themeName;
-            document.documentElement.setAttribute('data-theme', themeName);
-            localStorage.setItem('maria_theme', themeName);
+        function applyDefaultThemeIfNoManualOverride() {
+            if (!localStorage.getItem(THEME_MANUAL_KEY)) {
+                setTheme(siteConfig?.default_theme || 'cozy-cat', false, { manual: false });
+            }
+        }
+
+        function setTheme(themeName, playSound = true, options = {}) {
+            const safeTheme = normalizeThemeName(themeName);
+            const isManual = options.manual !== false;
+            currentTheme = safeTheme;
+            document.documentElement.setAttribute('data-theme', safeTheme);
+            localStorage.setItem('maria_theme', safeTheme);
+            if (isManual) {
+                localStorage.setItem(THEME_MANUAL_KEY, safeTheme);
+            }
 
             const themeMeta = {
                 'cozy-cat': { emoji: '🐱', label: 'Саян' },
@@ -2122,7 +2325,7 @@
                 'artek': { emoji: '🏕', label: 'Артек' },
                 'cyber': { emoji: '🌌', label: 'Кибер' }
             };
-            const meta = themeMeta[themeName] || themeMeta['cozy-cat'];
+            const meta = themeMeta[safeTheme] || themeMeta['cozy-cat'];
 
             // Update bottom dock active emoji
             const emojiEl = document.getElementById('activeThemeEmoji');
@@ -2136,7 +2339,7 @@
 
             // Update popover checkmarks
             document.querySelectorAll('#headerThemePopover [data-popover-theme]').forEach(btn => {
-                const isCurrent = btn.getAttribute('data-popover-theme') === themeName;
+                const isCurrent = btn.getAttribute('data-popover-theme') === safeTheme;
                 const check = btn.querySelector('.theme-check');
                 if (check) {
                     if (isCurrent) check.classList.remove('hidden');
@@ -2146,7 +2349,7 @@
 
             // Update all legacy theme buttons (bottom dock)
             document.querySelectorAll('[data-theme-btn]').forEach(btn => {
-                if (btn.getAttribute('data-theme-btn') === themeName) {
+                if (btn.getAttribute('data-theme-btn') === safeTheme) {
                     btn.classList.add('active');
                 } else {
                     btn.classList.remove('active');
@@ -2459,7 +2662,8 @@
             let recProg = 'group';
             if (quizAnswers[2] === 'indiv') recProg = 'indiv';
             else if (quizAnswers[2] === 'pair') recProg = 'pair';
-            const prog = (siteConfig.programs || []).find(p => p.id === recProg) || (siteConfig.programs || [])[0];
+            const activeProgs = getActivePrograms();
+            const prog = activeProgs.find(p => p.id === recProg) || activeProgs[0] || (siteConfig.programs || [])[0];
             if (pillEl && prog) {
                 pillEl.innerText = `✨ Рекомендован формат: ${prog.title} — ${Number(prog.price || 0).toLocaleString('ru-RU')} ₽ / ${prog.duration || 60} мин`;
             }
@@ -2473,7 +2677,9 @@
             let recProg = 'group';
             if (quizAnswers[2] === 'indiv') recProg = 'indiv';
             else if (quizAnswers[2] === 'pair') recProg = 'pair';
-            selectFormat(recProg);
+            const activeProgs = getActivePrograms();
+            const matched = activeProgs.find(p => p.id === recProg) || activeProgs[0];
+            selectFormat(matched ? matched.id : recProg);
         }
 
         function resetQuiz() {
@@ -2493,6 +2699,7 @@
         const SESSION_PIN_KEY = 'maria_teacher_pin';
 
         const DEFAULT_SITE_CONFIG = {
+            default_theme: 'cozy-cat',
             slot_step_min: 60,
             work_start_min: 600,
             work_end_min: 1260,
@@ -2512,6 +2719,7 @@
                 max_url: 'https://max.ru/u/+79195784289',
                 tg_handle: '@mm_kami',
                 tg_url: 'https://t.me/mm_kami',
+                reviews_channel_url: '',
                 avito_url: ''
             },
             programs: [
@@ -2523,7 +2731,8 @@
                     price: 900,
                     duration: 60,
                     icon: '👥',
-                    badge: 'Топ выбор'
+                    badge: 'Топ выбор',
+                    hidden: false
                 },
                 {
                     id: 'pair',
@@ -2533,7 +2742,8 @@
                     price: 1100,
                     duration: 60,
                     icon: '⚡',
-                    badge: 'Самостоятельность'
+                    badge: 'Самостоятельность',
+                    hidden: false
                 },
                 {
                     id: 'indiv',
@@ -2543,7 +2753,8 @@
                     price: 1600,
                     duration: 60,
                     icon: '🎯',
-                    badge: null
+                    badge: null,
+                    hidden: false
                 }
             ],
             weekly_open_slots: {
@@ -2578,10 +2789,34 @@
             const defContacts = DEFAULT_SITE_CONFIG.contacts;
             const contacts = { ...defContacts, ...(cfg.contacts || {}) };
             const rawProgs = Array.isArray(cfg.programs) && cfg.programs.length ? cfg.programs : DEFAULT_SITE_CONFIG.programs;
-            const programs = DEFAULT_SITE_CONFIG.programs.map(defProg => {
-                const match = rawProgs.find(p => p && p.id === defProg.id);
-                return match ? { ...defProg, ...match, price: Number(match.price ?? defProg.price), duration: Number(match.duration ?? defProg.duration) } : { ...defProg };
-            });
+            const programs = rawProgs
+                .filter(p => p && typeof p === 'object')
+                .map((p, idx) => {
+                    const defProg = DEFAULT_SITE_CONFIG.programs.find(d => d.id === p.id);
+                    const base = defProg || {};
+                    const parsedPrice = Number(p.price ?? base.price ?? 1000);
+                    const parsedDur = Number(p.duration ?? base.duration ?? 60);
+                    return {
+                        ...base,
+                        ...p,
+                        id: String(p.id || ('fmt_' + idx)),
+                        title: String(p.title ?? base.title ?? 'Формат занятия'),
+                        desc: String(p.desc ?? base.desc ?? ''),
+                        benefit: String(p.benefit ?? base.benefit ?? ''),
+                        price: Number.isFinite(parsedPrice) && parsedPrice >= 0 ? parsedPrice : (base.price ?? 1000),
+                        duration: Number.isFinite(parsedDur) && parsedDur >= 15 ? parsedDur : (base.duration ?? 60),
+                        icon: String(p.icon || base.icon || '📘'),
+                        badge: p.badge ?? base.badge ?? null,
+                        hidden: Boolean(p.hidden)
+                    };
+                });
+            if (!programs.length) {
+                DEFAULT_SITE_CONFIG.programs.forEach(p => programs.push({ ...p }));
+            }
+            if (!programs.some(p => !p.hidden)) {
+                programs[0].hidden = false;
+            }
+
             const weeklyRaw = cfg.weekly_open_slots && typeof cfg.weekly_open_slots === 'object' ? cfg.weekly_open_slots : DEFAULT_SITE_CONFIG.weekly_open_slots;
             const weekly_open_slots = {};
             for (let d = 0; d <= 6; d++) {
@@ -2592,6 +2827,7 @@
             return {
                 ...DEFAULT_SITE_CONFIG,
                 ...cfg,
+                default_theme: normalizeThemeName(cfg.default_theme || DEFAULT_SITE_CONFIG.default_theme),
                 slot_step_min: Number(cfg.slot_step_min || DEFAULT_SITE_CONFIG.slot_step_min),
                 work_start_min: Number(cfg.work_start_min ?? DEFAULT_SITE_CONFIG.work_start_min),
                 work_end_min: Number(cfg.work_end_min ?? DEFAULT_SITE_CONFIG.work_end_min),
@@ -2599,6 +2835,12 @@
                 programs,
                 weekly_open_slots
             };
+        }
+
+        function getActivePrograms() {
+            const list = Array.isArray(siteConfig.programs) ? siteConfig.programs : DEFAULT_SITE_CONFIG.programs;
+            const active = list.filter(p => p && !p.hidden);
+            return active.length ? active : list.slice(0, 1);
         }
 
         function escapeHtml(str) {
@@ -2639,12 +2881,112 @@
             }
         }
 
+        function normalizeRuPhone(str, fallback = '') {
+            const digits = String(str || '').replace(/\D/g, '');
+            if (!digits) return fallback;
+            if (digits.length === 11 && (digits.startsWith('8') || digits.startsWith('7'))) {
+                return '+7' + digits.slice(1);
+            }
+            if (digits.length === 10 && digits.startsWith('9')) {
+                return '+7' + digits;
+            }
+            if (digits.length === 10) {
+                return '+7' + digits;
+            }
+            return '+' + digits;
+        }
+
         function normalizePhoneRaw(str) {
-            const cleaned = String(str || '').replace(/[^\d+]/g, '');
-            if (!cleaned) return '+79195784289';
-            if (/^8\d{10}$/.test(cleaned)) return '+7' + cleaned.slice(1);
-            if (/^7\d{10}$/.test(cleaned)) return '+' + cleaned;
-            return cleaned.startsWith('+') ? cleaned : '+' + cleaned;
+            return normalizeRuPhone(str, '+79195784289');
+        }
+
+        function normalizeTelegramTarget(raw) {
+            const val = String(raw || '').trim();
+            if (!val) return { handle: '', url: '' };
+
+            const urlMatch = val.match(/^(?:https?:\/\/)?(?:www\.)?(?:t\.me|telegram\.me)\/([^\s?#]+)(?:[?#].*)?$/i);
+            if (urlMatch) {
+                const slug = urlMatch[1].replace(/^\/+|\/+$/g, '');
+                if (!slug) return { handle: '', url: '' };
+                if (slug.startsWith('+')) {
+                    const slugDigits = slug.replace(/\D/g, '');
+                    if (/^\+\d{10,15}$/.test(slug) || (slugDigits.length >= 10 && slugDigits.length <= 15 && /^\+[\d\s()-]+$/.test(slug))) {
+                        const normPh = normalizeRuPhone(slug, slug);
+                        return { handle: normPh, url: 'https://t.me/' + normPh };
+                    }
+                    return { handle: 'Telegram', url: 'https://t.me/' + slug };
+                }
+                const cleanUser = slug.replace(/^@+/, '');
+                return { handle: '@' + cleanUser, url: 'https://t.me/' + cleanUser };
+            }
+
+            if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(val)) {
+                return { handle: '', url: val };
+            }
+
+            const digitsOnly = val.replace(/\D/g, '');
+            if (!/[a-zA-Zа-яА-Я_]/.test(val) && digitsOnly.length >= 10) {
+                const normPh = normalizeRuPhone(val, '');
+                if (normPh) return { handle: normPh, url: 'https://t.me/' + normPh };
+            }
+
+            const clean = val.replace(/^@+/, '').replace(/[^\w]/g, '');
+            if (!clean) return { handle: '', url: val };
+            return { handle: '@' + clean, url: 'https://t.me/' + clean };
+        }
+
+        function normalizeMaxTarget(raw) {
+            const val = String(raw || '').trim();
+            if (!val) return '';
+            const urlMatch = val.match(/^(?:https?:\/\/)?(?:www\.)?max\.ru\/([^\s?#]+)(?:[?#].*)?$/i);
+            if (urlMatch) {
+                const rest = urlMatch[1].replace(/^\/+|\/+$/g, '');
+                if (rest.toLowerCase().startsWith('u/')) {
+                    const target = rest.slice(2);
+                    const digits = target.replace(/\D/g, '');
+                    if (!/[a-zA-Zа-яА-Я_]/.test(target) && digits.length >= 10) {
+                        return 'https://max.ru/u/' + normalizeRuPhone(target, target);
+                    }
+                }
+                return 'https://max.ru/' + rest;
+            }
+            if (/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(val)) return val;
+            const digitsOnly = val.replace(/\D/g, '');
+            if (!/[a-zA-Zа-яА-Я_]/.test(val) && digitsOnly.length >= 10) {
+                return 'https://max.ru/u/' + normalizeRuPhone(val, '');
+            }
+            return val;
+        }
+
+        function normalizeOptionalHttpUrl(raw) {
+            const val = String(raw || '').trim();
+            if (!val) return '';
+            if (val.startsWith('@')) {
+                const tg = normalizeTelegramTarget(val);
+                return tg.url || val;
+            }
+            if (/^(?:www\.)?(?:t\.me|telegram\.me|max\.ru|avito\.ru)\//i.test(val)) {
+                return 'https://' + val;
+            }
+            return val;
+        }
+
+        function getTodayDdMmYyyy() {
+            const d = new Date();
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+
+        function formatReviewsCountRu(n) {
+            const num = Math.abs(Number(n || 0));
+            const mod100 = num % 100;
+            const mod10 = num % 10;
+            if (mod100 >= 11 && mod100 <= 14) return `${num} отзывов`;
+            if (mod10 === 1) return `${num} отзыв`;
+            if (mod10 >= 2 && mod10 <= 4) return `${num} отзыва`;
+            return `${num} отзывов`;
         }
 
         function toLocalIso(d) {
@@ -2690,7 +3032,7 @@
             if (msg.includes('invalid_pin')) return 'Неверный PIN-код!';
             if (msg.includes('pin_too_short') || msg.includes('invalid_new_pin')) return 'PIN-код должен состоять из 4–8 цифр.';
             if (msg.includes('site_not_found')) return 'Сайт не найден в облаке.';
-            if (msg.includes('invalid_review')) return 'Пожалуйста, заполните имя и текст отзыва.';
+            if (msg.includes('invalid_review')) return 'Пожалуйста, заполните имя и текст отзыва (минимум 2 символа).';
             return rawMsg || 'Ошибка связи с сервером.';
         }
 
@@ -2710,15 +3052,32 @@
             return data;
         }
 
-        function showTeacherToast(msg) {
+        function showTeacherToast(msg, isWarn = false) {
             const box = document.getElementById('teacherSaveToast');
             const textEl = document.getElementById('teacherSaveToastText');
             if (!box || !textEl) return;
+            box.classList.remove('notice-ok', 'notice-warn');
+            box.classList.add(isWarn ? 'notice-warn' : 'notice-ok');
             textEl.innerText = msg;
             box.classList.remove('hidden');
             clearTimeout(window.__teacherToastTimer);
             window.__teacherToastTimer = setTimeout(() => box.classList.add('hidden'), 3500);
         }
+
+        function toggleOptionalLink(ids, href) {
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (href && href !== '#') {
+                    el.href = href;
+                    el.classList.remove('hidden');
+                } else {
+                    el.href = '#';
+                    el.classList.add('hidden');
+                }
+            });
+        }
+
         // --- APPLY DYNAMIC CONFIG TO DOM ---
         function applySiteConfigToDom() {
             const setTxt = (id, val) => {
@@ -2739,37 +3098,48 @@
 
             const contacts = siteConfig.contacts || DEFAULT_SITE_CONFIG.contacts;
             const phoneDisplay = contacts.phone_display || DEFAULT_SITE_CONFIG.contacts.phone_display;
-            const phoneRaw = contacts.phone_raw || normalizePhoneRaw(phoneDisplay);
+            const phoneRaw = normalizeRuPhone(contacts.phone_raw || phoneDisplay, '+79195784289');
             const telHref = 'tel:' + phoneRaw;
-            const tgHandle = contacts.tg_handle || '@mm_kami';
-            const tgHref = safeExternalUrl(contacts.tg_url);
-            const maxHref = safeExternalUrl(contacts.max_url);
+            const tgParsed = normalizeTelegramTarget(contacts.tg_url || contacts.tg_handle);
+            const tgHandle = contacts.tg_handle || tgParsed.handle || '@mm_kami';
+            const tgHref = safeExternalUrl(contacts.tg_url || tgParsed.url);
+            const maxHref = safeExternalUrl(contacts.max_url || ('https://max.ru/u/' + phoneRaw));
             const avitoHref = safeExternalUrl(contacts.avito_url);
+            const reviewsChannelHref = safeExternalUrl(contacts.reviews_channel_url);
 
             ['headerMaxBtn', 'heroMaxBtn', 'revSendMaxBtn', 'maxDirectBtn'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.href = maxHref;
+                if (el) {
+                    el.href = maxHref;
+                    el.title = `Написать Марии в МАКС (${phoneDisplay})`;
+                }
             });
             ['headerTgBtn', 'heroTgBtn', 'revSendTgBtn', 'tgDirectBtn'].forEach(id => {
                 const el = document.getElementById(id);
-                if (el) el.href = tgHref;
+                if (el) {
+                    el.href = tgHref;
+                    el.title = `Написать Марии в Telegram (${tgHandle})`;
+                }
             });
 
             const fMax = document.getElementById('footerMaxLink');
             if (fMax) {
                 fMax.href = maxHref;
+                fMax.title = `Написать Марии в МАКС (${phoneDisplay})`;
                 const spans = fMax.querySelectorAll('span');
                 if (spans.length > 0) spans[spans.length - 1].innerText = `МАКС (${phoneDisplay})`;
             }
             const fTg = document.getElementById('footerTgLink');
             if (fTg) {
                 fTg.href = tgHref;
+                fTg.title = `Написать Марии в Telegram (${tgHandle})`;
                 const sp = fTg.querySelector('span');
                 if (sp) sp.innerText = `Telegram (${tgHandle})`;
             }
             const fPhone = document.getElementById('footerPhoneLink');
             if (fPhone) {
                 fPhone.href = telHref;
+                fPhone.title = `Позвонить: ${phoneDisplay}`;
                 const spans = fPhone.querySelectorAll('span');
                 if (spans.length > 0) spans[spans.length - 1].innerText = phoneDisplay;
             }
@@ -2784,17 +3154,8 @@
                 if (sp) sp.innerText = `Написать в Telegram (${tgHandle})`;
             }
 
-            ['reviewsAvitoLink', 'footerAvitoLink'].forEach(id => {
-                const el = document.getElementById(id);
-                if (!el) return;
-                if (avitoHref !== '#') {
-                    el.href = avitoHref;
-                    el.classList.remove('hidden');
-                } else {
-                    el.href = '#';
-                    el.classList.add('hidden');
-                }
-            });
+            toggleOptionalLink(['reviewsAvitoLink', 'footerAvitoLink'], avitoHref);
+            toggleOptionalLink(['reviewsChannelLink', 'footerReviewsChannelLink'], reviewsChannelHref);
 
             document.querySelectorAll('[data-quiz-price]').forEach(el => {
                 const pid = el.getAttribute('data-quiz-price');
@@ -2869,6 +3230,7 @@
                 }
                 if (!teacherSelectedDateIso) teacherSelectedDateIso = getIso(0);
 
+                applyDefaultThemeIfNoManualOverride();
                 applySiteConfigToDom();
                 renderReviews();
                 renderDaysScroll();
@@ -2979,20 +3341,162 @@
             }
         }
 
+        function buildPublicReviewCardHtml(r) {
+            const author = String(r?.author || '').trim() || 'Ученик';
+            const role = String(r?.role || '').trim() || 'Ученик';
+            const rating = Math.max(1, Math.min(5, Number(r?.rating || 5)));
+            const dateStr = String(r?.date || '').trim();
+            const text = String(r?.text || '');
+            const starsHtml = Array.from({ length: 5 }, (_, idx) =>
+                `<span class="${idx < rating ? 'text-amber-400' : 'text-slate-300'} text-sm">★</span>`
+            ).join('');
+
+            return `
+                <div class="glass-panel rounded-3xl p-5 border border-cream-200 shadow-sm space-y-2.5 transition-all hover:border-peach/60">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-2xl bg-peach-light text-peach font-extrabold text-sm flex items-center justify-center border border-cream-200 flex-shrink-0">
+                                ${escapeHtml(author.charAt(0).toUpperCase())}
+                            </div>
+                            <div>
+                                <div class="font-display font-extrabold text-sm text-slateDark leading-tight">${escapeHtml(author)}</div>
+                                <div class="text-[11px] font-semibold text-peach">${escapeHtml(role)}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center justify-end gap-0.5 leading-none">${starsHtml}</div>
+                            <div class="text-[10px] text-slateDark/50 mt-1">${escapeHtml(dateStr)}</div>
+                        </div>
+                    </div>
+                    <p class="text-xs sm:text-sm text-slateDark/85 leading-relaxed">${escapeHtml(text)}</p>
+                </div>
+            `;
+        }
+
+        function populateAdminReviewDefaults() {
+            const dateEl = document.getElementById('admRevDate');
+            if (dateEl && !dateEl.value.trim()) {
+                dateEl.value = getTodayDdMmYyyy();
+            }
+            const visEl = document.getElementById('admRevVisible');
+            if (visEl && typeof visEl.checked !== 'boolean') {
+                visEl.checked = true;
+            }
+            updateAdminReviewPreview();
+        }
+
+        function updateAdminReviewPreview() {
+            const previewEl = document.getElementById('admReviewLivePreview');
+            if (!previewEl) return;
+            const author = (document.getElementById('admRevAuthor')?.value || '').trim() || 'Имя ученика или родителя';
+            const role = (document.getElementById('admRevRole')?.value || '').trim() || '9 класс • ОГЭ';
+            const rating = parseInt(document.getElementById('admRevRating')?.value || '5', 10) || 5;
+            const date = (document.getElementById('admRevDate')?.value || '').trim() || getTodayDdMmYyyy();
+            const text = (document.getElementById('admRevText')?.value || '').trim() || 'Здесь сразу видно, как карточка отзыва будет выглядеть на сайте.';
+            const isVisible = document.getElementById('admRevVisible')?.checked !== false;
+
+            const visBadge = document.getElementById('admReviewPreviewVisBadge');
+            if (visBadge) {
+                visBadge.className = isVisible
+                    ? 'badge-status-visible px-2.5 py-0.5 rounded-full border text-[10px] font-bold'
+                    : 'badge-status-hidden px-2.5 py-0.5 rounded-full border text-[10px] font-bold';
+                visBadge.innerText = isVisible ? 'Виден гостям' : 'Черновик (скрыт)';
+            }
+
+            previewEl.innerHTML = buildPublicReviewCardHtml({ author, role, rating, date, text });
+        }
+
+        async function submitAdminReview(e) {
+            e.preventDefault();
+            if (!activeTeacherPin) return requestTeacherAccess();
+
+            const author = (document.getElementById('admRevAuthor')?.value || '').trim();
+            const role = (document.getElementById('admRevRole')?.value || '').trim() || '9 класс • ОГЭ';
+            const rating = Math.max(1, Math.min(5, parseInt(document.getElementById('admRevRating')?.value || '5', 10) || 5));
+            const createdDate = (document.getElementById('admRevDate')?.value || '').trim() || getTodayDdMmYyyy();
+            const text = (document.getElementById('admRevText')?.value || '').trim();
+            const isVisible = document.getElementById('admRevVisible')?.checked !== false;
+
+            if (!author || text.length < 2) {
+                return showTeacherToast('Укажите автора и текст отзыва (минимум 2 символа).', true);
+            }
+
+            const btn = document.getElementById('admRevSubmitBtn');
+            if (btn) btn.disabled = true;
+
+            try {
+                const res = await sbRpc('admin_add_review', {
+                    p_slug: SITE_SLUG,
+                    p_pin: activeTeacherPin,
+                    p_author: author,
+                    p_role: role,
+                    p_rating: rating,
+                    p_text: text,
+                    p_created_date: createdDate,
+                    p_is_visible: isVisible
+                });
+                if (res && res.ok) {
+                    applyAdminPayload(res);
+                    renderTeacherReviews();
+                } else {
+                    await refreshTeacherBundle();
+                }
+                if (document.getElementById('admRevAuthor')) document.getElementById('admRevAuthor').value = '';
+                if (document.getElementById('admRevText')) document.getElementById('admRevText').value = '';
+                if (document.getElementById('admRevRating')) document.getElementById('admRevRating').value = '5';
+                if (document.getElementById('admRevDate')) document.getElementById('admRevDate').value = getTodayDdMmYyyy();
+                if (document.getElementById('admRevVisible')) document.getElementById('admRevVisible').checked = true;
+                updateAdminReviewPreview();
+                showTeacherToast(isVisible ? 'Отзыв добавлен и опубликован на сайте!' : 'Отзыв сохранён как скрытый.');
+            } catch (err) {
+                alert(err.message || 'Ошибка при добавлении отзыва.');
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        }
+
+        async function toggleReviewVisibility(id, nextVisible) {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const reviewId = Number(id);
+            try {
+                const res = await sbRpc('admin_set_review_visibility', {
+                    p_slug: SITE_SLUG,
+                    p_pin: activeTeacherPin,
+                    p_review_id: Number.isFinite(reviewId) ? reviewId : id,
+                    p_is_visible: Boolean(nextVisible)
+                });
+                if (res && res.ok) {
+                    applyAdminPayload(res);
+                    renderTeacherReviews();
+                } else {
+                    await refreshTeacherBundle();
+                }
+                showTeacherToast(nextVisible ? 'Отзыв теперь виден посетителям сайта.' : 'Отзыв скрыт с публичной страницы.');
+            } catch (err) {
+                alert(err.message || 'Ошибка при смене видимости отзыва.');
+            }
+        }
+
         async function deleteReview(id) {
             if (!activeTeacherPin) return requestTeacherAccess();
             if (!confirm('Удалить этот отзыв для всех посетителей сайта?')) return;
+            const reviewId = Number(id);
             try {
-                await sbRpc('admin_delete_review', {
+                const res = await sbRpc('admin_delete_review', {
                     p_slug: SITE_SLUG,
                     p_pin: activeTeacherPin,
-                    p_review_id: id
+                    p_review_id: Number.isFinite(reviewId) ? reviewId : id
                 });
-                cloudReviews = cloudReviews.filter(r => String(r.id) !== String(id));
-                renderReviews();
-                renderTeacherReviews();
+                if (res && res.ok) {
+                    applyAdminPayload(res);
+                    renderTeacherReviews();
+                } else {
+                    cloudReviews = cloudReviews.filter(r => String(r.id) !== String(id));
+                    renderReviews();
+                    renderTeacherReviews();
+                    await refreshTeacherBundle();
+                }
                 showTeacherToast('Отзыв удалён из облака.');
-                await refreshTeacherBundle();
             } catch (err) {
                 alert(err.message || 'Ошибка при удалении отзыва.');
             }
@@ -3003,8 +3507,8 @@
             const badge = document.getElementById('reviewsCountBadge');
             if (!container) return;
 
-            const list = Array.isArray(cloudReviews) ? cloudReviews : [];
-            if (badge) badge.innerText = `${list.length} отз.`;
+            const list = (Array.isArray(cloudReviews) ? cloudReviews : []).filter(r => r && r.visible !== false);
+            if (badge) badge.innerText = formatReviewsCountRu(list.length);
 
             if (list.length === 0) {
                 container.innerHTML = `
@@ -3017,33 +3521,7 @@
                 return;
             }
 
-            container.innerHTML = list.map(r => {
-                const rating = Math.max(1, Math.min(5, Number(r.rating || 5)));
-                const starsHtml = Array.from({ length: 5 }, (_, idx) =>
-                    `<span class="${idx < rating ? 'text-amber-400' : 'text-slate-300'} text-sm">★</span>`
-                ).join('');
-
-                return `
-                    <div class="glass-panel rounded-3xl p-5 border border-cream-200 shadow-sm space-y-2.5 transition-all hover:border-peach/60">
-                        <div class="flex flex-wrap items-center justify-between gap-2">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-9 h-9 rounded-2xl bg-peach-light text-peach font-extrabold text-sm flex items-center justify-center border border-cream-200 flex-shrink-0">
-                                    ${escapeHtml((r.author || 'У').trim().charAt(0).toUpperCase())}
-                                </div>
-                                <div>
-                                    <div class="font-display font-extrabold text-sm text-slateDark leading-tight">${escapeHtml(r.author)}</div>
-                                    <div class="text-[11px] font-semibold text-peach">${escapeHtml(r.role || 'Ученик')}</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="flex items-center justify-end gap-0.5 leading-none">${starsHtml}</div>
-                                <div class="text-[10px] text-slateDark/50 mt-1">${escapeHtml(r.date || '')}</div>
-                            </div>
-                        </div>
-                        <p class="text-xs sm:text-sm text-slateDark/85 leading-relaxed">${escapeHtml(r.text)}</p>
-                    </div>
-                `;
-            }).join('');
+            container.innerHTML = list.map(r => buildPublicReviewCardHtml(r)).join('');
         }
 
         function renderTeacherReviews() {
@@ -3055,20 +3533,36 @@
             if (countEl) countEl.innerText = list.length;
 
             if (list.length === 0) {
-                container.innerHTML = '<div class="text-xs text-slateDark/50 py-3">Пока нет опубликованных отзывов.</div>';
+                container.innerHTML = '<div class="text-xs text-slateDark/50 py-3">Пока нет отзывов в базе. Добавьте первый отзыв через форму выше!</div>';
                 return;
             }
 
             container.innerHTML = list.map(r => {
                 const rating = Math.max(1, Math.min(5, Number(r.rating || 5)));
+                const isHidden = r.visible === false;
+                const safeId = Number.isFinite(Number(r.id)) ? Number(r.id) : `'${escapeHtml(String(r.id))}'`;
                 return `
-                    <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 flex flex-wrap items-start justify-between gap-3 text-xs">
-                        <div class="space-y-1 flex-1 min-w-[200px]">
-                            <div class="font-bold text-slateDark">${escapeHtml(r.author)} <span class="text-peach font-semibold">(${escapeHtml(r.role || '')})</span> • ${'★'.repeat(rating)}</div>
+                    <div class="teacher-subcard p-3.5 rounded-2xl border flex flex-wrap items-start justify-between gap-3 text-xs ${isHidden ? 'opacity-85' : ''}">
+                        <div class="space-y-1 flex-1 min-w-[210px]">
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="font-bold text-slateDark">${escapeHtml(r.author)}</span>
+                                <span class="text-peach font-semibold">(${escapeHtml(r.role || '')})</span>
+                                <span class="text-amber-400 font-bold">${'★'.repeat(rating)}</span>
+                                <span class="${isHidden ? 'badge-status-hidden' : 'badge-status-visible'} px-2 py-0.5 rounded-full border text-[10px] font-bold">
+                                    ${isHidden ? 'Скрыт' : 'Виден'}
+                                </span>
+                            </div>
                             <div class="text-slateDark/75 leading-snug">${escapeHtml(r.text)}</div>
                             <div class="text-[10px] text-slateDark/45">${escapeHtml(r.date || '')}</div>
                         </div>
-                        <button type="button" onclick="deleteReview('${escapeHtml(String(r.id))}')" class="btn-danger px-2.5 py-1.5 rounded-lg font-bold flex-shrink-0">Удалить</button>
+                        <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                            <button type="button" onclick="toggleReviewVisibility(${safeId}, ${isHidden ? 'true' : 'false'})" class="btn-secondary px-2.5 py-1.5 rounded-lg font-bold transition-colors">
+                                ${isHidden ? 'Показать' : 'Скрыть'}
+                            </button>
+                            <button type="button" onclick="deleteReview(${safeId})" class="btn-danger px-2.5 py-1.5 rounded-lg font-bold transition-colors">
+                                Удалить
+                            </button>
+                        </div>
                     </div>
                 `;
             }).join('');
@@ -3077,7 +3571,15 @@
         function renderFormatCards() {
             const container = document.getElementById('formatsCards');
             if (!container) return;
-            const progs = Array.isArray(siteConfig.programs) ? siteConfig.programs : DEFAULT_SITE_CONFIG.programs;
+            const progs = getActivePrograms();
+            if (!progs.some(p => p.id === selectedFormatId)) {
+                selectedFormatId = progs[0]?.id || '';
+            }
+            const gridColsClass = progs.length === 1
+                ? 'grid grid-cols-1 max-w-md mx-auto gap-4'
+                : (progs.length === 2 ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'grid grid-cols-1 md:grid-cols-3 gap-4');
+            container.className = gridColsClass;
+
             container.innerHTML = progs.map(f => {
                 const isSelected = selectedFormatId === f.id;
                 const safeId = escapeHtml(f.id);
@@ -3248,7 +3750,8 @@
                 return alert('Заполните имя и телефон для связи!');
             }
 
-            const progObj = (siteConfig.programs || []).find(p => p.id === selectedFormatId) || (siteConfig.programs || [])[0];
+            const activeProgs = getActivePrograms();
+            const progObj = activeProgs.find(p => p.id === selectedFormatId) || activeProgs[0] || (siteConfig.programs || [])[0];
             const durationMin = Number(progObj?.duration || 60);
             const priceVal = Number(progObj?.price || 0);
             const formatTitle = progObj?.title || 'Урок математики';
@@ -3282,10 +3785,14 @@
 
                 const contacts = siteConfig.contacts || DEFAULT_SITE_CONFIG.contacts;
                 const tgMsg = `Здравствуйте, Мария! Записались через сайт на вводный урок.\nДата: ${formatRuDate(selectedDateIso)} в ${selectedTime}\nФормат: ${formatTitle} (${priceVal} ₽)\nУченик: ${name} (${gradeLabel})\nТелефон: ${phone}\nСвязь: ${messenger}`;
+                const phoneRaw = normalizeRuPhone(contacts.phone_raw || contacts.phone_display, '+79195784289');
+                const tgParsed = normalizeTelegramTarget(contacts.tg_url || contacts.tg_handle);
+                const tgHref = safeExternalUrl(contacts.tg_url || tgParsed.url);
+                const maxHref = safeExternalUrl(contacts.max_url || ('https://max.ru/u/' + phoneRaw));
                 const tgBtn = document.getElementById('tgDirectBtn');
                 const maxBtn = document.getElementById('maxDirectBtn');
-                if (tgBtn) tgBtn.href = appendTextQuery(safeExternalUrl(contacts.tg_url), tgMsg);
-                if (maxBtn) maxBtn.href = safeExternalUrl(contacts.max_url);
+                if (tgBtn) tgBtn.href = appendTextQuery(tgHref, tgMsg);
+                if (maxBtn) maxBtn.href = maxHref;
 
                 const modal = document.getElementById('confirmModal');
                 if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
@@ -3373,6 +3880,7 @@
                 }));
             }
             if (Array.isArray(res.reviews)) cloudReviews = res.reviews;
+            applyDefaultThemeIfNoManualOverride();
             applySiteConfigToDom();
             renderReviews();
             renderDaysScroll();
@@ -3456,6 +3964,7 @@
             renderTeacherTimeline();
             renderTeacherAllBookings();
             renderTeacherReviews();
+            populateAdminReviewDefaults();
             populateTeacherTextsForm();
             switchTeacherTab(teacherActiveTab || 'slots');
             lucide.createIcons();
@@ -3478,7 +3987,10 @@
                     : 'teacher-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold btn-secondary transition-all';
             });
             if (tabName === 'texts') populateTeacherTextsForm();
-            if (tabName === 'reviews') renderTeacherReviews();
+            if (tabName === 'reviews') {
+                renderTeacherReviews();
+                populateAdminReviewDefaults();
+            }
             lucide.createIcons();
         }
 
@@ -3497,6 +4009,8 @@
                 renderTeacherTimeline();
                 renderTeacherAllBookings();
                 renderTeacherReviews();
+                populateAdminReviewDefaults();
+                populateTeacherTextsForm();
             } else {
                 teacherEl.classList.add('hidden');
                 clientEl.classList.remove('hidden');
@@ -3561,7 +4075,7 @@
             const nextConfig = { ...siteConfig, weekly_open_slots: nextWeekly };
             try {
                 const res = await sbRpc('admin_save_config', { p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_config: nextConfig });
-                siteConfig = mergeSiteConfig(res && res.site && res.site.config ? res.site.config : nextConfig);
+                siteConfig = mergeSiteConfig(res?.site?.config || res?.config || nextConfig);
                 renderWeeklyScheduleEditor();
                 renderTeacherDaysBar();
                 renderTeacherTimeline();
@@ -3639,7 +4153,7 @@
             timeline.innerHTML = daySlots.map(slot => {
                 if (slot.status === 'booked') {
                     const b = slot.booking;
-                    const safeTel = normalizePhoneRaw(b.phone);
+                    const safeTel = normalizeRuPhone(b.phone, '');
                     return `
                         <div class="p-3.5 rounded-2xl border slot-booked-card flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                             <div class="flex items-center gap-3 min-w-0">
@@ -3741,7 +4255,7 @@
             }
 
             container.innerHTML = list.map(b => {
-                const safeTel = normalizePhoneRaw(b.phone);
+                const safeTel = normalizeRuPhone(b.phone, '');
                 return `
                     <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div class="space-y-0.5 min-w-0">
@@ -3797,7 +4311,7 @@
             const sel = document.getElementById('manualCustFormat');
             if (!sel) return;
             const prev = sel.value;
-            const progs = Array.isArray(siteConfig.programs) ? siteConfig.programs : DEFAULT_SITE_CONFIG.programs;
+            const progs = getActivePrograms();
             sel.innerHTML = progs.map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.title)} (${Number(p.price || 0)} ₽)</option>`).join('');
             if (prev && progs.some(p => p.id === prev)) sel.value = prev;
         }
@@ -3836,9 +4350,188 @@
             }
         }
 
-        // --- TAB 2: TEXTS, PRICES & LINKS EDITOR ---
+        // --- TAB 2: TEXTS, PRICES, THEME, CONTACTS & PROGRAMS CONSTRUCTOR ---
+        let teacherDraftPrograms = [];
+
+        function getNormalizedPhoneFromCfgInput() {
+            const raw = (document.getElementById('cfgPhoneDisplay')?.value || '').trim();
+            const digits = raw.replace(/\D/g, '');
+            if (digits.length < 10) return '';
+            return normalizeRuPhone(raw, '');
+        }
+
+        function syncMessengersFromPhone(force = false) {
+            const normPhone = getNormalizedPhoneFromCfgInput();
+            if (!normPhone) {
+                if (force) showTeacherToast('Введите номер телефона (минимум 10 цифр: +7, 8 или 9...).', true);
+                return;
+            }
+            const maxEl = document.getElementById('cfgMaxUrl');
+            const tgUrlEl = document.getElementById('cfgTgUrl');
+            const tgHandleEl = document.getElementById('cfgTgHandle');
+
+            if (maxEl) {
+                maxEl.value = 'https://max.ru/u/' + normPhone;
+            }
+            if (tgUrlEl) {
+                const curTg = tgUrlEl.value.trim();
+                const isEmptyOrPhoneTg = !curTg
+                    || /^(?:https?:\/\/)?(?:www\.)?(?:t\.me|telegram\.me)\/\+(?:\d|[\d\s()-]+$)/i.test(curTg)
+                    || /^\+?[\d\s()-]+$/.test(curTg);
+                if (force || isEmptyOrPhoneTg) {
+                    tgUrlEl.value = 'https://t.me/' + normPhone;
+                    if (tgHandleEl) {
+                        const curHandle = tgHandleEl.value.trim();
+                        if (force || !curHandle || curHandle.startsWith('+') || /^\d+$/.test(curHandle.replace(/[\s()-]/g, '')) || !curTg) {
+                            tgHandleEl.value = normPhone;
+                        }
+                    }
+                }
+            }
+            if (force) {
+                showTeacherToast('Ссылки МАКС и Telegram обновлены из номера.');
+            }
+        }
+
+        function handlePhoneInputSync() {
+            syncMessengersFromPhone(false);
+        }
+
+        function handleTgHandleSync() {
+            const tgHandleEl = document.getElementById('cfgTgHandle');
+            const tgUrlEl = document.getElementById('cfgTgUrl');
+            if (!tgHandleEl || !tgUrlEl) return;
+            const raw = tgHandleEl.value.trim();
+            if (!raw || raw === '@') return;
+            const parsed = normalizeTelegramTarget(raw);
+            if (parsed.url) tgUrlEl.value = parsed.url;
+        }
+
+        function readProgramsFromTextsForm() {
+            const getVal = id => (document.getElementById(id)?.value || '').trim();
+            teacherDraftPrograms = (teacherDraftPrograms || []).map(p => {
+                const id = p.id;
+                const titleEl = document.getElementById(`cfgProgTitle_${id}`);
+                if (!titleEl) return { ...p };
+                const iconVal = getVal(`cfgProgIcon_${id}`) || p.icon || '📘';
+                const titleVal = getVal(`cfgProgTitle_${id}`) || p.title;
+                const priceRaw = parseInt(getVal(`cfgProgPrice_${id}`), 10);
+                const durRaw = parseInt(getVal(`cfgProgDuration_${id}`), 10);
+                const descEl = document.getElementById(`cfgProgDesc_${id}`);
+                const benEl = document.getElementById(`cfgProgBenefit_${id}`);
+                return {
+                    ...p,
+                    icon: iconVal,
+                    title: titleVal,
+                    price: Number.isFinite(priceRaw) && priceRaw >= 0 ? priceRaw : Number(p.price || 0),
+                    duration: Number.isFinite(durRaw) && durRaw >= 15 && durRaw <= 240 ? durRaw : Number(p.duration || 60),
+                    desc: descEl ? descEl.value.trim() : (p.desc || ''),
+                    benefit: benEl ? benEl.value.trim() : (p.benefit || '')
+                };
+            });
+            return teacherDraftPrograms;
+        }
+
+        function renderTeacherProgramsEditor(programsList) {
+            const listEl = document.getElementById('cfgProgramsList');
+            if (!listEl) return;
+            const list = Array.isArray(programsList) ? programsList : [];
+            const activeCount = list.filter(p => !p.hidden).length;
+
+            listEl.innerHTML = list.map((p, idx) => {
+                const id = escapeHtml(p.id);
+                const isHidden = Boolean(p.hidden);
+                const disableHide = !isHidden && activeCount <= 1;
+                return `
+                    <div data-program-id="${id}" class="teacher-subcard rounded-2xl p-4 border space-y-2.5 ${isHidden ? 'program-card-hidden' : ''}">
+                        <div class="font-extrabold text-slateDark flex flex-wrap items-center justify-between gap-2">
+                            <div class="flex flex-wrap items-center gap-2 min-w-0">
+                                <span>${escapeHtml(p.icon || '📘')} ${escapeHtml(p.title)}</span>
+                                <span class="${isHidden ? 'badge-status-hidden' : 'badge-status-visible'} px-2 py-0.5 rounded-full border text-[10px] font-bold">
+                                    ${isHidden ? 'Скрыт на сайте' : 'Активен'}
+                                </span>
+                            </div>
+                            <button type="button" data-prog-toggle="${id}" onclick="toggleTeacherProgramHidden(${idx})" ${disableHide ? 'title="Нельзя скрыть последний активный формат"' : ''} class="btn-secondary px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${disableHide ? 'opacity-60' : ''}">
+                                ${isHidden ? 'Показать' : 'Скрыть'}
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                            <div class="sm:col-span-2">
+                                <label for="cfgProgIcon_${id}" class="font-bold text-slateDark block mb-1">Иконка</label>
+                                <input type="text" id="cfgProgIcon_${id}" value="${escapeHtml(p.icon || '📘')}" maxlength="8" class="w-full px-3 py-2 rounded-xl border text-xs text-center">
+                            </div>
+                            <div class="sm:col-span-5">
+                                <label for="cfgProgTitle_${id}" class="font-bold text-slateDark block mb-1">Название формата</label>
+                                <input type="text" id="cfgProgTitle_${id}" value="${escapeHtml(p.title)}" class="w-full px-3 py-2 rounded-xl border text-xs">
+                            </div>
+                            <div class="sm:col-span-3">
+                                <label for="cfgProgPrice_${id}" class="font-bold text-slateDark block mb-1">Цена (₽)</label>
+                                <input type="number" id="cfgProgPrice_${id}" value="${Number(p.price || 0)}" min="0" step="50" class="w-full px-3 py-2 rounded-xl border text-xs font-bold">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label for="cfgProgDuration_${id}" class="font-bold text-slateDark block mb-1">Мин</label>
+                                <input type="number" id="cfgProgDuration_${id}" value="${Number(p.duration || 60)}" min="15" max="240" step="5" class="w-full px-3 py-2 rounded-xl border text-xs font-bold">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="cfgProgDesc_${id}" class="font-bold text-slateDark block mb-1">Описание</label>
+                            <textarea id="cfgProgDesc_${id}" rows="2" class="w-full px-3 py-2 rounded-xl border text-xs">${escapeHtml(p.desc || '')}</textarea>
+                        </div>
+                        <div>
+                            <label for="cfgProgBenefit_${id}" class="font-bold text-slateDark block mb-1">Блок преимущества (💡)</label>
+                            <input type="text" id="cfgProgBenefit_${id}" value="${escapeHtml(p.benefit || '')}" class="w-full px-3 py-2 rounded-xl border text-xs">
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleTeacherProgramHidden(idx) {
+            readProgramsFromTextsForm();
+            if (!teacherDraftPrograms[idx]) return;
+            const target = teacherDraftPrograms[idx];
+            if (!target.hidden) {
+                const activeCount = teacherDraftPrograms.filter(p => !p.hidden).length;
+                if (activeCount <= 1) {
+                    showTeacherToast('Должен оставаться хотя бы 1 активный формат на сайте!', true);
+                    return;
+                }
+            }
+            target.hidden = !target.hidden;
+            renderTeacherProgramsEditor(teacherDraftPrograms);
+        }
+
+        function addTeacherProgramFormat() {
+            readProgramsFromTextsForm();
+            let suffix = teacherDraftPrograms.length + 1;
+            let newId = 'fmt_' + Date.now().toString(36).slice(-5) + '_' + suffix;
+            while (teacherDraftPrograms.some(p => p.id === newId)) {
+                suffix += 1;
+                newId = 'fmt_' + Date.now().toString(36).slice(-5) + '_' + suffix;
+            }
+            teacherDraftPrograms.push({
+                id: newId,
+                title: 'Новый формат',
+                desc: 'Индивидуальный маршрут и разбор сложных задач под цель ученика.',
+                benefit: 'Гибкий темп и фокус на конкретных темах.',
+                price: 1200,
+                duration: 60,
+                icon: '📘',
+                badge: null,
+                hidden: false
+            });
+            renderTeacherProgramsEditor(teacherDraftPrograms);
+            const titleEl = document.getElementById(`cfgProgTitle_${newId}`);
+            if (titleEl) {
+                titleEl.focus();
+                titleEl.select();
+            }
+            showTeacherToast('Добавлен новый формат — настройте и нажмите «Сохранить».');
+        }
+
         function populateTeacherTextsForm() {
             const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v ?? ''; };
+            setVal('cfgDefaultTheme', normalizeThemeName(siteConfig.default_theme));
             setVal('cfgAnnouncement', siteConfig.announcement);
             setVal('cfgHeroBadge', siteConfig.hero_badge);
             setVal('cfgHeroSubtitle', siteConfig.hero_subtitle);
@@ -3852,42 +4545,15 @@
 
             const c = siteConfig.contacts || {};
             setVal('cfg_avito_url', c.avito_url || '');
+            setVal('cfgReviewsChannelUrl', c.reviews_channel_url || '');
             setVal('cfgPhoneDisplay', c.phone_display || '');
             setVal('cfgTgHandle', c.tg_handle || '');
             setVal('cfgTgUrl', c.tg_url || '');
             setVal('cfgMaxUrl', c.max_url || '');
 
-            const listEl = document.getElementById('cfgProgramsList');
-            if (!listEl) return;
-            listEl.innerHTML = (siteConfig.programs || []).map(p => {
-                const id = escapeHtml(p.id);
-                return `
-                    <div class="teacher-subcard rounded-2xl p-4 border space-y-2.5">
-                        <div class="font-extrabold text-slateDark flex items-center justify-between gap-2">
-                            <span>${escapeHtml(p.icon || '📘')} ${escapeHtml(p.title)}</span>
-                            <span class="text-[10px] uppercase tracking-wider text-peach">${id}</span>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                            <div class="sm:col-span-2">
-                                <label class="font-bold text-slateDark block mb-1">Название формата</label>
-                                <input type="text" id="cfgProgTitle_${id}" value="${escapeHtml(p.title)}" class="w-full px-3 py-2 rounded-xl border text-xs">
-                            </div>
-                            <div>
-                                <label class="font-bold text-slateDark block mb-1">Цена (₽)</label>
-                                <input type="number" id="cfgProgPrice_${id}" value="${Number(p.price || 0)}" min="0" step="50" class="w-full px-3 py-2 rounded-xl border text-xs font-bold">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="font-bold text-slateDark block mb-1">Описание</label>
-                            <textarea id="cfgProgDesc_${id}" rows="2" class="w-full px-3 py-2 rounded-xl border text-xs">${escapeHtml(p.desc || '')}</textarea>
-                        </div>
-                        <div>
-                            <label class="font-bold text-slateDark block mb-1">Блок преимущества (💡)</label>
-                            <input type="text" id="cfgProgBenefit_${id}" value="${escapeHtml(p.benefit || '')}" class="w-full px-3 py-2 rounded-xl border text-xs">
-                        </div>
-                    </div>
-                `;
-            }).join('');
+            teacherDraftPrograms = (Array.isArray(siteConfig.programs) ? siteConfig.programs : DEFAULT_SITE_CONFIG.programs)
+                .map(p => ({ ...p }));
+            renderTeacherProgramsEditor(teacherDraftPrograms);
         }
 
         async function saveTeacherTextsAndConfig(e) {
@@ -3895,25 +4561,38 @@
             if (!activeTeacherPin) return requestTeacherAccess();
 
             const getVal = id => (document.getElementById(id)?.value || '').trim();
-            const avitoUrl = getVal('cfg_avito_url');
-            const tgUrl = getVal('cfgTgUrl');
-            const maxUrl = getVal('cfgMaxUrl');
+            const defaultTheme = normalizeThemeName(getVal('cfgDefaultTheme') || siteConfig.default_theme);
+            const phoneDisplay = getVal('cfgPhoneDisplay') || DEFAULT_SITE_CONFIG.contacts.phone_display;
+            const phoneRaw = normalizeRuPhone(phoneDisplay, DEFAULT_SITE_CONFIG.contacts.phone_raw);
 
-            if (!isValidHttpUrlInput(avitoUrl) || !isValidHttpUrlInput(tgUrl) || !isValidHttpUrlInput(maxUrl)) {
-                return alert('Ссылки Telegram, МАКС и Авито должны начинаться с https:// или http://');
+            const rawTgUrl = getVal('cfgTgUrl');
+            const rawTgHandle = getVal('cfgTgHandle');
+            const tgParsed = rawTgUrl ? normalizeTelegramTarget(rawTgUrl) : normalizeTelegramTarget(rawTgHandle);
+            const tgUrl = tgParsed.url || siteConfig.contacts.tg_url;
+            const tgHandle = (tgParsed.handle && tgParsed.handle !== 'Telegram')
+                ? tgParsed.handle
+                : (rawTgHandle || tgParsed.handle || siteConfig.contacts.tg_handle);
+
+            const maxUrl = normalizeMaxTarget(getVal('cfgMaxUrl')) || ('https://max.ru/u/' + phoneRaw);
+            const avitoUrl = normalizeOptionalHttpUrl(getVal('cfg_avito_url'));
+            const reviewsChannelUrl = normalizeOptionalHttpUrl(getVal('cfgReviewsChannelUrl'));
+
+            if (!isValidHttpUrlInput(avitoUrl) || !isValidHttpUrlInput(tgUrl) || !isValidHttpUrlInput(maxUrl) || !isValidHttpUrlInput(reviewsChannelUrl)) {
+                return showTeacherToast('Ссылки Telegram, МАКС, канала отзывов и Авито должны начинаться с https:// или http://', true);
             }
 
-            const phoneDisplay = getVal('cfgPhoneDisplay') || DEFAULT_SITE_CONFIG.contacts.phone_display;
-            const nextPrograms = (siteConfig.programs || []).map(p => {
-                const title = getVal(`cfgProgTitle_${p.id}`) || p.title;
-                const priceRaw = parseInt(getVal(`cfgProgPrice_${p.id}`), 10);
-                const desc = getVal(`cfgProgDesc_${p.id}`) || p.desc;
-                const benefit = getVal(`cfgProgBenefit_${p.id}`);
-                return { ...p, title, price: Number.isFinite(priceRaw) && priceRaw >= 0 ? priceRaw : p.price, desc, benefit };
-            });
+            readProgramsFromTextsForm();
+            const nextPrograms = (teacherDraftPrograms || []).map(p => ({ ...p }));
+            if (!nextPrograms.length) {
+                DEFAULT_SITE_CONFIG.programs.forEach(p => nextPrograms.push({ ...p }));
+            }
+            if (!nextPrograms.some(p => !p.hidden)) {
+                nextPrograms[0].hidden = false;
+            }
 
             const nextConfig = {
                 ...siteConfig,
+                default_theme: defaultTheme,
                 announcement: getVal('cfgAnnouncement') || siteConfig.announcement,
                 hero_badge: getVal('cfgHeroBadge') || siteConfig.hero_badge,
                 hero_subtitle: getVal('cfgHeroSubtitle') || siteConfig.hero_subtitle,
@@ -3928,10 +4607,11 @@
                 contacts: {
                     ...siteConfig.contacts,
                     phone_display: phoneDisplay,
-                    phone_raw: normalizePhoneRaw(phoneDisplay),
-                    tg_handle: getVal('cfgTgHandle') || siteConfig.contacts.tg_handle,
-                    tg_url: tgUrl || siteConfig.contacts.tg_url,
-                    max_url: maxUrl || siteConfig.contacts.max_url,
+                    phone_raw: phoneRaw,
+                    tg_handle: tgHandle,
+                    tg_url: tgUrl,
+                    max_url: maxUrl,
+                    reviews_channel_url: reviewsChannelUrl,
                     avito_url: avitoUrl
                 }
             };
@@ -3941,7 +4621,8 @@
 
             try {
                 const res = await sbRpc('admin_save_config', { p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_config: nextConfig });
-                siteConfig = mergeSiteConfig(res && res.site && res.site.config ? res.site.config : nextConfig);
+                siteConfig = mergeSiteConfig(res?.site?.config || res?.config || nextConfig);
+                setTheme(siteConfig.default_theme, false, { manual: false });
                 applySiteConfigToDom();
                 populateTeacherTextsForm();
                 showTeacherToast('Изменения сохранены и опубликованы на сайте!');
@@ -3987,6 +4668,7 @@
             updateCatPetsBadge();
             loadSavedPortrait();
             setReviewRating(5);
+            populateAdminReviewDefaults();
 
             selectedDateIso = '';
             teacherSelectedDateIso = getIso(0);
