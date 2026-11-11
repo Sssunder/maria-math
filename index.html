@@ -143,6 +143,13 @@
         ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
         ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
 
+        /* --- Mobile Responsive Invariants --- */
+        html, body {
+            max-width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+        }
+
         /* --- Global Bindings --- */
         body {
             background-color: var(--bg-page) !important;
@@ -392,9 +399,9 @@
     </div>
 
     <!-- Top Announcement Bar with Cat Sayan -->
-    <div id="topAnnouncement" class="bg-gradient-to-r from-peach via-amber-400 to-peach text-white py-2 px-4 text-xs font-bold text-center tracking-wide flex items-center justify-center gap-2 shadow-sm">
-        <span>🐾 Кот Саян напоминает: идёт набор в мини-группы ОГЭ 2026/2027! Первое диагностическое занятие бесплатно</span>
-        <a href="#booking" class="underline decoration-white/70 hover:decoration-white ml-1">Занять место &rarr;</a>
+    <div id="topAnnouncement" class="bg-gradient-to-r from-peach via-amber-400 to-peach text-white py-1.5 px-3 text-[11px] sm:text-xs font-bold text-center tracking-wide flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 shadow-sm">
+        <span class="truncate max-w-[280px] sm:max-w-none">🐾 Кот Саян: набор в группы ОГЭ 2026/2027 • Вводный урок бесплатно</span>
+        <a href="#booking" class="underline decoration-white/70 hover:decoration-white flex-shrink-0">Занять место &rarr;</a>
     </div>
 
     <!-- CLIENT VIEW CONTAINER -->
@@ -402,17 +409,17 @@
 
         <!-- Navigation Bar -->
         <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-cream-200">
-            <div class="max-w-5xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+            <div class="max-w-5xl mx-auto px-3 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2">
                 <!-- Brand -->
-                <div class="flex items-center gap-3">
-                    <div class="w-11 h-11 rounded-2xl bg-peach-light border border-peach/30 flex items-center justify-center text-2xl shadow-sm">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-peach-light border border-peach/30 flex items-center justify-center text-lg sm:text-2xl shadow-sm flex-shrink-0">
                         🐱
                     </div>
-                    <div>
-                        <span class="font-display font-extrabold text-base sm:text-lg tracking-tight text-slateDark block leading-none">
+                    <div class="min-w-0">
+                        <span class="font-display font-extrabold text-sm sm:text-lg tracking-tight text-slateDark block leading-none whitespace-nowrap">
                             Мария Дружинина
                         </span>
-                        <span class="text-[11px] font-semibold text-peach block mt-0.5">
+                        <span class="text-[10px] sm:text-[11px] font-semibold text-peach hidden sm:block truncate mt-0.5">
                             Архитектор математического мышления • 5–9 класс
                         </span>
                     </div>
@@ -431,59 +438,65 @@
                 </div>
 
                 <!-- Quick Messengers & Header CTA -->
-                <div class="flex items-center gap-2 sm:gap-3">
-                    <!-- Sound FX Toggle Button -->
-                    <button onclick="toggleSound()" id="soundToggleBtn" class="px-2.5 py-1.5 rounded-xl border border-cream-200 text-xs font-bold hover:border-peach transition-colors flex items-center gap-1" title="Звуки кликов и мурчания">
-                        <span id="soundIcon">🔊</span>
-                        <span class="hidden sm:inline text-[11px] font-bold">Звук</span>
+                <div class="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
+                    
+                    <!-- Mobile Theme Trigger in Header -->
+                    <button onclick="toggleMobileThemeDock(true)" class="sm:hidden w-8 h-8 rounded-xl border border-cream-200 text-xs font-bold hover:border-peach transition-colors flex items-center justify-center p-1.5" title="Сменить стиль оформления">
+                        <i data-lucide="palette" class="w-4 h-4 text-peach"></i>
                     </button>
 
-                    <!-- MAX Messenger Button -->
-                    <a href="https://max.ru/" target="_blank" title="Написать в МАКС" class="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0077FF] border border-[#0077FF]/25 font-bold text-xs flex items-center gap-1.5 transition-all">
+                    <!-- Sound FX Toggle Button -->
+                    <button onclick="toggleSound()" id="soundToggleBtn" class="w-8 h-8 sm:w-auto sm:h-auto p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl border border-cream-200 text-xs font-bold hover:border-peach transition-colors flex items-center justify-center gap-1" title="Звуки кликов и мурчания">
+                        <span id="soundIcon">🔊</span>
+                        <span class="hidden md:inline text-[11px] font-bold">Звук</span>
+                    </button>
+
+                    <!-- MAX Messenger Button (hidden on mobile, prominent in Hero) -->
+                    <a href="https://max.ru/" target="_blank" title="Написать в МАКС" class="hidden sm:flex px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0077FF] border border-[#0077FF]/25 font-bold text-xs items-center gap-1.5 transition-all">
                         <span class="w-2 h-2 rounded-full bg-[#0077FF] animate-pulse"></span>
-                        <span class="hidden sm:inline">МАКС</span>
-                        <span class="text-[10px] font-extrabold sm:hidden">MAX</span>
+                        <span>МАКС</span>
                     </a>
 
-                    <!-- Telegram Button -->
-                    <a href="https://t.me/" target="_blank" title="Написать в Telegram" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-[#2AABEE] border border-[#2AABEE]/25 font-bold text-xs flex items-center gap-1.5 transition-all">
+                    <!-- Telegram Button (hidden on mobile, prominent in Hero) -->
+                    <a href="https://t.me/" target="_blank" title="Написать в Telegram" class="hidden sm:flex px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-[#2AABEE] border border-[#2AABEE]/25 font-bold text-xs items-center gap-1.5 transition-all">
                         <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                        <span class="hidden sm:inline">Telegram</span>
+                        <span>Telegram</span>
                     </a>
 
-                    <a href="#booking" class="px-4 py-2 sm:py-2.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-xs shadow-md shadow-peach/25 transition-all flex items-center gap-1.5">
-                        <span>Пробный урок</span>
+                    <a href="#booking" class="px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-xs shadow-md shadow-peach/25 transition-all flex items-center gap-1.5">
+                        <span class="hidden sm:inline">Пробный урок</span>
+                        <span class="sm:hidden text-[11px] font-black">Урок</span>
                         <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
                     </a>
                 </div>
             </div>
         </header>
 
-        <main class="max-w-5xl mx-auto px-4 py-6 sm:py-10 space-y-12">
+        <main class="max-w-5xl mx-auto px-3.5 sm:px-6 py-6 sm:py-10 space-y-12 sm:space-y-16 pb-28 sm:pb-16">
 
             <!-- HERO SECTION: Maria + Cat Sayan + Custom Generated Banner -->
-            <section class="glass-panel rounded-3xl p-6 sm:p-10 blob-shadow relative overflow-hidden hero-mesh">
+            <section class="glass-panel rounded-3xl p-4 sm:p-10 blob-shadow relative overflow-hidden hero-mesh">
                 
                 <!-- Atmospheric Aesthetic Banner -->
-                <div class="relative w-full h-44 sm:h-56 rounded-2xl overflow-hidden mb-8 border border-cream-200 shadow-inner">
+                <div class="relative w-full h-40 sm:h-56 rounded-2xl overflow-hidden mb-6 sm:mb-8 border border-cream-200 shadow-inner">
                     <img src="assets/hero_banner.jpg" alt="Уютное рабочее пространство репетитора и кот Саян" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-r from-slateDark/80 via-slateDark/40 to-transparent flex items-center p-6 sm:p-8">
-                        <div class="max-w-md text-white space-y-2">
-                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-peach/90 backdrop-blur-sm text-[11px] font-extrabold tracking-wide uppercase">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slateDark/80 via-slateDark/40 to-transparent flex items-center p-4 sm:p-8">
+                        <div class="max-w-md text-white space-y-1.5 sm:space-y-2">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-0.5 sm:py-1 rounded-full bg-peach/90 backdrop-blur-sm text-[10px] sm:text-[11px] font-extrabold tracking-wide uppercase">
                                 ✨ Набор на 2026/2027 учебный год
                             </div>
-                            <h2 class="font-display text-xl sm:text-2xl font-black leading-tight text-white">
+                            <h2 class="font-display text-lg sm:text-2xl font-black leading-tight text-white">
                                 Уютные уроки геометрии и алгебры в компании кота Саяна
                             </h2>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 sm:gap-8 items-center relative">
                     
                     <!-- Left: Headline & Trust Chips -->
                     <div class="md:col-span-7 space-y-4">
-                        <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-slateDark leading-tight tracking-tight">
+                        <h1 class="font-display text-2xl sm:text-4xl font-extrabold text-slateDark leading-tight tracking-tight">
                             Математика и геометрия 
                             <span class="text-peach relative">без слёз
                                 <svg class="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C35 2 85 2 118 6" stroke="#FF7A50" stroke-width="3" stroke-linecap="round"/></svg>
@@ -491,13 +504,13 @@
                             и страха перед доской
                         </h1>
 
-                        <p class="text-sm sm:text-base text-slateDark/80 leading-relaxed font-medium">
+                        <p class="text-xs sm:text-base text-slateDark/80 leading-relaxed font-medium">
                             Учу понимать логику формул, а не зубрить их наизусть. Разбираем геометрию на понятных визуальных ассоциациях и жизненных примерах. Спокойно и уверенно готовимся к <strong>ОГЭ на 4 и 5</strong>.
                         </p>
 
                         <!-- Credentials Badges -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                            <div class="p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-1">
+                            <div class="p-3 sm:p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
                                 <span class="text-2xl">🎓</span>
                                 <div>
                                     <div class="font-bold text-xs text-slateDark">Пед. диплом + Магистратура</div>
@@ -505,7 +518,7 @@
                                 </div>
                             </div>
 
-                            <div class="p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
+                            <div class="p-3 sm:p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
                                 <span class="text-2xl">🏕</span>
                                 <div>
                                     <div class="font-bold text-xs text-slateDark">Опыт работы в МДЦ «Артек»</div>
@@ -514,18 +527,20 @@
                             </div>
                         </div>
 
-                        <!-- CTA Buttons & Messenger Links -->
-                        <div class="flex flex-wrap items-center gap-3 pt-3">
-                            <a href="#booking" class="px-6 py-3.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-sm shadow-md shadow-peach/25 transition-all flex items-center gap-2">
+                        <!-- CTA Buttons & Messenger Links (Responsive Mobile + Desktop) -->
+                        <div class="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-2">
+                            <a href="#booking" class="w-full sm:w-auto justify-center px-6 py-3.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-xs sm:text-sm shadow-md shadow-peach/25 transition-all flex items-center gap-2">
                                 <span>Выбрать удобное время</span>
                                 <i data-lucide="sparkles" class="w-4 h-4"></i>
                             </a>
-                            <a href="https://max.ru/" target="_blank" class="px-4 py-3.5 rounded-2xl bg-blue-50 border border-blue-200 hover:bg-blue-100 text-[#0077FF] font-bold text-xs flex items-center gap-2 transition-colors">
-                                <span>Написать в МАКС</span>
-                            </a>
-                            <a href="https://t.me/" target="_blank" class="px-4 py-3.5 rounded-2xl bg-sky-50 border border-sky-200 hover:bg-sky-100 text-[#2AABEE] font-bold text-xs flex items-center gap-2 transition-colors">
-                                <span>Telegram</span>
-                            </a>
+                            <div class="flex items-center gap-2 w-full sm:w-auto">
+                                <a href="https://max.ru/" target="_blank" class="flex-1 sm:flex-initial justify-center px-4 py-3 sm:py-3.5 rounded-2xl bg-blue-50 border border-blue-200 hover:bg-blue-100 text-[#0077FF] font-bold text-xs flex items-center gap-2 transition-colors">
+                                    <span>Написать в МАКС</span>
+                                </a>
+                                <a href="https://t.me/" target="_blank" class="flex-1 sm:flex-initial justify-center px-4 py-3 sm:py-3.5 rounded-2xl bg-sky-50 border border-sky-200 hover:bg-sky-100 text-[#2AABEE] font-bold text-xs flex items-center gap-2 transition-colors">
+                                    <span>Telegram</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
 
@@ -811,12 +826,12 @@
                 </div>
 
                 <!-- 1. DYNAMIC HORIZONTAL DAYS SCROLL (14 Days) -->
-                <div>
+                <div class="min-w-0 max-w-full overflow-hidden">
                     <div class="flex items-center justify-between mb-2">
                         <label class="text-xs font-extrabold uppercase tracking-wider text-slateDark/70">1. Выберите дату (ближайшие 14 дней)</label>
                         <span class="text-[11px] text-peach font-bold" id="currentSelectedMonth">Ноябрь 2026</span>
                     </div>
-                    <div id="daysScroll" class="flex gap-2 overflow-x-auto pb-2 scroll-smooth">
+                    <div id="daysScroll" class="flex gap-2 overflow-x-auto pb-2 scroll-smooth max-w-full">
                         <!-- Populated by JS -->
                     </div>
                 </div>
@@ -1186,18 +1201,47 @@
     </div>
 
     <!-- FLOATING THEME SWITCHER DOCK (MOBILE & DESKTOP) -->
-    <div class="fixed bottom-4 right-4 z-40 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-cream-300 p-1.5 flex items-center gap-1">
-        <span class="text-[11px] font-black text-peach pl-2 pr-1 hidden sm:inline">Стиль:</span>
-        <button onclick="setTheme('cozy-cat')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all active" data-theme-btn="cozy-cat" title="Уютный Кот Саян">🐱</button>
-        <button onclick="setTheme('sakura')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all" data-theme-btn="sakura" title="Сакура & Аниме">🌸</button>
-        <button onclick="setTheme('artek')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all" data-theme-btn="artek" title="Артек Лазурный">🏕</button>
-        <button onclick="setTheme('cyber')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all" data-theme-btn="cyber" title="Кибер-Кот Неон">🌌</button>
+    <div id="themeSwitcherDock" class="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-cream-300 p-1 sm:p-1.5 flex items-center transition-all duration-300">
+        <!-- Mobile Collapsed Pill (default on mobile: takes minimal 75px footprint, never covers cards) -->
+        <button onclick="toggleMobileThemeDock(true)" id="mobileThemeTrigger" class="sm:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold text-peach" title="Сменить стиль">
+            <i data-lucide="palette" class="w-3.5 h-3.5"></i>
+            <span id="activeThemeEmoji">🐱</span>
+            <span class="text-[10px] uppercase font-black tracking-wider">Стиль</span>
+        </button>
+
+        <!-- Expanded Theme Controls (always visible on sm+, expandable on mobile) -->
+        <div id="themeControlsContent" class="hidden sm:flex items-center gap-1">
+            <span class="text-[11px] font-black text-peach pl-2 pr-1 hidden md:inline">Стиль:</span>
+            <button onclick="setTheme('cozy-cat')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all active" data-theme-btn="cozy-cat" title="Уютный Кот Саян">🐱</button>
+            <button onclick="setTheme('sakura')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all" data-theme-btn="sakura" title="Сакура & Аниме">🌸</button>
+            <button onclick="setTheme('artek')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all" data-theme-btn="artek" title="Артек Лазурный">🏕</button>
+            <button onclick="setTheme('cyber')" class="theme-btn p-2 rounded-xl text-xs font-bold transition-all" data-theme-btn="cyber" title="Кибер-Кот Неон">🌌</button>
+            <!-- Close button for mobile -->
+            <button onclick="toggleMobileThemeDock(false)" class="sm:hidden p-1 text-slate-400 hover:text-slate-800 rounded-lg transition-colors ml-0.5" title="Свернуть">
+                <i data-lucide="x" class="w-3.5 h-3.5"></i>
+            </button>
+        </div>
     </div>
 
     <!-- SCRIPTING ENGINE -->
     <script>
         // ================= MULTI-THEME ENGINE =================
         let currentTheme = localStorage.getItem('maria_theme') || 'cozy-cat';
+
+        function toggleMobileThemeDock(show) {
+            const trigger = document.getElementById('mobileThemeTrigger');
+            const controls = document.getElementById('themeControlsContent');
+            if (!trigger || !controls) return;
+            if (show) {
+                trigger.classList.add('hidden');
+                controls.classList.remove('hidden');
+                controls.classList.add('flex');
+            } else {
+                controls.classList.add('hidden');
+                controls.classList.remove('flex');
+                trigger.classList.remove('hidden');
+            }
+        }
 
         function initTheme() {
             setTheme(currentTheme, false);
@@ -1207,6 +1251,10 @@
             currentTheme = themeName;
             document.documentElement.setAttribute('data-theme', themeName);
             localStorage.setItem('maria_theme', themeName);
+
+            const emojis = { 'cozy-cat': '🐱', 'sakura': '🌸', 'artek': '🏕', 'cyber': '🌌' };
+            const emojiEl = document.getElementById('activeThemeEmoji');
+            if (emojiEl && emojis[themeName]) emojiEl.innerText = emojis[themeName];
 
             // Update all theme buttons
             document.querySelectorAll('[data-theme-btn]').forEach(btn => {
