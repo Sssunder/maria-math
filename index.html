@@ -35,10 +35,6 @@
                             light: '#EDF5F0',
                             DEFAULT: '#487A60',
                         },
-                        maxBlue: {
-                            DEFAULT: '#0077FF',
-                            hover: '#0062D6',
-                        },
                         slateDark: '#1E2530',
                     },
                     fontFamily: {
@@ -51,7 +47,7 @@
         }
     </script>
     <style>
-        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #FDFBF7; }
         ::-webkit-scrollbar-thumb { background: #EBDDC5; border-radius: 4px; }
         .glass-panel {
@@ -72,447 +68,524 @@
 </head>
 <body class="bg-cream-50 text-slateDark font-sans antialiased min-h-screen selection:bg-peach selection:text-white">
 
+    <!-- Teacher Admin Floating Sticky Bar when logged in -->
+    <div id="teacherStickyBar" class="hidden sticky top-0 z-50 bg-slateDark text-white py-2.5 px-4 text-xs shadow-lg border-b border-white/10 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="font-bold">Кабинет Марии активирован</span>
+            <span class="text-white/60 hidden sm:inline">• Режим управления расписанием</span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="toggleTeacherModeView()" id="toggleViewBtn" class="px-3 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white font-bold transition-all">
+                Тетрадка преподавателя
+            </button>
+            <button onclick="logoutTeacher()" class="px-2.5 py-1 rounded-lg bg-rose-500/30 hover:bg-rose-500 text-rose-200 hover:text-white font-semibold transition-all">
+                Выйти
+            </button>
+        </div>
+    </div>
+
     <!-- Top Announcement Bar with Cat Sayan -->
-    <div class="bg-gradient-to-r from-peach via-amber-400 to-peach text-white py-2 px-4 text-xs font-bold text-center tracking-wide flex items-center justify-center gap-2 shadow-sm">
+    <div id="topAnnouncement" class="bg-gradient-to-r from-peach via-amber-400 to-peach text-white py-2 px-4 text-xs font-bold text-center tracking-wide flex items-center justify-center gap-2 shadow-sm">
         <span>🐾 Кот Саян напоминает: идёт набор в мини-группы ОГЭ 2026/2027! Первое диагностическое занятие бесплатно</span>
         <a href="#booking" class="underline decoration-white/70 hover:decoration-white ml-1">Занять место &rarr;</a>
     </div>
 
-    <!-- Navigation Bar -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-cream-200">
-        <div class="max-w-5xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
-            <!-- Brand -->
-            <div class="flex items-center gap-3">
-                <div class="w-11 h-11 rounded-2xl bg-peach-light border border-peach/30 flex items-center justify-center text-2xl shadow-sm">
-                    🐱
-                </div>
-                <div>
-                    <span class="font-display font-extrabold text-base sm:text-lg tracking-tight text-slateDark block leading-none">
-                        Мария Дружинина
-                    </span>
-                    <span class="text-[11px] font-semibold text-peach block mt-0.5">
-                        Архитектор математического мышления • 5–9 класс
-                    </span>
-                </div>
-            </div>
+    <!-- CLIENT VIEW CONTAINER -->
+    <div id="clientView">
 
-            <!-- Quick Messengers & Header CTA -->
-            <div class="flex items-center gap-2 sm:gap-3">
-                <!-- MAX Messenger Button -->
-                <a href="https://max.ru/" target="_blank" title="Написать в МАКС" class="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0077FF] border border-[#0077FF]/25 font-bold text-xs flex items-center gap-1.5 transition-all">
-                    <span class="w-2 h-2 rounded-full bg-[#0077FF] animate-pulse"></span>
-                    <span class="hidden sm:inline">МАКС</span>
-                    <span class="text-[10px] font-extrabold sm:hidden">MAX</span>
-                </a>
-
-                <!-- Telegram Button -->
-                <a href="https://t.me/" target="_blank" title="Написать в Telegram" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-[#2AABEE] border border-[#2AABEE]/25 font-bold text-xs flex items-center gap-1.5 transition-all">
-                    <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                    <span class="hidden sm:inline">Telegram</span>
-                </a>
-
-                <a href="#booking" class="px-4 py-2 sm:py-2.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-xs shadow-md shadow-peach/25 transition-all flex items-center gap-1.5">
-                    <span>Пробный урок</span>
-                    <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <main class="max-w-5xl mx-auto px-4 py-6 sm:py-10 space-y-12">
-
-        <!-- HERO SECTION: Maria + Cat Sayan + Custom Generated Visual -->
-        <section class="glass-panel rounded-3xl p-6 sm:p-10 blob-shadow relative overflow-hidden hero-mesh">
-            
-            <!-- Atmospheric Aesthetic Banner Strip -->
-            <div class="relative w-full h-44 sm:h-56 rounded-2xl overflow-hidden mb-8 border border-cream-200 shadow-inner">
-                <img src="assets/hero_banner.jpg" alt="Уютное рабочее пространство репетитора и кот Саян" class="w-full h-full object-cover">
-                <div class="absolute inset-0 bg-gradient-to-r from-slateDark/80 via-slateDark/40 to-transparent flex items-center p-6 sm:p-8">
-                    <div class="max-w-md text-white space-y-2">
-                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-peach/90 backdrop-blur-sm text-[11px] font-extrabold tracking-wide uppercase">
-                            ✨ Набор на 2026/2027 учебный год
-                        </div>
-                        <h2 class="font-display text-xl sm:text-2xl font-black leading-tight text-white">
-                            Уютные уроки геометрии и алгебры в компании кота Саяна
-                        </h2>
-                    </div>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative">
-                
-                <!-- Left: Headline & Trust Chips -->
-                <div class="md:col-span-7 space-y-4">
-                    <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-slateDark leading-tight tracking-tight">
-                        Математика и геометрия 
-                        <span class="text-peach relative">без слёз
-                            <svg class="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C35 2 85 2 118 6" stroke="#FF7A50" stroke-width="3" stroke-linecap="round"/></svg>
-                        </span> 
-                        и страха перед доской
-                    </h1>
-
-                    <p class="text-sm sm:text-base text-slateDark/80 leading-relaxed font-medium">
-                        Учу понимать логику формул, а не зубрить их наизусть. Разбираем геометрию на понятных визуальных ассоциациях и жизненных примерах. Спокойно и уверенно готовимся к <strong>ОГЭ на 4 и 5</strong>.
-                    </p>
-
-                    <!-- Credentials Badges -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                        <div class="p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
-                            <span class="text-2xl">🎓</span>
-                            <div>
-                                <div class="font-bold text-xs text-slateDark">Пед. диплом + Магистратура</div>
-                                <div class="text-[11px] text-slateDark/70">Архитектор математического мышления</div>
-                            </div>
-                        </div>
-
-                        <div class="p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
-                            <span class="text-2xl">🏕</span>
-                            <div>
-                                <div class="font-bold text-xs text-slateDark">Опыт работы в МДЦ «Артек»</div>
-                                <div class="text-[11px] text-slateDark/70">Умею увлечь и найти подход к любому подростку</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CTA Buttons & Messenger Links -->
-                    <div class="flex flex-wrap items-center gap-3 pt-3">
-                        <a href="#booking" class="px-6 py-3.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-sm shadow-md shadow-peach/25 transition-all flex items-center gap-2">
-                            <span>Записаться на диагностику</span>
-                            <i data-lucide="sparkles" class="w-4 h-4"></i>
-                        </a>
-                        <a href="https://max.ru/" target="_blank" class="px-4 py-3.5 rounded-2xl bg-blue-50 border border-blue-200 hover:bg-blue-100 text-[#0077FF] font-bold text-xs flex items-center gap-2 transition-colors">
-                            <span>Написать в МАКС</span>
-                        </a>
-                        <a href="https://t.me/" target="_blank" class="px-4 py-3.5 rounded-2xl bg-sky-50 border border-sky-200 hover:bg-sky-100 text-[#2AABEE] font-bold text-xs flex items-center gap-2 transition-colors">
-                            <span>Telegram</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Right: Visual Cards (Maria & Cat Sayan) -->
-                <div class="md:col-span-5 relative flex flex-col items-center">
-                    
-                    <!-- Main Photo of Maria -->
-                    <div class="relative w-64 h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white rotate-1 hover:rotate-0 transition-transform duration-500">
-                        <img src="assets/maria_fountain.jpg" alt="Мария Дружинина — репетитор" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slateDark/70 via-transparent to-transparent flex items-end p-4">
-                            <div class="text-white">
-                                <div class="font-display font-extrabold text-sm">Мария Дружинина</div>
-                                <div class="text-[11px] opacity-90">Твой проводник в мир геометрии 📐</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Floating Card: Cat Sayan -->
-                    <div class="absolute -bottom-5 -left-4 sm:-left-6 p-3 rounded-2xl bg-white shadow-xl border border-cream-200 flex items-center gap-3 -rotate-2 hover:rotate-0 transition-transform">
-                        <img src="assets/cat_usayam.jpg" alt="Кот Саян" class="w-14 h-14 rounded-xl object-cover shadow-sm">
-                        <div class="pr-2">
-                            <div class="flex items-center gap-1 font-bold text-xs text-slateDark">
-                                <span>Кот Саян</span>
-                                <span class="text-xs">🐾</span>
-                            </div>
-                            <div class="text-[11px] text-peach font-bold">Главный контролёр домашек</div>
-                            <div class="text-[10px] text-slateDark/60">и пушистый антистресс</div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-        </section>
-
-        <!-- METHODOLOGY: ARCHITECT OF THINKING -->
-        <section class="space-y-4">
-            <div class="text-center max-w-lg mx-auto space-y-1">
-                <span class="text-xs font-extrabold text-peach uppercase tracking-wider">Методика архитектора мышления</span>
-                <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slateDark">Почему у моих учеников всё получается?</h2>
-                <p class="text-xs text-slateDark/70">Математика — это не про зубрёжку сотен формул, а про умение видеть закономерности</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                
-                <div class="p-5 rounded-3xl bg-white border border-cream-200 shadow-sm space-y-2 hover:border-peach transition-colors">
-                    <div class="w-10 h-10 rounded-2xl bg-peach-light text-peach flex items-center justify-center text-xl font-bold">
-                        🧩
-                    </div>
-                    <h3 class="font-display font-extrabold text-base text-slateDark">Понятные ассоциации</h3>
-                    <p class="text-xs text-slateDark/75 leading-relaxed">
-                        Никакого заумного языка. Объясняю синусы, дроби и функции через бытовые аналогии, графику и жизненные примеры.
-                    </p>
-                </div>
-
-                <div class="p-5 rounded-3xl bg-white border border-cream-200 shadow-sm space-y-2 hover:border-peach transition-colors">
-                    <div class="w-10 h-10 rounded-2xl bg-sage-light text-sage flex items-center justify-center text-xl font-bold">
-                        📐
-                    </div>
-                    <h3 class="font-display font-extrabold text-base text-slateDark">Любовь к геометрии</h3>
-                    <p class="text-xs text-slateDark/75 leading-relaxed">
-                        90% школьников ненавидят доказательства. Мы учимся видеть чертёж как детективную загадку, где каждая теорема — это подсказка.
-                    </p>
-                </div>
-
-                <div class="p-5 rounded-3xl bg-white border border-cream-200 shadow-sm space-y-2 hover:border-peach transition-colors">
-                    <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl font-bold">
+        <!-- Navigation Bar -->
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-cream-200">
+            <div class="max-w-5xl mx-auto px-4 h-16 sm:h-20 flex items-center justify-between">
+                <!-- Brand -->
+                <div class="flex items-center gap-3">
+                    <div class="w-11 h-11 rounded-2xl bg-peach-light border border-peach/30 flex items-center justify-center text-2xl shadow-sm">
                         🐱
                     </div>
-                    <h3 class="font-display font-extrabold text-base text-slateDark">Атмосфера без стресса</h3>
-                    <p class="text-xs text-slateDark/75 leading-relaxed">
-                        На уроках можно ошибаться, задавать «глупые» вопросы и не бояться осуждения. Кот Саян гарантирует спокойствие на каждом созвоне.
-                    </p>
+                    <div>
+                        <span class="font-display font-extrabold text-base sm:text-lg tracking-tight text-slateDark block leading-none">
+                            Мария Дружинина
+                        </span>
+                        <span class="text-[11px] font-semibold text-peach block mt-0.5">
+                            Архитектор математического мышления • 5–9 класс
+                        </span>
+                    </div>
                 </div>
 
-            </div>
-        </section>
+                <!-- Quick Messengers & Header CTA -->
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <!-- MAX Messenger Button -->
+                    <a href="https://max.ru/" target="_blank" title="Написать в МАКС" class="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-[#0077FF] border border-[#0077FF]/25 font-bold text-xs flex items-center gap-1.5 transition-all">
+                        <span class="w-2 h-2 rounded-full bg-[#0077FF] animate-pulse"></span>
+                        <span class="hidden sm:inline">МАКС</span>
+                        <span class="text-[10px] font-extrabold sm:hidden">MAX</span>
+                    </a>
 
-        <!-- FORMATS & PRICING -->
-        <section id="formats" class="space-y-4">
-            <div class="text-center max-w-lg mx-auto space-y-1">
-                <span class="text-xs font-extrabold text-peach uppercase tracking-wider">Форматы занятий</span>
-                <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slateDark">Выберите подходящий формат</h2>
-                <p class="text-xs text-slateDark/70">Занятия проходят онлайн (Zoom / Telegram / МАКС / доска Miro)</p>
-            </div>
+                    <!-- Telegram Button -->
+                    <a href="https://t.me/" target="_blank" title="Написать в Telegram" class="px-3 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 text-[#2AABEE] border border-[#2AABEE]/25 font-bold text-xs flex items-center gap-1.5 transition-all">
+                        <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Telegram</span>
+                    </a>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <a href="#booking" class="px-4 py-2 sm:py-2.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-xs shadow-md shadow-peach/25 transition-all flex items-center gap-1.5">
+                        <span>Пробный урок</span>
+                        <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-4 py-6 sm:py-10 space-y-12">
+
+            <!-- HERO SECTION: Maria + Cat Sayan + Custom Generated Banner -->
+            <section class="glass-panel rounded-3xl p-6 sm:p-10 blob-shadow relative overflow-hidden hero-mesh">
                 
-                <!-- Format 1: Mini-Groups (Hero Offer) -->
-                <div class="p-6 rounded-3xl bg-white border-2 border-peach shadow-md relative space-y-4 flex flex-col justify-between">
-                    <div class="absolute -top-3 right-6 px-3 py-1 rounded-full bg-peach text-white text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
-                        Топ выбор
+                <!-- Atmospheric Aesthetic Banner -->
+                <div class="relative w-full h-44 sm:h-56 rounded-2xl overflow-hidden mb-8 border border-cream-200 shadow-inner">
+                    <img src="assets/hero_banner.jpg" alt="Уютное рабочее пространство репетитора и кот Саян" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slateDark/80 via-slateDark/40 to-transparent flex items-center p-6 sm:p-8">
+                        <div class="max-w-md text-white space-y-2">
+                            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-peach/90 backdrop-blur-sm text-[11px] font-extrabold tracking-wide uppercase">
+                                ✨ Набор на 2026/2027 учебный год
+                            </div>
+                            <h2 class="font-display text-xl sm:text-2xl font-black leading-tight text-white">
+                                Уютные уроки геометрии и алгебры в компании кота Саяна
+                            </h2>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="space-y-2">
-                        <div class="text-2xl">👥</div>
-                        <h3 class="font-display font-extrabold text-lg text-slateDark">Мини-группы (3–5 человек)</h3>
-                        <p class="text-xs text-slateDark/70 leading-relaxed">
-                            Идеальный баланс внимания и командной динамики. Дети поддерживают друг друга, видят чужие ошибки и быстрее растут.
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center relative">
+                    
+                    <!-- Left: Headline & Trust Chips -->
+                    <div class="md:col-span-7 space-y-4">
+                        <h1 class="font-display text-3xl sm:text-4xl font-extrabold text-slateDark leading-tight tracking-tight">
+                            Математика и геометрия 
+                            <span class="text-peach relative">без слёз
+                                <svg class="absolute -bottom-1 left-0 w-full" viewBox="0 0 120 8" fill="none"><path d="M2 6C35 2 85 2 118 6" stroke="#FF7A50" stroke-width="3" stroke-linecap="round"/></svg>
+                            </span> 
+                            и страха перед доской
+                        </h1>
+
+                        <p class="text-sm sm:text-base text-slateDark/80 leading-relaxed font-medium">
+                            Учу понимать логику формул, а не зубрить их наизусть. Разбираем геометрию на понятных визуальных ассоциациях и жизненных примерах. Спокойно и уверенно готовимся к <strong>ОГЭ на 4 и 5</strong>.
                         </p>
-                        
-                        <div class="pt-2">
-                            <span class="font-display text-2xl font-extrabold text-slateDark">900 ₽</span>
-                            <span class="text-xs text-slateDark/60 font-semibold"> / 60 мин</span>
+
+                        <!-- Credentials Badges -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                            <div class="p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
+                                <span class="text-2xl">🎓</span>
+                                <div>
+                                    <div class="font-bold text-xs text-slateDark">Пед. диплом + Магистратура</div>
+                                    <div class="text-[11px] text-slateDark/70">Архитектор математического мышления</div>
+                                </div>
+                            </div>
+
+                            <div class="p-3.5 rounded-2xl bg-white/90 border border-cream-200 flex items-start gap-3 shadow-sm">
+                                <span class="text-2xl">🏕</span>
+                                <div>
+                                    <div class="font-bold text-xs text-slateDark">Опыт работы в МДЦ «Артек»</div>
+                                    <div class="text-[11px] text-slateDark/70">Умею увлечь и найти подход к любому подростку</div>
+                                </div>
+                            </div>
                         </div>
 
-                        <ul class="text-xs text-slateDark/80 space-y-1.5 pt-2 font-medium">
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Группы строго по уровню</li>
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Подготовка к ОГЭ на 4 и 5</li>
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Чат с разбором домашек</li>
-                        </ul>
+                        <!-- CTA Buttons & Messenger Links -->
+                        <div class="flex flex-wrap items-center gap-3 pt-3">
+                            <a href="#booking" class="px-6 py-3.5 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-sm shadow-md shadow-peach/25 transition-all flex items-center gap-2">
+                                <span>Выбрать удобное время</span>
+                                <i data-lucide="sparkles" class="w-4 h-4"></i>
+                            </a>
+                            <a href="https://max.ru/" target="_blank" class="px-4 py-3.5 rounded-2xl bg-blue-50 border border-blue-200 hover:bg-blue-100 text-[#0077FF] font-bold text-xs flex items-center gap-2 transition-colors">
+                                <span>Написать в МАКС</span>
+                            </a>
+                            <a href="https://t.me/" target="_blank" class="px-4 py-3.5 rounded-2xl bg-sky-50 border border-sky-200 hover:bg-sky-100 text-[#2AABEE] font-bold text-xs flex items-center gap-2 transition-colors">
+                                <span>Telegram</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <div class="pt-4">
-                        <a href="#booking" onclick="selectCourse('Мини-группа (900 ₽)')" class="w-full py-3 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-xs text-center block transition-colors">
-                            Выбрать мини-группу
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Format 2: Pairs -->
-                <div class="p-6 rounded-3xl bg-white border border-cream-200 shadow-sm relative space-y-4 flex flex-col justify-between hover:border-peach transition-colors">
-                    <div class="space-y-2">
-                        <div class="text-2xl">👯</div>
-                        <h3 class="font-display font-extrabold text-lg text-slateDark">Занятия в паре (2 ученика)</h3>
-                        <p class="text-xs text-slateDark/70 leading-relaxed">
-                            Можно заниматься с одноклассником или другом. Здоровая соревновательность и максимум внимания преподавателя.
-                        </p>
+                    <!-- Right: Visual Cards (Maria & Cat Sayan) -->
+                    <div class="md:col-span-5 relative flex flex-col items-center">
                         
-                        <div class="pt-2">
-                            <span class="font-display text-2xl font-extrabold text-slateDark">1 100 ₽</span>
-                            <span class="text-xs text-slateDark/60 font-semibold"> / 60 мин</span>
+                        <!-- Main Photo of Maria -->
+                        <div class="relative w-64 h-80 rounded-3xl overflow-hidden shadow-2xl border-4 border-white rotate-1 hover:rotate-0 transition-transform duration-500">
+                            <img src="assets/maria_fountain.jpg" alt="Мария Дружинина — репетитор" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slateDark/70 via-transparent to-transparent flex items-end p-4">
+                                <div class="text-white">
+                                    <div class="font-display font-extrabold text-sm">Мария Дружинина</div>
+                                    <div class="text-[11px] opacity-90">Твой проводник в мир геометрии 📐</div>
+                                </div>
+                            </div>
                         </div>
 
-                        <ul class="text-xs text-slateDark/80 space-y-1.5 pt-2 font-medium">
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Индивидуальный темп пары</li>
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Устранение школьных пробелов</li>
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Удобное время под двух ребят</li>
-                        </ul>
-                    </div>
-
-                    <div class="pt-4">
-                        <a href="#booking" onclick="selectCourse('Занятия в паре (1 100 ₽)')" class="w-full py-3 rounded-2xl bg-cream-100 hover:bg-cream-200 text-slateDark font-extrabold text-xs text-center block transition-colors">
-                            Выбрать пару
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Format 3: Individual -->
-                <div class="p-6 rounded-3xl bg-white border border-cream-200 shadow-sm relative space-y-4 flex flex-col justify-between hover:border-peach transition-colors">
-                    <div class="space-y-2">
-                        <div class="text-2xl">🎯</div>
-                        <h3 class="font-display font-extrabold text-lg text-slateDark">Индивидуально</h3>
-                        <p class="text-xs text-slateDark/70 leading-relaxed">
-                            100% фокус на целях конкретного ученика: экстренная подготовка к контрольным, сложная геометрия, ОГЭ с нуля.
-                        </p>
-                        
-                        <div class="pt-2">
-                            <span class="font-display text-2xl font-extrabold text-slateDark">1 600 ₽</span>
-                            <span class="text-xs text-slateDark/60 font-semibold"> / 60 мин</span>
+                        <!-- Floating Card: Cat Sayan -->
+                        <div class="absolute -bottom-5 -left-4 sm:-left-6 p-3 rounded-2xl bg-white shadow-xl border border-cream-200 flex items-center gap-3 -rotate-2 hover:rotate-0 transition-transform">
+                            <img src="assets/cat_sayan.jpg" alt="Кот Саян" class="w-14 h-14 rounded-xl object-cover shadow-sm">
+                            <div class="pr-2">
+                                <div class="flex items-center gap-1 font-bold text-xs text-slateDark">
+                                    <span>Кот Саян</span>
+                                    <span class="text-xs">🐾</span>
+                                </div>
+                                <div class="text-[11px] text-peach font-bold">Главный контролёр домашек</div>
+                                <div class="text-[10px] text-slateDark/60">и пушистый антистресс</div>
+                            </div>
                         </div>
 
-                        <ul class="text-xs text-slateDark/80 space-y-1.5 pt-2 font-medium">
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Персональная программа</li>
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Разбор любых школьных тем</li>
-                            <li class="flex items-center gap-1.5"><i data-lucide="check" class="w-3.5 h-3.5 text-peach"></i> Полная психологическая поддержка</li>
-                        </ul>
                     </div>
 
-                    <div class="pt-4">
-                        <a href="#booking" onclick="selectCourse('Индивидуально (1 600 ₽)')" class="w-full py-3 rounded-2xl bg-cream-100 hover:bg-cream-200 text-slateDark font-extrabold text-xs text-center block transition-colors">
-                            Выбрать индивидуально
-                        </a>
+                </div>
+            </section>
+
+            <!-- METHODOLOGY -->
+            <section class="space-y-4">
+                <div class="text-center max-w-lg mx-auto space-y-1">
+                    <span class="text-xs font-extrabold text-peach uppercase tracking-wider">Методика архитектора мышления</span>
+                    <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slateDark">Почему у моих учеников всё получается?</h2>
+                    <p class="text-xs text-slateDark/70">Математика — это не про зубрёжку сотен формул, а про умение видеть закономерности</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    
+                    <div class="p-5 rounded-3xl bg-white border border-cream-200 shadow-sm space-y-2 hover:border-peach transition-colors">
+                        <div class="w-10 h-10 rounded-2xl bg-peach-light text-peach flex items-center justify-center text-xl font-bold">
+                            🧩
+                        </div>
+                        <h3 class="font-display font-extrabold text-base text-slateDark">Понятные ассоциации</h3>
+                        <p class="text-xs text-slateDark/75 leading-relaxed">
+                            Никакого заумного языка. Объясняю синусы, дроби и функции через бытовые аналогии, графику и жизненные примеры.
+                        </p>
                     </div>
+
+                    <div class="p-5 rounded-3xl bg-white border border-cream-200 shadow-sm space-y-2 hover:border-peach transition-colors">
+                        <div class="w-10 h-10 rounded-2xl bg-sage-light text-sage flex items-center justify-center text-xl font-bold">
+                            📐
+                        </div>
+                        <h3 class="font-display font-extrabold text-base text-slateDark">Любовь к геометрии</h3>
+                        <p class="text-xs text-slateDark/75 leading-relaxed">
+                            90% школьников ненавидят доказательства. Мы учимся видеть чертёж как детективную загадку, где каждая теорема — это подсказка.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-3xl bg-white border border-cream-200 shadow-sm space-y-2 hover:border-peach transition-colors">
+                        <div class="w-10 h-10 rounded-2xl bg-amber-50 text-amber-700 flex items-center justify-center text-xl font-bold">
+                            🐱
+                        </div>
+                        <h3 class="font-display font-extrabold text-base text-slateDark">Атмосфера без стресса</h3>
+                        <p class="text-xs text-slateDark/75 leading-relaxed">
+                            На уроках можно ошибаться, задавать «глупые» вопросы и не бояться осуждения. Кот Саян гарантирует спокойствие на каждом созвоне.
+                        </p>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- FORMATS & PRICING (Interactive Selector that links to schedule) -->
+            <section id="formats" class="space-y-4">
+                <div class="text-center max-w-lg mx-auto space-y-1">
+                    <span class="text-xs font-extrabold text-peach uppercase tracking-wider">Форматы занятий</span>
+                    <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slateDark">Выберите подходящий формат</h2>
+                    <p class="text-xs text-slateDark/70">Занятия проходят онлайн (Zoom / Telegram / МАКС / доска Miro)</p>
                 </div>
 
-            </div>
-        </section>
-
-        <!-- INTERACTIVE BOOKING SECTION WITH SLOT AVAILABILITY -->
-        <section id="booking" class="glass-panel rounded-3xl p-6 sm:p-10 blob-shadow space-y-8">
-            <div class="space-y-1">
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-peach-light text-peach text-xs font-bold">
-                    <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                    <span>Онлайн-запись на бесплатный пробный урок</span>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="formatsCards">
+                    <!-- Format cards generated by JS -->
                 </div>
-                <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slateDark">
-                    Запишитесь на вводную диагностику
-                </h2>
-                <p class="text-xs sm:text-sm text-slateDark/70">
-                    На пробном уроке определим уровень знаний, пробелы и подберём комфортный формат обучения.
-                </p>
-            </div>
+            </section>
 
-            <form id="bookingForm" onsubmit="handleBookingSubmit(event)" class="space-y-6">
+            <!-- TOP-TIER INTERACTIVE SCHEDULE & BOOKING (AS IN ELENA BEAUTY) -->
+            <section id="booking" class="glass-panel rounded-3xl p-6 sm:p-10 blob-shadow space-y-6">
                 
-                <!-- Format selection -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slateDark/70">1. Желаемый формат</label>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                        <label class="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-cream-200 cursor-pointer hover:border-peach transition-colors">
-                            <input type="radio" name="formatRadio" value="Мини-группа (900 ₽)" checked class="accent-peach">
-                            <span class="text-xs font-bold text-slateDark">Мини-группа (900 ₽)</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-cream-200 cursor-pointer hover:border-peach transition-colors">
-                            <input type="radio" name="formatRadio" value="В паре (1 100 ₽)" class="accent-peach">
-                            <span class="text-xs font-bold text-slateDark">В паре (1 100 ₽)</span>
-                        </label>
-                        <label class="flex items-center gap-3 p-3.5 rounded-2xl bg-white border border-cream-200 cursor-pointer hover:border-peach transition-colors">
-                            <input type="radio" name="formatRadio" value="Индивидуально (1 600 ₽)" class="accent-peach">
-                            <span class="text-xs font-bold text-slateDark">Индивидуально (1 600 ₽)</span>
-                        </label>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-cream-200">
+                    <div>
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-peach-light text-peach text-xs font-bold mb-1">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                            <span>Интерактивное расписание • Онлайн-запись</span>
+                        </div>
+                        <h2 class="font-display text-2xl sm:text-3xl font-extrabold text-slateDark">
+                            Выберите дату и удобное свободное окно
+                        </h2>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="flex items-center gap-3 text-xs">
+                        <span class="flex items-center gap-1.5 font-bold text-slateDark">
+                            <span class="w-3 h-3 rounded-full bg-peach"></span>
+                            Свободно
+                        </span>
+                        <span class="flex items-center gap-1.5 font-semibold text-slateDark/50">
+                            <span class="w-3 h-3 rounded-full bg-slateDark/20"></span>
+                            Занято
+                        </span>
                     </div>
                 </div>
 
-                <!-- Class / Grade selection -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slateDark/70">2. Класс ученика</label>
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="selectGrade(5, this)" class="grade-btn px-4 py-2 rounded-xl bg-white border border-cream-200 text-xs font-bold hover:border-peach">5 класс</button>
-                        <button type="button" onclick="selectGrade(6, this)" class="grade-btn px-4 py-2 rounded-xl bg-white border border-cream-200 text-xs font-bold hover:border-peach">6 класс</button>
-                        <button type="button" onclick="selectGrade(7, this)" class="grade-btn px-4 py-2 rounded-xl bg-white border border-cream-200 text-xs font-bold hover:border-peach">7 класс</button>
-                        <button type="button" onclick="selectGrade(8, this)" class="grade-btn px-4 py-2 rounded-xl bg-white border border-cream-200 text-xs font-bold hover:border-peach">8 класс</button>
-                        <button type="button" onclick="selectGrade(9, this)" class="grade-btn px-4 py-2 rounded-xl bg-peach text-white font-extrabold text-xs shadow-sm">9 класс (ОГЭ)</button>
+                <!-- 1. DYNAMIC HORIZONTAL DAYS SCROLL (14 Days) -->
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="text-xs font-extrabold uppercase tracking-wider text-slateDark/70">1. Выберите дату (ближайшие 14 дней)</label>
+                        <span class="text-[11px] text-peach font-bold" id="currentSelectedMonth">Ноябрь 2026</span>
                     </div>
-                </div>
-
-                <!-- Day selection -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slateDark/70">3. Удобный день</label>
-                    <div id="daySelector" class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+                    <div id="daysScroll" class="flex gap-2 overflow-x-auto pb-2 scroll-smooth">
                         <!-- Populated by JS -->
                     </div>
                 </div>
 
-                <!-- Time slot selection -->
+                <!-- 2. SMART SLOTS GRID WITH REAL OCCUPANCY -->
                 <div class="space-y-2">
-                    <label class="block text-xs font-extrabold uppercase tracking-wider text-slateDark/70">4. Время слота</label>
-                    <div id="slotSelector" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-extrabold uppercase tracking-wider text-slateDark/70">2. Свободные слоты на выбранный день</label>
+                        <span class="text-[11px] text-slateDark/60">Длительность урока: 60 минут</span>
+                    </div>
+                    
+                    <div id="slotsGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
                         <!-- Populated by JS -->
                     </div>
-                    <p id="slotStatusHint" class="text-[11px] text-slateDark/60 italic"></p>
+
+                    <!-- Dynamic Slot Confirmation Notice -->
+                    <div id="slotNotice" class="text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 p-3 rounded-2xl flex items-center gap-2.5 mt-3 shadow-sm">
+                        <i data-lucide="clock" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i>
+                        <span id="slotNoticeText">Выбрано: 16:00 (урок до 17:00)</span>
+                    </div>
                 </div>
 
-                <!-- Contact Inputs & Preferred Messenger -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                <!-- 3. CLIENT INFO & MESSENGER CHOICE -->
+                <form id="bookingForm" onsubmit="submitClientBooking(event)" class="space-y-4 pt-2 border-t border-cream-200">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-slateDark">Класс ученика *</label>
+                            <select id="custGrade" class="w-full px-3 py-2.5 rounded-xl bg-white border border-cream-300 text-xs font-bold text-slateDark focus:outline-none focus:border-peach">
+                                <option value="5">5 класс</option>
+                                <option value="6">6 класс</option>
+                                <option value="7">7 класс (начало геометрии)</option>
+                                <option value="8">8 класс</option>
+                                <option value="9" selected>9 класс (Подготовка к ОГЭ)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-slateDark">Имя ученика / родителя *</label>
+                            <input type="text" id="custName" required placeholder="Например: Артём" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-cream-300 text-xs text-slateDark focus:outline-none focus:border-peach">
+                        </div>
+                        <div class="space-y-1">
+                            <label class="block text-xs font-bold text-slateDark">Телефон *</label>
+                            <input type="tel" id="custPhone" required placeholder="+7 (999) 000-00-00" class="w-full px-3.5 py-2.5 rounded-xl bg-white border border-cream-300 text-xs text-slateDark focus:outline-none focus:border-peach">
+                        </div>
+                    </div>
+
+                    <!-- Preferred Messenger -->
                     <div class="space-y-1.5">
-                        <label class="block text-xs font-bold text-slateDark">Имя ученика или родителя *</label>
-                        <input type="text" id="clientName" required placeholder="Например, Артём или Анна" class="w-full px-4 py-3 rounded-2xl bg-white border border-cream-200 text-sm focus:outline-none focus:border-peach">
+                        <label class="block text-xs font-bold text-slateDark">Где согласовать ссылку на видеоурок и созвон?</label>
+                        <div class="grid grid-cols-3 gap-2.5">
+                            <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-sky-50 border border-sky-200 cursor-pointer hover:border-[#2AABEE] transition-colors text-xs font-bold text-[#2AABEE]">
+                                <input type="radio" name="custMessenger" value="Telegram" checked class="accent-[#2AABEE]">
+                                <span>Telegram</span>
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-blue-50 border border-blue-200 cursor-pointer hover:border-[#0077FF] transition-colors text-xs font-bold text-[#0077FF]">
+                                <input type="radio" name="custMessenger" value="МАКС" class="accent-[#0077FF]">
+                                <span>МАКС (MAX)</span>
+                            </label>
+                            <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 cursor-pointer hover:border-emerald-500 transition-colors text-xs font-bold text-emerald-800">
+                                <input type="radio" name="custMessenger" value="Звонок" class="accent-emerald-600">
+                                <span>Звонок</span>
+                            </label>
+                        </div>
                     </div>
-                    <div class="space-y-1.5">
-                        <label class="block text-xs font-bold text-slateDark">Телефон *</label>
-                        <input type="tel" id="clientPhone" required placeholder="+7 (999) 000-00-00" class="w-full px-4 py-3 rounded-2xl bg-white border border-cream-200 text-sm focus:outline-none focus:border-peach">
-                    </div>
+
+                    <button type="submit" class="w-full py-4 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-peach/30 transition-all flex items-center justify-center gap-2">
+                        <span>Зафиксировать запись на вводный урок</span>
+                        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    </button>
+
+                </form>
+            </section>
+
+            <!-- FOOTER -->
+            <footer class="pt-8 pb-12 border-t border-cream-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateDark/70">
+                <div class="flex items-center gap-3">
+                    <span class="font-display font-extrabold text-sm text-slateDark">Мария Дружинина</span>
+                    <span>•</span>
+                    <span>Архитектор математического мышления</span>
                 </div>
 
-                <!-- Messenger preference -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-slateDark">Где удобнее получить подтверждение и ссылку на созвон?</label>
-                    <div class="grid grid-cols-3 gap-2.5">
-                        <label class="flex items-center justify-center gap-2 p-3 rounded-xl bg-sky-50 border border-sky-200 cursor-pointer hover:border-[#2AABEE] transition-colors text-xs font-bold text-[#2AABEE]">
-                            <input type="radio" name="messengerRadio" value="Telegram" checked class="accent-[#2AABEE]">
-                            <span>Telegram</span>
-                        </label>
-                        <label class="flex items-center justify-center gap-2 p-3 rounded-xl bg-blue-50 border border-blue-200 cursor-pointer hover:border-[#0077FF] transition-colors text-xs font-bold text-[#0077FF]">
-                            <input type="radio" name="messengerRadio" value="МАКС" class="accent-[#0077FF]">
-                            <span>МАКС (MAX)</span>
-                        </label>
-                        <label class="flex items-center justify-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-200 cursor-pointer hover:border-emerald-500 transition-colors text-xs font-bold text-emerald-700">
-                            <input type="radio" name="messengerRadio" value="Звонок" class="accent-emerald-600">
-                            <span>Звонок</span>
-                        </label>
-                    </div>
+                <div class="flex items-center gap-4">
+                    <a href="https://max.ru/" target="_blank" class="hover:text-[#0077FF] transition-colors font-bold">МАКС (MAX)</a>
+                    <a href="https://t.me/" target="_blank" class="hover:text-[#2AABEE] transition-colors font-bold">Telegram</a>
+                    <button onclick="requestTeacherAccess()" class="text-slateDark/40 hover:text-slateDark flex items-center gap-1 font-semibold transition-colors">
+                        <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                        <span>Вход для преподавателя</span>
+                    </button>
                 </div>
+            </footer>
 
-                <!-- Submit Button -->
-                <button type="submit" class="w-full py-4 rounded-2xl bg-peach hover:bg-peach-hover text-white font-extrabold text-sm uppercase tracking-wider shadow-lg shadow-peach/30 transition-all flex items-center justify-center gap-2">
-                    <span>Записаться на бесплатную диагностику</span>
-                    <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+        </main>
+    </div>
+
+    <!-- TEACHER NOTEBOOK VIEW (ПОЛНОЦЕННАЯ ТЕТРАДКА МАРИИ) -->
+    <div id="teacherView" class="hidden max-w-4xl mx-auto px-4 py-6 space-y-6">
+        
+        <!-- Top Teacher Bar -->
+        <div class="flex items-center justify-between bg-white rounded-3xl p-5 shadow-sm border border-cream-200">
+            <div class="flex items-center gap-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-peach-light text-peach flex items-center justify-center text-2xl">
+                    📓
+                </div>
+                <div>
+                    <h2 class="font-display font-black text-xl text-slateDark">Тетрадка расписания — Мария</h2>
+                    <p class="text-xs text-slateDark/60">Почасовой график, блокировка часов и учёт учеников</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-2">
+                <button onclick="openManualAddModal()" class="px-4 py-2 rounded-xl bg-peach hover:bg-peach-hover text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all">
+                    <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+                    <span>+ Записать ученика</span>
                 </button>
+                <button onclick="toggleTeacherModeView()" class="px-3 py-2 rounded-xl border border-cream-300 text-slateDark font-bold text-xs hover:bg-cream-100 transition-colors">
+                    К сайту
+                </button>
+            </div>
+        </div>
 
-            </form>
-        </section>
+        <!-- Master Day Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-4 rounded-2xl bg-white border border-cream-200 text-center shadow-sm">
+                <div class="text-xs text-slateDark/60 font-semibold">Уроков на выбранный день</div>
+                <div id="teacherDayLessonsCount" class="font-display text-2xl font-black text-slateDark mt-1">0</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white border border-cream-200 text-center shadow-sm">
+                <div class="text-xs text-slateDark/60 font-semibold">Ожидаемая выручка за день</div>
+                <div id="teacherDayIncome" class="font-display text-2xl font-black text-emerald-600 mt-1">0 ₽</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white border border-cream-200 text-center shadow-sm">
+                <div class="text-xs text-slateDark/60 font-semibold">Свободных окон для записи</div>
+                <div id="teacherDayFreeSlots" class="font-display text-2xl font-black text-peach mt-1">0</div>
+            </div>
+        </div>
 
-        <!-- FOOTER & ADMIN ENTRY -->
-        <footer class="pt-8 pb-12 border-t border-cream-200 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slateDark/70">
-            <div class="flex items-center gap-3">
-                <span class="font-display font-extrabold text-sm text-slateDark">Мария Дружинина</span>
-                <span>•</span>
-                <span>Архитектор математического мышления</span>
+        <!-- Teacher Day Selector (Horizontal Bar) -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-cream-200 space-y-3">
+            <label class="block text-xs font-extrabold uppercase tracking-wider text-slateDark/70">Выберите дату в графике</label>
+            <div id="teacherDaysBar" class="flex gap-2 overflow-x-auto pb-1">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- HOURLY TIMELINE (ПОЧАСОВОЙ ГРАФИК 10:00 — 21:00) -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-cream-200 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-cream-200">
+                <div>
+                    <h3 class="font-display font-extrabold text-base text-slateDark">Почасовой график на день</h3>
+                    <p class="text-xs text-slateDark/60" id="teacherTimelineDateLabel">16 ноября 2026</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                    <span class="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold">Свободно</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-peach-light text-peach border border-peach/30 font-bold">Урок</span>
+                    <span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 border border-slate-200 font-bold">Заблокировано</span>
+                </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <a href="https://max.ru/" target="_blank" class="hover:text-[#0077FF] transition-colors font-bold">МАКС (MAX)</a>
-                <a href="https://t.me/" target="_blank" class="hover:text-[#2AABEE] transition-colors font-bold">Telegram</a>
-                <button onclick="openAdminModal()" class="text-slateDark/50 hover:text-slateDark flex items-center gap-1 font-semibold transition-colors">
-                    <i data-lucide="lock" class="w-3.5 h-3.5"></i>
-                    <span>Кабинет Марии</span>
+            <!-- Timeline Rows -->
+            <div id="teacherTimeline" class="space-y-2.5">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- ALL STUDENTS DATABASE & RECENT BOOKINGS -->
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-cream-200 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-cream-200">
+                <h3 class="font-display font-extrabold text-base text-slateDark">Все ученики и заявки (<span id="teacherTotalCount">0</span>)</h3>
+                <button onclick="exportTeacherCalendarAll()" class="px-3 py-1.5 rounded-xl bg-cream-200 hover:bg-cream-300 text-slateDark font-bold text-xs flex items-center gap-1.5 transition-colors">
+                    <i data-lucide="calendar" class="w-3.5 h-3.5 text-peach"></i>
+                    <span>В Яндекс.Календарь</span>
                 </button>
             </div>
-        </footer>
 
-    </main>
+            <div id="teacherAllBookingsList" class="space-y-2.5">
+                <!-- Populated by JS -->
+            </div>
+        </div>
 
-    <!-- SUCCESS MODAL (With Yandex Calendar & ICS Download & MAX/TG) -->
-    <div id="successModal" class="fixed inset-0 z-50 bg-slateDark/60 backdrop-blur-sm hidden items-center justify-center p-4">
+    </div>
+
+    <!-- PIN MODAL FOR TEACHER ACCESS -->
+    <div id="pinModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-xs rounded-3xl p-6 shadow-2xl space-y-4 text-center border border-cream-200">
+            <div class="w-14 h-14 rounded-2xl bg-peach-light text-peach flex items-center justify-center mx-auto text-2xl shadow-sm">
+                🔒
+            </div>
+            <div>
+                <h3 class="font-display font-extrabold text-lg text-slateDark">Кабинет Марии</h3>
+                <p class="text-xs text-slateDark/60 mt-0.5">Введите PIN-код для входа (по умолчанию <strong>1234</strong>)</p>
+            </div>
+            <div>
+                <input type="password" id="pinInput" maxlength="4" placeholder="••••" class="w-36 text-center tracking-widest text-2xl font-bold py-2 rounded-xl border border-cream-300 focus:outline-none focus:border-peach">
+            </div>
+            <div class="flex gap-2">
+                <button onclick="closePinModal()" class="flex-1 py-2.5 rounded-xl bg-cream-100 text-xs font-bold text-slateDark">Отмена</button>
+                <button onclick="verifyPin()" class="flex-1 py-2.5 rounded-xl bg-peach text-xs font-bold text-white hover:bg-peach-hover">Войти</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MANUAL ADD STUDENT MODAL -->
+    <div id="manualAddModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 border border-cream-200">
+            <div class="flex items-center justify-between pb-2 border-b border-cream-200">
+                <h3 class="font-display font-extrabold text-base text-slateDark">+ Записать ученика в график</h3>
+                <button onclick="closeManualAddModal()" class="text-slateDark/40 hover:text-slateDark text-xl font-bold">&times;</button>
+            </div>
+
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="font-bold text-slateDark block mb-1">Имя ученика</label>
+                    <input type="text" id="manualCustName" placeholder="Например: Даниил (8 класс)" class="w-full px-3 py-2 border rounded-xl">
+                </div>
+                <div>
+                    <label class="font-bold text-slateDark block mb-1">Телефон</label>
+                    <input type="tel" id="manualCustPhone" placeholder="+7..." class="w-full px-3 py-2 border rounded-xl">
+                </div>
+                <div>
+                    <label class="font-bold text-slateDark block mb-1">Формат занятия</label>
+                    <select id="manualCustFormat" class="w-full px-3 py-2 border rounded-xl font-bold">
+                        <option value="Мини-группа (900 ₽)">Мини-группа (900 ₽)</option>
+                        <option value="В паре (1 100 ₽)">В паре (1 100 ₽)</option>
+                        <option value="Индивидуально (1 600 ₽)" selected>Индивидуально (1 600 ₽)</option>
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="font-bold text-slateDark block mb-1">Дата</label>
+                        <select id="manualCustDateSelect" class="w-full px-3 py-2 border rounded-xl font-bold"></select>
+                    </div>
+                    <div>
+                        <label class="font-bold text-slateDark block mb-1">Время</label>
+                        <select id="manualCustTimeSelect" class="w-full px-3 py-2 border rounded-xl font-bold"></select>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="saveManualStudentEntry()" class="w-full py-3 rounded-xl bg-peach hover:bg-peach-hover text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-peach/25">
+                Зафиксировать в расписании
+            </button>
+        </div>
+    </div>
+
+    <!-- CLIENT CONFIRMATION MODAL -->
+    <div id="confirmModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="max-w-md w-full rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-cream-200 space-y-5 text-center relative">
-            
             <div class="w-16 h-16 rounded-2xl bg-peach-light text-peach mx-auto flex items-center justify-center text-3xl shadow-sm">
                 🐾
             </div>
 
             <div class="space-y-1">
                 <h3 class="font-display text-2xl font-extrabold text-slateDark">Заявка принята!</h3>
-                <p class="text-xs text-slateDark/75 leading-relaxed">
-                    Кот Саян передал данные Марии. Мы свяжемся с вами в течение 2 часов для согласования ссылки на созвон.
+                <p class="text-xs text-slateDark/70 leading-relaxed">
+                    Кот Саян передал данные Марии. Мы свяжемся с вами в течение 2 часов для подтверждения созвона.
                 </p>
             </div>
 
-            <div class="p-4 rounded-2xl bg-cream-100 border border-cream-200 text-left space-y-1 text-xs">
-                <div class="font-bold text-slateDark" id="modalSlotDetail">Слот: Четверг, 16:00</div>
-                <div class="text-peach font-bold" id="modalFormatDetail">Формат: Мини-группа (900 ₽)</div>
-                <div class="text-slateDark/70" id="modalClientDetail">Ученик: Артём (9 класс)</div>
-                <div class="text-slateDark/70" id="modalMessengerDetail">Мессенджер для связи: МАКС</div>
-            </div>
+            <div id="modalSummaryBox" class="p-4 rounded-2xl bg-cream-100 border border-cream-200 text-left space-y-1 text-xs"></div>
 
-            <!-- Direct Messenger Buttons -->
             <div class="space-y-2 pt-1">
                 <a id="maxDirectBtn" href="https://max.ru/" target="_blank" class="w-full py-2.5 rounded-xl bg-[#0077FF] hover:bg-[#0062D6] text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-sm">
                     <span>Написать Марии в МАКС</span>
@@ -520,444 +593,717 @@
 
                 <a id="tgDirectBtn" href="https://t.me/" target="_blank" class="w-full py-2.5 rounded-xl bg-[#2AABEE] hover:bg-[#2299D6] text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors shadow-sm">
                     <i data-lucide="send" class="w-3.5 h-3.5"></i>
-                    <span>Написать Марии в Telegram</span>
+                    <span>Написать в Telegram</span>
                 </a>
 
-                <a id="yandexCalBtn" href="#" target="_blank" class="w-full py-2.5 rounded-xl bg-cream-200 hover:bg-cream-300 text-slateDark font-bold text-xs flex items-center justify-center gap-2 transition-colors">
+                <button onclick="addCurrentToYandex()" class="w-full py-2.5 rounded-xl bg-cream-200 hover:bg-cream-300 text-slateDark font-bold text-xs flex items-center justify-center gap-2 transition-colors">
                     <i data-lucide="calendar-plus" class="w-4 h-4 text-peach"></i>
                     <span>Добавить в Яндекс.Календарь</span>
-                </a>
+                </button>
 
-                <button onclick="downloadICS()" class="w-full py-2 rounded-xl border border-cream-200 hover:bg-cream-100 text-slateDark/80 font-bold text-xs flex items-center justify-center gap-2 transition-colors">
+                <button onclick="downloadCurrentICS()" class="w-full py-2 rounded-xl border border-cream-200 hover:bg-cream-100 text-slateDark/80 font-bold text-xs flex items-center justify-center gap-2 transition-colors">
                     <i data-lucide="download" class="w-3.5 h-3.5"></i>
                     <span>Скачать .ICS файл</span>
                 </button>
             </div>
 
-            <button onclick="closeModal()" class="text-xs text-slateDark/50 hover:text-slateDark font-semibold">
+            <button onclick="closeConfirmModal()" class="text-xs text-slateDark/50 hover:text-slateDark font-semibold">
                 Закрыть окно
             </button>
-
         </div>
     </div>
 
-    <!-- TEACHER ADMIN PANEL MODAL (PIN: 1234) -->
-    <div id="adminModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="max-w-2xl w-full rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-cream-200 space-y-6 max-h-[90vh] overflow-y-auto">
-            
-            <div class="flex items-center justify-between pb-4 border-b border-cream-200">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-peach-light text-peach flex items-center justify-center font-bold">
-                        🔒
-                    </div>
-                    <div>
-                        <h3 class="font-display font-extrabold text-lg text-slateDark">Кабинет преподавателя — Мария</h3>
-                        <p class="text-xs text-slateDark/60">Управление заявками и расписанием</p>
-                    </div>
-                </div>
-                <button onclick="closeAdminModal()" class="text-slateDark/40 hover:text-slateDark text-xl font-bold">&times;</button>
-            </div>
-
-            <!-- PIN Code Screen if not unlocked -->
-            <div id="pinScreen" class="py-8 space-y-4 text-center">
-                <p class="text-xs text-slateDark/70">Введите PIN-код преподавателя для доступа:</p>
-                <div class="flex justify-center gap-2">
-                    <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-32 text-center text-2xl font-bold tracking-widest px-4 py-2 rounded-xl border border-cream-300 focus:outline-none focus:border-peach">
-                </div>
-                <button onclick="verifyAdminPin()" class="px-6 py-2.5 rounded-xl bg-peach text-white font-bold text-xs">
-                    Войти в кабинет
-                </button>
-                <p id="pinError" class="text-xs text-red-500 hidden font-bold">Неверный PIN-код (по умолчанию 1234)</p>
-            </div>
-
-            <!-- Admin Workspace (Unlocked) -->
-            <div id="adminWorkspace" class="hidden space-y-6">
-                
-                <!-- Admin Tabs -->
-                <div class="flex border-b border-cream-200 gap-4 text-xs font-bold">
-                    <button id="tabBtnRequests" onclick="switchAdminTab('requests')" class="pb-2 text-peach border-b-2 border-peach">Заявки учеников (<span id="reqCount">0</span>)</button>
-                    <button id="tabBtnSlots" onclick="switchAdminTab('slots')" class="pb-2 text-slateDark/60 hover:text-slateDark">Блокировка часов</button>
-                    <button id="tabBtnManual" onclick="switchAdminTab('manual')" class="pb-2 text-slateDark/60 hover:text-slateDark">+ Добавить ученика</button>
-                </div>
-
-                <!-- Tab 1: Requests List -->
-                <div id="tabContentRequests" class="space-y-3">
-                    <div id="requestsList" class="space-y-2.5">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
-
-                <!-- Tab 2: Slot Blocking (Disables slots from public picker) -->
-                <div id="tabContentSlots" class="space-y-4 hidden">
-                    <p class="text-xs text-slateDark/70">Кликните по слоту, чтобы заблокировать его для клиентов (пометить как «Занято»):</p>
-                    <div id="adminSlotBlocker" class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                        <!-- Populated by JS -->
-                    </div>
-                </div>
-
-                <!-- Tab 3: Manual Student Entry -->
-                <div id="tabContentManual" class="space-y-3 hidden">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                        <div>
-                            <label class="font-bold text-slateDark">Имя ученика</label>
-                            <input type="text" id="manualName" class="w-full mt-1 px-3 py-2 border rounded-xl" placeholder="Дмитрий">
-                        </div>
-                        <div>
-                            <label class="font-bold text-slateDark">Телефон</label>
-                            <input type="tel" id="manualPhone" class="w-full mt-1 px-3 py-2 border rounded-xl" placeholder="+7...">
-                        </div>
-                        <div>
-                            <label class="font-bold text-slateDark">Формат</label>
-                            <select id="manualFormat" class="w-full mt-1 px-3 py-2 border rounded-xl">
-                                <option>Мини-группа (900 ₽)</option>
-                                <option>В паре (1 100 ₽)</option>
-                                <option>Индивидуально (1 600 ₽)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="font-bold text-slateDark">Время</label>
-                            <input type="text" id="manualTime" class="w-full mt-1 px-3 py-2 border rounded-xl" placeholder="Четверг 16:00">
-                        </div>
-                    </div>
-                    <button onclick="addManualStudent()" class="px-5 py-2.5 rounded-xl bg-peach text-white font-bold text-xs">
-                        Сохранить в расписание
-                    </button>
-                </div>
-
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Scripting for Dynamic Booking, Messengers, Calendar & Teacher Admin Panel -->
+    <!-- SCRIPTING ENGINE -->
     <script>
-        lucide.createIcons();
-
-        let selectedDay = null;
-        let selectedTime = '16:00';
-        let selectedGradeNum = 9;
-        let currentBooking = null;
-
-        const scheduleDays = [
-            { id: 1, name: 'Понедельник', dateStr: '16 ноя', fullDate: '20261116' },
-            { id: 2, name: 'Вторник',     dateStr: '17 ноя', fullDate: '20261117' },
-            { id: 3, name: 'Среда',       dateStr: '18 ноя', fullDate: '20261118' },
-            { id: 4, name: 'Четверг',     dateStr: '19 ноя', fullDate: '20261119' },
-            { id: 5, name: 'Суббота',     dateStr: '21 ноя', fullDate: '20261121' }
+        // 1. CONFIG & DATA
+        const TUTOR_FORMATS = [
+            {
+                id: 'group',
+                title: 'Мини-группы (3–5 человек)',
+                desc: 'Идеальный баланс внимания и командной динамики. Дети поддерживают друг друга, видят чужие ошибки и быстрее растут.',
+                price: 900,
+                duration: 60,
+                icon: '👥',
+                badge: 'Топ выбор'
+            },
+            {
+                id: 'pair',
+                title: 'Занятия в паре (2 ученика)',
+                desc: 'Можно заниматься с одноклассником или другом. Здоровая соревновательность и максимум внимания преподавателя.',
+                price: 1100,
+                duration: 60,
+                icon: '👯',
+                badge: null
+            },
+            {
+                id: 'indiv',
+                title: 'Индивидуально',
+                desc: '100% фокус на целях конкретного ученика: экстренная подготовка к контрольным, сложная геометрия, ОГЭ с нуля.',
+                price: 1600,
+                duration: 60,
+                icon: '🎯',
+                badge: null
+            }
         ];
 
-        const defaultSlots = ['15:00', '16:30', '18:00', '19:30'];
+        let selectedFormatId = 'group';
+        let selectedDateIso = '';
+        let selectedTime = '16:00';
+        let isTeacherMode = false;
+        let teacherSelectedDateIso = '';
+        let lastCreatedBooking = null;
 
-        // Blocked slots stored in localStorage: format { "20261116_15:00": true }
-        function getBlockedSlots() {
-            try {
-                return JSON.parse(localStorage.getItem('maria_blocked_slots') || '{}');
-            } catch(e) { return {}; }
-        }
+        const WORK_START = 10 * 60; // 10:00
+        const WORK_END = 21 * 60;   // 21:00
+        const LESSON_DURATION = 60; // 60 mins
+        const STEP_MIN = 60;        // 1 hour intervals
 
-        function saveBlockedSlots(data) {
-            localStorage.setItem('maria_blocked_slots', JSON.stringify(data));
-        }
+        // LocalStorage Helpers
+        function getSchedule() {
+            const data = localStorage.getItem('maria_schedule_v3');
+            if (data) return JSON.parse(data);
 
-        function getStoredBookings() {
-            try {
-                return JSON.parse(localStorage.getItem('maria_bookings') || '[]');
-            } catch(e) { return []; }
-        }
+            const today = getIso(0);
+            const tomorrow = getIso(1);
+            const in2days = getIso(2);
 
-        function saveStoredBookings(data) {
-            localStorage.setItem('maria_bookings', JSON.stringify(data));
-        }
-
-        function renderDays() {
-            const container = document.getElementById('daySelector');
-            container.innerHTML = '';
-            scheduleDays.forEach((day, index) => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = `p-3 rounded-2xl border text-center transition-all ${
-                    (selectedDay && selectedDay.id === day.id) || (!selectedDay && index === 0)
-                        ? 'bg-peach text-white font-extrabold shadow-md border-peach'
-                        : 'bg-white text-slateDark border-cream-200 hover:border-peach'
-                }`;
-                btn.innerHTML = `<div class="text-xs">${day.name}</div><div class="text-[10px] opacity-80 mt-0.5">${day.dateStr}</div>`;
-                btn.onclick = () => {
-                    selectedDay = day;
-                    renderDays();
-                    renderSlots();
-                };
-                container.appendChild(btn);
-            });
-            if (!selectedDay) selectedDay = scheduleDays[0];
-        }
-
-        function renderSlots() {
-            const container = document.getElementById('slotSelector');
-            container.innerHTML = '';
-            const blocked = getBlockedSlots();
-
-            defaultSlots.forEach(slot => {
-                const slotKey = `${selectedDay.fullDate}_${slot}`;
-                const isBlocked = !!blocked[slotKey];
-
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                if (isBlocked) {
-                    btn.disabled = true;
-                    btn.className = 'py-2.5 px-3 rounded-xl border border-cream-200 bg-cream-100 text-slateDark/30 text-xs font-semibold line-through cursor-not-allowed';
-                    btn.innerText = `${slot} (занято)`;
-                } else {
-                    btn.className = `py-2.5 px-3 rounded-xl border text-center text-xs font-bold transition-all ${
-                        selectedTime === slot
-                            ? 'bg-peach text-white shadow-sm border-peach'
-                            : 'bg-white text-slateDark border-cream-200 hover:border-peach'
-                    }`;
-                    btn.innerText = slot;
-                    btn.onclick = () => {
-                        selectedTime = slot;
-                        renderSlots();
-                    };
+            const initial = [
+                {
+                    id: 201,
+                    date: today,
+                    time: '14:00',
+                    startMin: 14 * 60,
+                    duration: 60,
+                    name: 'Даша К.',
+                    grade: 9,
+                    phone: '+7 (912) 333-22-11',
+                    format: 'Мини-группа (900 ₽)',
+                    price: 900,
+                    messenger: 'Telegram',
+                    isBlocked: false
+                },
+                {
+                    id: 202,
+                    date: tomorrow,
+                    time: '18:00',
+                    startMin: 18 * 60,
+                    duration: 60,
+                    name: 'Илья (ОГЭ)',
+                    grade: 9,
+                    phone: '+7 (902) 444-55-66',
+                    format: 'Индивидуально (1 600 ₽)',
+                    price: 1600,
+                    messenger: 'МАКС',
+                    isBlocked: false
+                },
+                {
+                    id: 203,
+                    date: in2days,
+                    time: '12:00',
+                    startMin: 12 * 60,
+                    duration: 60,
+                    name: 'Перерыв преподавателя',
+                    phone: '-',
+                    format: 'Заблокировано',
+                    price: 0,
+                    isBlocked: true
                 }
-                container.appendChild(btn);
-            });
+            ];
+            localStorage.setItem('maria_schedule_v3', JSON.stringify(initial));
+            return initial;
         }
 
-        function selectGrade(grade, btn) {
-            selectedGradeNum = grade;
-            document.querySelectorAll('.grade-btn').forEach(b => {
-                b.className = 'grade-btn px-4 py-2 rounded-xl bg-white border border-cream-200 text-xs font-bold hover:border-peach text-slateDark';
-            });
-            btn.className = 'grade-btn px-4 py-2 rounded-xl bg-peach text-white font-extrabold text-xs shadow-sm';
+        function saveSchedule(items) {
+            localStorage.setItem('maria_schedule_v3', JSON.stringify(items));
         }
 
-        function selectCourse(format) {
-            const radios = document.getElementsByName('formatRadio');
-            for (let r of radios) {
-                if (r.value === format) {
-                    r.checked = true;
-                    break;
-                }
+        function getIso(offset = 0) {
+            const d = new Date();
+            d.setDate(d.getDate() + offset);
+            return d.toISOString().split('T')[0];
+        }
+
+        function formatRuDate(isoStr) {
+            const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+            const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+            const parts = isoStr.split('-');
+            const d = new Date(parts[0], parts[1] - 1, parts[2]);
+            return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+        }
+
+        function minToTime(mins) {
+            const h = Math.floor(mins / 60).toString().padStart(2, '0');
+            const m = (mins % 60).toString().padStart(2, '0');
+            return `${h}:${m}`;
+        }
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            selectedDateIso = getIso(0);
+            teacherSelectedDateIso = getIso(0);
+
+            renderFormatCards();
+            renderDaysScroll();
+            recomputeSlots();
+            populateManualDateDropdowns();
+            lucide.createIcons();
+
+            if (window.location.hash === '#admin' || window.location.hash === '#master' || sessionStorage.getItem('maria_teacher_auth') === 'true') {
+                grantTeacherMode();
             }
+        });
+
+        // 2. FORMATS
+        function renderFormatCards() {
+            const container = document.getElementById('formatsCards');
+            container.innerHTML = TUTOR_FORMATS.map(f => {
+                const isSelected = selectedFormatId === f.id;
+                return `
+                    <div onclick="selectFormat('${f.id}')" class="p-6 rounded-3xl bg-white border-2 cursor-pointer transition-all flex flex-col justify-between relative ${
+                        isSelected ? 'border-peach shadow-md ring-2 ring-peach/20' : 'border-cream-200 hover:border-peach shadow-sm'
+                    }">
+                        ${f.badge ? `<div class="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-peach text-white text-[10px] font-extrabold uppercase tracking-wider">${f.badge}</div>` : ''}
+                        <div class="space-y-2">
+                            <div class="text-3xl">${f.icon}</div>
+                            <h3 class="font-display font-extrabold text-lg text-slateDark">${f.title}</h3>
+                            <p class="text-xs text-slateDark/70 leading-relaxed">${f.desc}</p>
+                            <div class="pt-2">
+                                <span class="font-display text-2xl font-black text-slateDark">${f.price} ₽</span>
+                                <span class="text-xs text-slateDark/60 font-semibold"> / 60 мин</span>
+                            </div>
+                        </div>
+                        <div class="pt-4">
+                            <div class="w-full py-2.5 rounded-2xl text-xs font-bold text-center transition-colors ${
+                                isSelected ? 'bg-peach text-white shadow-sm' : 'bg-cream-100 text-slateDark hover:bg-cream-200'
+                            }">
+                                ${isSelected ? '✓ Выбрано' : 'Выбрать'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectFormat(id) {
+            selectedFormatId = id;
+            renderFormatCards();
+            recomputeSlots();
             document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function handleBookingSubmit(e) {
-            e.preventDefault();
-            const format = document.querySelector('input[name="formatRadio"]:checked').value;
-            const messenger = document.querySelector('input[name="messengerRadio"]:checked').value;
-            const name = document.getElementById('clientName').value;
-            const phone = document.getElementById('clientPhone').value;
+        // 3. DAYS SCROLL (14 Days)
+        function renderDaysScroll() {
+            const container = document.getElementById('daysScroll');
+            container.innerHTML = '';
+            const daysOfWeek = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+            const months = ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
 
-            currentBooking = {
-                id: Date.now(),
-                format,
-                grade: selectedGradeNum,
-                name,
-                phone,
-                messenger,
-                day: selectedDay,
-                time: selectedTime,
-                created: new Date().toLocaleString('ru-RU')
-            };
+            for (let i = 0; i < 14; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                const iso = date.toISOString().split('T')[0];
+                const dayTitle = i === 0 ? 'Сегодня' : i === 1 ? 'Завтра' : daysOfWeek[date.getDay()];
+                const dayNum = `${date.getDate()} ${months[date.getMonth()]}`;
 
-            // Save to localStorage for Maria's Admin Panel
-            const list = getStoredBookings();
-            list.unshift(currentBooking);
-            saveStoredBookings(list);
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                const active = selectedDateIso === iso;
+                btn.className = `flex-shrink-0 px-4 py-2.5 rounded-2xl border text-center transition-all ${
+                    active ? 'bg-peach text-white border-peach font-extrabold shadow-md' : 'bg-white text-slateDark border-cream-200 hover:border-peach'
+                }`;
+                btn.innerHTML = `
+                    <div class="text-[10px] uppercase font-bold tracking-wider opacity-85">${dayTitle}</div>
+                    <div class="text-xs font-black mt-0.5">${dayNum}</div>
+                `;
+                btn.onclick = () => {
+                    selectedDateIso = iso;
+                    renderDaysScroll();
+                    recomputeSlots();
+                };
+                container.appendChild(btn);
+            }
+        }
 
-            // Modal text
-            document.getElementById('modalSlotDetail').innerText = `Слот: ${selectedDay.name} (${selectedDay.dateStr}) в ${selectedTime}`;
-            document.getElementById('modalFormatDetail').innerText = `Формат: ${format}`;
-            document.getElementById('modalClientDetail').innerText = `Ученик: ${name} (${selectedGradeNum} класс) • Тел: ${phone}`;
-            document.getElementById('modalMessengerDetail').innerText = `Связь через: ${messenger}`;
+        // 4. SMART SLOTS CALCULATION
+        function recomputeSlots() {
+            const grid = document.getElementById('slotsGrid');
+            grid.innerHTML = '';
+            const schedule = getSchedule();
+            const dayItems = schedule.filter(b => b.date === selectedDateIso);
 
-            // Yandex Calendar link
-            const startHour = selectedTime.split(':')[0];
-            const startMin = selectedTime.split(':')[1];
-            const endHour = String(parseInt(startHour) + 1).padStart(2, '0');
-            const startDateTime = `${selectedDay.fullDate}T${startHour}${startMin}00`;
-            const endDateTime = `${selectedDay.fullDate}T${endHour}${startMin}00`;
+            let firstValid = null;
 
-            const yandexUrl = `https://calendar.yandex.ru/custom-event?name=${encodeURIComponent('Пробный урок по математике с Марией Дружининой')}&start_ts=${startDateTime}&end_ts=${endDateTime}&description=${encodeURIComponent('Формат: ' + format + '\nКласс: ' + selectedGradeNum + '\nУченик: ' + name + ' (' + phone + ')\nМессенджер: ' + messenger)}`;
-            document.getElementById('yandexCalBtn').href = yandexUrl;
+            for (let min = WORK_START; min < WORK_END; min += STEP_MIN) {
+                const timeStr = minToTime(min);
+                const endStr = minToTime(min + LESSON_DURATION);
+                
+                const isConflict = dayItems.some(b => {
+                    return Math.max(min, b.startMin) < Math.min(min + LESSON_DURATION, b.startMin + b.duration);
+                });
 
-            // Telegram Link
-            const tgMsg = encodeURIComponent(`Привет, Мария! Меня зовут ${name}. Записались на сайте на пробный урок по математике:\n- Формат: ${format}\n- Класс: ${selectedGradeNum}\n- Слот: ${selectedDay.name} (${selectedDay.dateStr}) в ${selectedTime}\n- Мой телефон: ${phone}\n- Удобный мессенджер: ${messenger}`);
-            document.getElementById('tgDirectBtn').href = `https://t.me/share/url?url=${tgMsg}`;
+                const slotBtn = document.createElement('button');
+                slotBtn.type = 'button';
 
-            // MAX Messenger Link
-            document.getElementById('maxDirectBtn').href = `https://max.ru/`;
+                if (isConflict) {
+                    slotBtn.disabled = true;
+                    slotBtn.className = 'py-3 px-2 rounded-2xl border border-cream-200/80 bg-cream-100/60 text-slateDark/35 text-xs font-semibold cursor-not-allowed line-through text-center';
+                    slotBtn.innerHTML = `<div>${timeStr}</div><div class="text-[9px] uppercase tracking-wider text-rose-400 font-bold">Занято</div>`;
+                } else {
+                    if (!firstValid) firstValid = timeStr;
+                    const isSelected = selectedTime === timeStr;
+                    slotBtn.className = `py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all ${
+                        isSelected ? 'bg-peach text-white border-peach shadow-md ring-2 ring-peach/30' : 'bg-white text-slateDark border-cream-200 hover:border-peach shadow-sm'
+                    }`;
+                    slotBtn.innerHTML = `<div>${timeStr}</div><div class="text-[10px] font-normal opacity-75">до ${endStr}</div>`;
+                    slotBtn.onclick = () => selectSlot(timeStr, endStr);
+                }
+                grid.appendChild(slotBtn);
+            }
 
-            // Show Modal
-            document.getElementById('successModal').classList.remove('hidden');
-            document.getElementById('successModal').classList.add('flex');
+            if (firstValid && (!selectedTime || grid.querySelector('.line-through.bg-peach'))) {
+                selectSlot(firstValid, minToTime(parseInt(firstValid.split(':')[0]) * 60 + LESSON_DURATION));
+            } else if (!firstValid) {
+                selectedTime = '';
+                document.getElementById('slotNotice').className = 'text-xs text-rose-800 bg-rose-50 border border-rose-200 p-3 rounded-2xl flex items-center gap-2 mt-3';
+                document.getElementById('slotNoticeText').innerText = 'На этот день все часы заняты или закрыты преподавателем. Выберите другой день!';
+            }
+        }
+
+        function selectSlot(timeStr, endStr) {
+            selectedTime = timeStr;
+            document.querySelectorAll('#slotsGrid button').forEach(b => {
+                if (b.innerText.includes(timeStr) && !b.disabled) {
+                    b.className = 'py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all bg-peach text-white border-peach shadow-md ring-2 ring-peach/30';
+                } else if (!b.disabled) {
+                    b.className = 'py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all bg-white text-slateDark border-cream-200 hover:border-peach shadow-sm';
+                }
+            });
+            document.getElementById('slotNotice').className = 'text-xs text-emerald-800 bg-emerald-50 border border-emerald-200 p-3 rounded-2xl flex items-center gap-2.5 mt-3 shadow-sm';
+            document.getElementById('slotNoticeText').innerText = `Выбрано: ${formatRuDate(selectedDateIso)} в ${timeStr} (урок до ${endStr})`;
             lucide.createIcons();
         }
 
-        function closeModal() {
-            document.getElementById('successModal').classList.add('hidden');
-            document.getElementById('successModal').classList.remove('flex');
+        // 5. CLIENT SUBMIT
+        function submitClientBooking(e) {
+            e.preventDefault();
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const grade = document.getElementById('custGrade').value;
+            const messenger = document.querySelector('input[name="custMessenger"]:checked').value;
+
+            if (!name || !phone) return alert('Пожалуйста, укажите имя и телефон');
+            if (!selectedTime) return alert('Пожалуйста, выберите свободное время');
+
+            const formatObj = TUTOR_FORMATS.find(f => f.id === selectedFormatId);
+            const startH = parseInt(selectedTime.split(':')[0]);
+            const startMin = startH * 60;
+
+            const schedule = getSchedule();
+            const newBooking = {
+                id: Date.now(),
+                date: selectedDateIso,
+                time: selectedTime,
+                startMin: startMin,
+                duration: LESSON_DURATION,
+                name: name,
+                grade: grade,
+                phone: phone,
+                format: formatObj.title,
+                price: formatObj.price,
+                messenger: messenger,
+                isBlocked: false,
+                created: new Date().toLocaleString('ru-RU')
+            };
+
+            schedule.push(newBooking);
+            saveSchedule(schedule);
+            lastCreatedBooking = newBooking;
+
+            // Update UI
+            recomputeSlots();
+
+            // Populate Modal
+            document.getElementById('modalSummaryBox').innerHTML = `
+                <div><span class="text-slateDark/60">Ученик:</span> <strong>${name}</strong> (${grade} класс)</div>
+                <div><span class="text-slateDark/60">Дата и время:</span> <strong>${formatRuDate(selectedDateIso)} в ${selectedTime}</strong></div>
+                <div><span class="text-slateDark/60">Формат:</span> ${formatObj.title} (${formatObj.price} ₽)</div>
+                <div><span class="text-slateDark/60">Связь для созвона:</span> <strong>${messenger}</strong> (${phone})</div>
+            `;
+
+            // Messengers URLs
+            const msg = encodeURIComponent(`Привет, Мария! Меня зовут ${name}. Записались на пробный урок:\n- Дата: ${selectedDateIso} в ${selectedTime}\n- Формат: ${formatObj.title}\n- Класс: ${grade}\n- Телефон: ${phone}\n- Мессенджер: ${messenger}`);
+            document.getElementById('tgDirectBtn').href = `https://t.me/share/url?url=${msg}`;
+            document.getElementById('maxDirectBtn').href = `https://max.ru/`;
+
+            document.getElementById('confirmModal').classList.remove('hidden');
+            document.getElementById('confirmModal').classList.add('flex');
+            lucide.createIcons();
         }
 
-        function downloadICS() {
-            if (!currentBooking) return;
-            const b = currentBooking;
-            const startHour = b.time.split(':')[0];
-            const startMin = b.time.split(':')[1];
-            const endHour = String(parseInt(startHour) + 1).padStart(2, '0');
-            
-            const icsContent = [
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+            document.getElementById('confirmModal').classList.remove('flex');
+        }
+
+        // Calendar sync
+        function addCurrentToYandex() {
+            const b = lastCreatedBooking;
+            if (!b) return;
+            const startStr = `${b.date.replace(/-/g, '')}T${b.time.replace(':', '')}00`;
+            const endHour = String(parseInt(b.time.split(':')[0]) + 1).padStart(2, '0');
+            const endStr = `${b.date.replace(/-/g, '')}T${endHour}0000`;
+            const title = `Урок математики — Мария Дружинина`;
+            const desc = `Формат: ${b.format}\nУченик: ${b.name}\nТелефон: ${b.phone}\nМессенджер: ${b.messenger}`;
+
+            window.open(`https://calendar.yandex.ru/custom-event?name=${encodeURIComponent(title)}&start_ts=${startStr}&end_ts=${endStr}&description=${encodeURIComponent(desc)}`, '_blank');
+        }
+
+        function downloadCurrentICS() {
+            const b = lastCreatedBooking;
+            if (!b) return;
+            const dateClean = b.date.replace(/-/g, '');
+            const startH = b.time.split(':')[0];
+            const endH = String(parseInt(startH) + 1).padStart(2, '0');
+
+            const ics = [
                 'BEGIN:VCALENDAR',
                 'VERSION:2.0',
                 'PRODID:-//Maria Druzhinina Math//RU',
                 'CALSCALE:GREGORIAN',
                 'BEGIN:VEVENT',
-                `SUMMARY:Пробный урок — Мария Дружинина`,
-                `DESCRIPTION:Формат: ${b.format}\\nКласс: ${b.grade}\\nУченик: ${b.name} (${b.phone})\\nМессенджер: ${b.messenger}`,
-                `DTSTART:${b.day.fullDate}T${startHour}${startMin}00`,
-                `DTEND:${b.day.fullDate}T${endHour}${startMin}00`,
+                `SUMMARY:Урок математики — Мария Дружинина`,
+                `DESCRIPTION:Формат: ${b.format}\\nУченик: ${b.name} (${b.phone})\\nМессенджер: ${b.messenger}`,
+                `DTSTART:${dateClean}T${startH}0000`,
+                `DTEND:${dateClean}T${endH}0000`,
                 'STATUS:CONFIRMED',
                 'END:VEVENT',
                 'END:VCALENDAR'
             ].join('\r\n');
 
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', `urok_maria_${b.day.fullDate}.ics`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `urok_maria_${b.date}.ics`;
+            a.click();
         }
 
-        // ================= TEACHER ADMIN PANEL LOGIC =================
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
-            document.getElementById('adminModal').classList.add('flex');
+        // ================= TEACHER ADMIN NOTEBOOK ENGINE =================
+        function requestTeacherAccess() {
+            if (sessionStorage.getItem('maria_teacher_auth') === 'true') {
+                grantTeacherMode();
+            } else {
+                document.getElementById('pinInput').value = '';
+                document.getElementById('pinModal').classList.remove('hidden');
+                document.getElementById('pinModal').classList.add('flex');
+                document.getElementById('pinInput').focus();
+            }
+        }
+
+        function closePinModal() {
+            document.getElementById('pinModal').classList.add('hidden');
+            document.getElementById('pinModal').classList.remove('flex');
+        }
+
+        function verifyPin() {
+            const p = document.getElementById('pinInput').value.trim();
+            if (p === '1234') {
+                sessionStorage.setItem('maria_teacher_auth', 'true');
+                closePinModal();
+                grantTeacherMode();
+            } else {
+                alert('Неверный PIN-код (по умолчанию 1234)');
+            }
+        }
+
+        function grantTeacherMode() {
+            isTeacherMode = true;
+            document.getElementById('teacherStickyBar').classList.remove('hidden');
+            document.getElementById('clientView').classList.add('hidden');
+            document.getElementById('teacherView').classList.remove('hidden');
+            document.getElementById('toggleViewBtn').innerText = 'Вернуться на сайт';
+
+            renderTeacherDaysBar();
+            renderTeacherTimeline();
+            renderTeacherAllBookings();
             lucide.createIcons();
         }
 
-        function closeAdminModal() {
-            document.getElementById('adminModal').classList.add('hidden');
-            document.getElementById('adminModal').classList.remove('flex');
-        }
+        function toggleTeacherModeView() {
+            const cView = document.getElementById('clientView');
+            const tView = document.getElementById('teacherView');
+            const btn = document.getElementById('toggleViewBtn');
 
-        function verifyAdminPin() {
-            const pin = document.getElementById('adminPinInput').value;
-            if (pin === '1234') {
-                document.getElementById('pinScreen').classList.add('hidden');
-                document.getElementById('adminWorkspace').classList.remove('hidden');
-                renderAdminRequests();
-                renderAdminSlots();
+            if (tView.classList.contains('hidden')) {
+                tView.classList.remove('hidden');
+                cView.classList.add('hidden');
+                btn.innerText = 'Вернуться на сайт';
+                renderTeacherTimeline();
             } else {
-                document.getElementById('pinError').classList.remove('hidden');
+                tView.classList.add('hidden');
+                cView.classList.remove('hidden');
+                btn.innerText = 'Тетрадка преподавателя';
+                recomputeSlots();
+            }
+            lucide.createIcons();
+        }
+
+        function logoutTeacher() {
+            isTeacherMode = false;
+            sessionStorage.removeItem('maria_teacher_auth');
+            window.location.hash = '';
+            document.getElementById('teacherStickyBar').classList.add('hidden');
+            document.getElementById('teacherView').classList.add('hidden');
+            document.getElementById('clientView').classList.remove('hidden');
+            recomputeSlots();
+            lucide.createIcons();
+        }
+
+        function renderTeacherDaysBar() {
+            const container = document.getElementById('teacherDaysBar');
+            container.innerHTML = '';
+            const daysOfWeek = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
+            for (let i = 0; i < 14; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                const iso = date.toISOString().split('T')[0];
+                const active = teacherSelectedDateIso === iso;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap border transition-all ${
+                    active ? 'bg-slateDark text-white border-slateDark shadow-sm' : 'bg-white text-slateDark border-cream-200 hover:border-peach'
+                }`;
+                btn.innerText = i === 0 ? 'Сегодня' : i === 1 ? 'Завтра' : `${daysOfWeek[date.getDay()]} ${date.getDate()}.${date.getMonth()+1}`;
+                btn.onclick = () => {
+                    teacherSelectedDateIso = iso;
+                    renderTeacherDaysBar();
+                    renderTeacherTimeline();
+                };
+                container.appendChild(btn);
             }
         }
 
-        function switchAdminTab(tab) {
-            ['requests', 'slots', 'manual'].forEach(t => {
-                const content = document.getElementById('tabContent' + t.charAt(0).toUpperCase() + t.slice(1));
-                const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
-                if (t === tab) {
-                    content.classList.remove('hidden');
-                    btn.className = 'pb-2 text-peach border-b-2 border-peach';
+        function renderTeacherTimeline() {
+            const container = document.getElementById('teacherTimeline');
+            container.innerHTML = '';
+            document.getElementById('teacherTimelineDateLabel').innerText = formatRuDate(teacherSelectedDateIso);
+
+            const schedule = getSchedule();
+            const dayItems = schedule.filter(b => b.date === teacherSelectedDateIso);
+
+            let lessonsCount = 0;
+            let income = 0;
+            let freeCount = 0;
+
+            for (let min = WORK_START; min < WORK_END; min += STEP_MIN) {
+                const timeStr = minToTime(min);
+                const endStr = minToTime(min + LESSON_DURATION);
+                const booking = dayItems.find(b => min >= b.startMin && min < (b.startMin + b.duration));
+
+                const row = document.createElement('div');
+                row.className = 'p-3.5 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3';
+
+                if (booking) {
+                    if (booking.isBlocked) {
+                        row.className += ' bg-slate-50 border-slate-200';
+                        row.innerHTML = `
+                            <div class="flex items-center gap-3">
+                                <span class="font-display font-black text-sm text-slate-400 w-16">${timeStr}</span>
+                                <span class="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-700 text-xs font-bold">⛔ Закрыто для записи</span>
+                                <span class="text-xs text-slate-400">Час заблокирован преподавателем</span>
+                            </div>
+                            <button onclick="unblockSlot(${booking.id})" class="px-3 py-1.5 rounded-xl bg-white border border-slate-300 text-xs font-bold text-slateDark hover:bg-slate-100 self-start sm:self-auto">
+                                Разблокировать
+                            </button>
+                        `;
+                    } else {
+                        lessonsCount++;
+                        income += (booking.price || 0);
+                        row.className += ' bg-peach-light/50 border-peach/40 shadow-sm';
+                        row.innerHTML = `
+                            <div class="flex items-start sm:items-center gap-3">
+                                <span class="font-display font-black text-sm text-peach w-16">${timeStr}</span>
+                                <div class="space-y-0.5">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-sm text-slateDark">${booking.name}</span>
+                                        <span class="px-2 py-0.5 rounded-full bg-peach text-white text-[10px] font-extrabold">${booking.format}</span>
+                                    </div>
+                                    <div class="text-xs text-slateDark/75">
+                                        Связь: <strong>${booking.messenger || 'Telegram'}</strong> • Телефон: <strong>${booking.phone}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2 self-start sm:self-auto">
+                                <a href="tel:${booking.phone}" class="px-3 py-1.5 rounded-xl bg-white border border-cream-300 text-xs font-bold text-slateDark hover:bg-cream-100">Позвонить</a>
+                                <button onclick="deleteBooking(${booking.id})" class="p-1.5 rounded-xl text-rose-500 hover:bg-rose-50 text-sm font-bold" title="Отменить">&times;</button>
+                            </div>
+                        `;
+                    }
                 } else {
-                    content.classList.add('hidden');
-                    btn.className = 'pb-2 text-slateDark/60 hover:text-slateDark';
+                    freeCount++;
+                    row.className += ' bg-emerald-50/50 border-emerald-200/70 hover:bg-emerald-50';
+                    row.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="font-display font-black text-sm text-emerald-800 w-16">${timeStr}</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 text-xs font-bold">Свободно</span>
+                            <span class="text-xs text-emerald-700 hidden sm:inline">Окно открыто для онлайн-записи</span>
+                        </div>
+                        <div class="flex items-center gap-2 self-start sm:self-auto">
+                            <button onclick="quickAddForSlot('${timeStr}')" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs hover:bg-emerald-700 shadow-sm">
+                                + Записать
+                            </button>
+                            <button onclick="quickBlockSlot('${timeStr}')" class="px-2.5 py-1.5 rounded-xl border border-slate-300 bg-white text-slate-600 font-bold text-xs hover:bg-slate-100">
+                                ⛔ Закрыть
+                            </button>
+                        </div>
+                    `;
                 }
-            });
+
+                container.appendChild(row);
+            }
+
+            document.getElementById('teacherDayLessonsCount').innerText = lessonsCount;
+            document.getElementById('teacherDayIncome').innerText = `${income.toLocaleString('ru-RU')} ₽`;
+            document.getElementById('teacherDayFreeSlots').innerText = freeCount;
+            lucide.createIcons();
         }
 
-        function renderAdminRequests() {
-            const list = getStoredBookings();
-            document.getElementById('reqCount').innerText = list.length;
-            const container = document.getElementById('requestsList');
-            if (list.length === 0) {
-                container.innerHTML = '<div class="p-6 text-center text-xs text-slateDark/50">Пока новых заявок нет. Клиенты увидят форму на сайте.</div>';
-                return;
-            }
-            container.innerHTML = list.map((item, idx) => `
-                <div class="p-4 rounded-2xl bg-cream-100 border border-cream-200 flex items-start justify-between gap-4">
-                    <div class="space-y-1">
-                        <div class="font-bold text-sm text-slateDark">${item.name} <span class="text-xs text-peach">(${item.grade} класс)</span></div>
-                        <div class="text-xs text-slateDark/80"><strong>Слот:</strong> ${item.day ? item.day.name : ''} в ${item.time}</div>
-                        <div class="text-xs text-slateDark/70"><strong>Формат:</strong> ${item.format} • <strong>Связь:</strong> ${item.messenger || 'Telegram'} (${item.phone})</div>
-                        <div class="text-[10px] text-slateDark/50">Заявка от ${item.created}</div>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <a href="tel:${item.phone}" class="p-2 rounded-xl bg-white border border-cream-300 text-slateDark text-xs font-bold hover:bg-cream-200">Позвонить</a>
-                        <button onclick="deleteBooking(${item.id})" class="p-2 rounded-xl text-red-500 hover:bg-red-50 text-xs font-bold">&times;</button>
-                    </div>
-                </div>
-            `).join('');
+        function quickBlockSlot(timeStr) {
+            const startH = parseInt(timeStr.split(':')[0]);
+            const schedule = getSchedule();
+            schedule.push({
+                id: Date.now(),
+                date: teacherSelectedDateIso,
+                time: timeStr,
+                startMin: startH * 60,
+                duration: LESSON_DURATION,
+                name: 'Блокировка слота',
+                isBlocked: true
+            });
+            saveSchedule(schedule);
+            renderTeacherTimeline();
+        }
+
+        function unblockSlot(id) {
+            let schedule = getSchedule();
+            schedule = schedule.filter(b => b.id !== id);
+            saveSchedule(schedule);
+            renderTeacherTimeline();
         }
 
         function deleteBooking(id) {
-            let list = getStoredBookings();
-            list = list.filter(b => b.id !== id);
-            saveStoredBookings(list);
-            renderAdminRequests();
+            if (!confirm('Отменить это занятие и освободить слот?')) return;
+            let schedule = getSchedule();
+            schedule = schedule.filter(b => b.id !== id);
+            saveSchedule(schedule);
+            renderTeacherTimeline();
+            renderTeacherAllBookings();
         }
 
-        function renderAdminSlots() {
-            const container = document.getElementById('adminSlotBlocker');
-            container.innerHTML = '';
-            const blocked = getBlockedSlots();
+        function renderTeacherAllBookings() {
+            const schedule = getSchedule().filter(b => !b.isBlocked);
+            document.getElementById('teacherTotalCount').innerText = schedule.length;
+            const container = document.getElementById('teacherAllBookingsList');
 
-            scheduleDays.forEach(day => {
-                defaultSlots.forEach(slot => {
-                    const key = `${day.fullDate}_${slot}`;
-                    const isB = !!blocked[key];
-                    const btn = document.createElement('button');
-                    btn.type = 'button';
-                    btn.className = `p-3 rounded-xl border text-xs font-bold transition-all ${
-                        isB ? 'bg-red-500 text-white border-red-600' : 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                    }`;
-                    btn.innerHTML = `<div>${day.name.slice(0, 2)} ${slot}</div><div class="text-[9px] mt-0.5">${isB ? 'ЗАНЯТО' : 'СВОБОДНО'}</div>`;
-                    btn.onclick = () => {
-                        blocked[key] = !blocked[key];
-                        saveBlockedSlots(blocked);
-                        renderAdminSlots();
-                        renderSlots();
-                    };
-                    container.appendChild(btn);
-                });
-            });
+            if (schedule.length === 0) {
+                container.innerHTML = '<div class="p-6 text-center text-xs text-slateDark/50">Список пуст</div>';
+                return;
+            }
+
+            container.innerHTML = schedule.map(b => `
+                <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 flex items-start justify-between gap-3 text-xs">
+                    <div>
+                        <div class="font-bold text-slateDark text-sm">${b.name} <span class="text-xs text-peach">(${b.grade ? b.grade + ' кл' : ''})</span></div>
+                        <div class="text-slateDark/80 mt-0.5"><strong>${b.date} в ${b.time}</strong> • ${b.format}</div>
+                        <div class="text-slateDark/60">Тел: ${b.phone} • Мессенджер: ${b.messenger || 'Telegram'}</div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="tel:${b.phone}" class="px-2.5 py-1.5 rounded-xl bg-white border border-cream-300 font-bold text-slateDark">Звонок</a>
+                        <button onclick="deleteBooking(${b.id})" class="p-1 rounded-lg text-rose-500 font-bold">&times;</button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
         }
 
-        function addManualStudent() {
-            const name = document.getElementById('manualName').value;
-            const phone = document.getElementById('manualPhone').value;
-            const format = document.getElementById('manualFormat').value;
-            const time = document.getElementById('manualTime').value;
+        // Manual Add Modal
+        function openManualAddModal() {
+            document.getElementById('manualAddModal').classList.remove('hidden');
+            document.getElementById('manualAddModal').classList.add('flex');
+        }
+
+        function closeManualAddModal() {
+            document.getElementById('manualAddModal').classList.add('hidden');
+            document.getElementById('manualAddModal').classList.remove('flex');
+        }
+
+        function quickAddForSlot(timeStr) {
+            openManualAddModal();
+            document.getElementById('manualCustDateSelect').value = teacherSelectedDateIso;
+            document.getElementById('manualCustTimeSelect').value = timeStr;
+        }
+
+        function populateManualDateDropdowns() {
+            const dateSel = document.getElementById('manualCustDateSelect');
+            const timeSel = document.getElementById('manualCustTimeSelect');
+            dateSel.innerHTML = '';
+            timeSel.innerHTML = '';
+
+            for (let i = 0; i < 14; i++) {
+                const iso = getIso(i);
+                dateSel.innerHTML += `<option value="${iso}">${iso}</option>`;
+            }
+
+            for (let min = WORK_START; min < WORK_END; min += STEP_MIN) {
+                const t = minToTime(min);
+                timeSel.innerHTML += `<option value="${t}">${t}</option>`;
+            }
+        }
+
+        function saveManualStudentEntry() {
+            const name = document.getElementById('manualCustName').value.trim();
+            const phone = document.getElementById('manualCustPhone').value.trim() || '—';
+            const format = document.getElementById('manualCustFormat').value;
+            const date = document.getElementById('manualCustDateSelect').value;
+            const time = document.getElementById('manualCustTimeSelect').value;
 
             if (!name) return alert('Укажите имя ученика');
-            const item = {
+            const startH = parseInt(time.split(':')[0]);
+
+            const schedule = getSchedule();
+            schedule.push({
                 id: Date.now(),
-                name,
-                phone,
-                format,
-                grade: 9,
-                time,
+                date: date,
+                time: time,
+                startMin: startH * 60,
+                duration: LESSON_DURATION,
+                name: name,
+                phone: phone,
+                format: format,
+                price: format.includes('900') ? 900 : format.includes('1 100') ? 1100 : 1600,
                 messenger: 'Личная запись',
+                isBlocked: false,
                 created: new Date().toLocaleString('ru-RU')
-            };
-            const list = getStoredBookings();
-            list.unshift(item);
-            saveStoredBookings(list);
-            alert('Ученик добавлен в расписание!');
-            switchAdminTab('requests');
-            renderAdminRequests();
+            });
+
+            saveSchedule(schedule);
+            closeManualAddModal();
+            renderTeacherTimeline();
+            renderTeacherAllBookings();
+            alert('Ученик успешно внесён в расписание!');
         }
 
-        // Check URL hash for direct admin entry
-        if (window.location.hash === '#admin') {
-            openAdminModal();
+        function exportTeacherCalendarAll() {
+            const schedule = getSchedule().filter(b => !b.isBlocked);
+            if (schedule.length === 0) return alert('Расписание пока пусто');
+            const b = schedule[0];
+            const startStr = `${b.date.replace(/-/g, '')}T${b.time.replace(':', '')}00`;
+            const endH = String(parseInt(b.time.split(':')[0]) + 1).padStart(2, '0');
+            const endStr = `${b.date.replace(/-/g, '')}T${endH}0000`;
+            window.open(`https://calendar.yandex.ru/custom-event?name=${encodeURIComponent('Расписание уроков Марии')}&start_ts=${startStr}&end_ts=${endStr}`, '_blank');
         }
-
-        // Initialize
-        renderDays();
-        renderSlots();
     </script>
 </body>
 </html>
+
