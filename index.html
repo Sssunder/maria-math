@@ -169,18 +169,104 @@
             box-shadow: var(--glow) !important;
         }
 
-        /* Card surfaces & text */
-        .theme-card, .bg-white {
+        /* --- Universal Surface & Card Backgrounds --- */
+        [class*="bg-white"], 
+        .bg-white, 
+        .theme-card,
+        [class*="bg-cream-50"] {
             background-color: var(--bg-card) !important;
             border-color: var(--border-color) !important;
         }
-        .theme-elevated, .bg-cream-100, .bg-peach-light {
+
+        [class*="bg-cream-100"], 
+        [class*="bg-cream-200"], 
+        [class*="bg-peach-light"], 
+        .theme-elevated {
             background-color: var(--bg-elevated) !important;
+            border-color: var(--border-color) !important;
         }
 
-        .text-slateDark {
+        /* --- Universal Text Legibility Across All Themes --- */
+        /* 1. All headings and primary titles */
+        h1, h2, h3, h4, h5, h6,
+        [class*="font-display"],
+        [class*="text-slateDark"],
+        .text-heading-theme {
             color: var(--text-heading) !important;
         }
+
+        /* 2. Body text and standard descriptions */
+        p,
+        [class*="text-slateDark/8"],
+        [class*="text-slateDark/75"],
+        [class*="text-slateDark/70"],
+        [class*="text-slateDark/7"],
+        .text-body-theme {
+            color: var(--text-body) !important;
+        }
+
+        /* 3. Muted hints, small notes and secondary stats */
+        [class*="text-slateDark/60"],
+        [class*="text-slateDark/6"],
+        [class*="text-slateDark/50"],
+        [class*="text-slateDark/5"],
+        [class*="text-slateDark/40"],
+        [class*="text-slateDark/4"],
+        [class*="text-slate-400"],
+        [class*="text-slate-500"],
+        .text-muted-theme {
+            color: var(--text-muted) !important;
+        }
+
+        /* 4. Explicit Cyber/Dark Mode Overrides */
+        [data-theme="cyber"] [class*="bg-white"],
+        [data-theme="cyber"] #quizSection,
+        [data-theme="cyber"] .glass-panel,
+        [data-theme="cyber"] #catSayanCard,
+        [data-theme="cyber"] #photoModal > div,
+        [data-theme="cyber"] #pinModal > div,
+        [data-theme="cyber"] #manualAddModal > div,
+        [data-theme="cyber"] #confirmModal > div {
+            background-color: #111827 !important;
+            border-color: rgba(6, 182, 212, 0.35) !important;
+            color: #CBD5E1 !important;
+        }
+        [data-theme="cyber"] [class*="bg-peach-light"],
+        [data-theme="cyber"] [class*="bg-cream-100"] {
+            background-color: #1F2937 !important;
+            border-color: rgba(6, 182, 212, 0.25) !important;
+        }
+        [data-theme="cyber"] #catSpeechBubble {
+            background-color: #1F2937 !important;
+            color: #F8FAFC !important;
+            border-color: #06B6D4 !important;
+        }
+        [data-theme="cyber"] #catSpeechBubble > div:last-child {
+            background-color: #1F2937 !important;
+            border-color: #06B6D4 !important;
+        }
+        [data-theme="cyber"] [class*="text-slateDark"] {
+            color: #F8FAFC !important;
+        }
+        [data-theme="cyber"] p,
+        [data-theme="cyber"] [class*="text-slateDark/8"],
+        [data-theme="cyber"] [class*="text-slateDark/75"],
+        [data-theme="cyber"] [class*="text-slateDark/7"] {
+            color: #CBD5E1 !important;
+        }
+        [data-theme="cyber"] [class*="text-slateDark/6"],
+        [data-theme="cyber"] [class*="text-slateDark/5"] {
+            color: #94A3B8 !important;
+        }
+        [data-theme="cyber"] #quizContent button {
+            background-color: #111827 !important;
+            border-color: rgba(6, 182, 212, 0.3) !important;
+        }
+        [data-theme="cyber"] #quizContent button:hover {
+            border-color: #06B6D4 !important;
+            background-color: #1A2436 !important;
+        }
+
         .text-peach {
             color: var(--color-accent) !important;
         }
@@ -423,10 +509,10 @@
                         
                         <!-- Main Photo of Maria with Interactive Avatar Customizer -->
                         <div id="mariaPortraitContainer" class="relative w-64 sm:w-72 h-80 sm:h-88 rounded-3xl overflow-hidden shadow-2xl border-4 border-white rotate-1 hover:rotate-0 transition-transform duration-500 group">
-                            <!-- Photo Customizer Button -->
-                            <button onclick="openPhotoModal()" class="camera-pulse absolute top-3 right-3 px-3 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-cream-200 text-[11px] font-extrabold text-slateDark shadow-lg hover:scale-105 transition-all flex items-center gap-1.5 z-20 cursor-pointer" title="Сменить образ / фото">
-                                <i data-lucide="camera" class="w-3.5 h-3.5 text-peach"></i>
-                                <span>Примерка фото</span>
+                            <!-- Photo Customizer Button (High Contrast Pill) -->
+                            <button onclick="openPhotoModal()" class="camera-pulse absolute top-3 right-3 px-3.5 py-1.5 rounded-full bg-slate-900/85 backdrop-blur-md border border-white/30 text-[11px] font-extrabold text-white shadow-xl hover:scale-105 transition-all flex items-center gap-1.5 z-20 cursor-pointer" title="Сменить образ / фото">
+                                <i data-lucide="camera" class="w-3.5 h-3.5 text-amber-300"></i>
+                                <span class="tracking-wide">Примерка фото</span>
                             </button>
 
                             <img id="mariaMainPortrait" src="assets/maria_fountain.jpg" alt="Мария Дружинина — репетитор" class="w-full h-full object-cover transition-all duration-300">
