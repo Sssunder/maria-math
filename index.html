@@ -258,23 +258,48 @@
         [data-theme="cyber"] [class*="text-slateDark/5"] {
             color: #94A3B8 !important;
         }
-        [data-theme="cyber"] #quizContent button {
+        /* Quiz option buttons in Cyber mode (DO NOT override CTA action buttons!) */
+        [data-theme="cyber"] #quizStep1 button,
+        [data-theme="cyber"] #quizStep2 button,
+        [data-theme="cyber"] #quizStep3 button {
             background-color: #111827 !important;
             border-color: rgba(6, 182, 212, 0.3) !important;
         }
-        [data-theme="cyber"] #quizContent button:hover {
+        [data-theme="cyber"] #quizStep1 button:hover,
+        [data-theme="cyber"] #quizStep2 button:hover,
+        [data-theme="cyber"] #quizStep3 button:hover {
             border-color: #06B6D4 !important;
             background-color: #1A2436 !important;
+        }
+
+        /* Quiz Result Card in Cyber Mode */
+        [data-theme="cyber"] #quizResult {
+            background-color: #111827 !important;
+            border-color: rgba(6, 182, 212, 0.4) !important;
+        }
+        [data-theme="cyber"] #quizResult .bg-peach {
+            background-color: #06B6D4 !important;
+            color: #080D1A !important;
+            box-shadow: 0 0 25px rgba(6, 182, 212, 0.45) !important;
+        }
+        [data-theme="cyber"] #quizResult .bg-peach:hover {
+            background-color: #22D3EE !important;
+            color: #080D1A !important;
+        }
+        [data-theme="cyber"] #quizResult button:not(.bg-peach) {
+            background-color: #1E293B !important;
+            border-color: rgba(6, 182, 212, 0.3) !important;
+            color: #F8FAFC !important;
         }
 
         .text-peach {
             color: var(--color-accent) !important;
         }
-        .bg-peach {
+        .bg-peach, button.bg-peach, a.bg-peach {
             background-color: var(--color-accent) !important;
             color: var(--color-accent-text) !important;
         }
-        .bg-peach:hover, .hover\:bg-peach-hover:hover {
+        .bg-peach:hover, button.bg-peach:hover, a.bg-peach:hover, .hover\:bg-peach-hover:hover {
             filter: brightness(1.1);
         }
 
