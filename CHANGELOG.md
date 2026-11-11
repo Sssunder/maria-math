@@ -1,5 +1,11 @@
 # Changelog — maria-math
 
+## 2026-11-12 — UX loop, 3 rounds (native maker-checker, read-only verify)
+- **R1**: `#nearestSlotHint` — banner above day-scroll shows nearest open slot ("Ближайшее свободное окно: …") with "Показать" jump; refreshed in `recomputeSlots()`.
+- **R2**: `#reviewsAvgBadge` — average rating "X.X из 5" next to reviews count, hidden when no reviews.
+- **R3**: mobile header CTA "Урок" → "Записаться"; `aria-label` on icon-only theme & sound buttons.
+- **Verified**: headless Playwright (mocked `get_public_site_bundle`, no DB writes) at 360x800 & 1440x900: 0 overflow, 0 console errors, all three features visible. History preserved (new commit on top of `f23b510`).
+
 ## 2026-11-12 — Constructor v3 (`index.html`, Supabase `ngsonqwylcwcziwxurkc`)
 - **Tab 2 (`#teacherTabTexts`) Constructor**: added `#cfgDefaultTheme` (`cozy-cat`/`sakura`/`artek`/`cyber`) applied when `maria_theme_manual` is unset and immediately on Save; phone (`+7/8/9...` -> `+7XXXXXXXXXX`) & Telegram (`@user`/`user`/`+7...`/`https://t.me/...`) normalization with auto-sync to `#cfgMaxUrl` / `#cfgTgUrl` + `#syncMessengersFromPhoneBtn`; `#cfgReviewsChannelUrl` rendered as `#reviewsChannelLink` + `#footerReviewsChannelLink`; all header/hero/booking/review/footer contact links synced via `siteConfig.contacts`.
 - **Programs Constructor (`#cfgProgramsList`)**: added show/hide toggle (`p.hidden`, `>= 1` active guard), icon/title/price/duration/desc/benefit editing, and `+ Добавить формат` (`#addProgramFormatBtn`) persisted cleanly via `mergeSiteConfig()`.
