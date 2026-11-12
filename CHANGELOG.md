@@ -1,5 +1,9 @@
 # Changelog — maria-math
 
+## 2026-11-12 — Fix invisible sticky-bar toggle text in light themes (pushed)
+- Universal theme binding `[class*="bg-white"]` repainted `#toggleViewBtn` (`bg-white/15` + `text-white`) to solid `--bg-card` → white-on-white in cozy-cat/sakura/artek. Added scoped `#teacherStickyBar #toggleViewBtn` override (translucent white bg + white text) that wins in all 4 themes; same fix in tutor-platform-template.
+- **Verified**: computed contrast 9.23 (light themes) / 11.01 (cyber); `verify_tour.py` 11/8/8 PASS; template `verify.py` PASS. Pushed to origin/master.
+
 ## 2026-11-12 — Obvious «Пройти обучение заново» button + post-skip hint, local only
 - Faint «Экскурсия» pill → prominent white button «Пройти обучение заново» (tooltip «Повторить экскурсию по кабинету»), always in the cabinet tab bar.
 - On accidental skip (Пропустить / Esc): bottom toast «Ничего страшного! Жми «Пройти обучение заново» вверху — покажу всё ещё раз.» for ~6s + the button pulses. Toast is `pointer-events:none` so it never blocks clicks.
