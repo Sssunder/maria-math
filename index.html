@@ -1525,7 +1525,8 @@
                     </div>
 
                     <!-- Legend -->
-                    <div class="flex items-center gap-3 text-xs">
+                    <div class="flex flex-wrap items-center gap-3 text-xs">
+                        <button type="button" id="shareBookingLinkBtn" onclick="shareBookingLink()" title="Скопировать прямую ссылку на запись на выбранный день" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">🔗 Ссылка на запись</button>
                         <span class="flex items-center gap-1.5 font-bold text-slateDark">
                             <span class="w-3 h-3 rounded-full bg-peach"></span>
                             Свободно
@@ -1555,11 +1556,17 @@
                     </div>
                 </div>
 
+                <!-- Pair round 4: permanent weekly schedule at a glance -->
+                <details id="weeklyOverview" class="rounded-2xl border border-cream-200 bg-white/70 px-4 py-3 text-xs">
+                    <summary class="cursor-pointer font-extrabold text-slateDark select-none">📅 Постоянное расписание недели</summary>
+                    <div id="weeklyOverviewGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3"></div>
+                </details>
+
                 <!-- 2. SMART SLOTS GRID WITH REAL OCCUPANCY -->
                 <div class="space-y-2">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-extrabold uppercase tracking-wider text-slateDark/70">2. Свободные слоты на выбранный день</label>
-                        <span class="text-[11px] text-slateDark/60">Длительность урока: 60 минут</span>
+                        <span class="text-[11px] text-slateDark/60" id="slotDurationLabel">Длительность урока: 60 минут</span>
                     </div>
                     
                     <div id="slotsGrid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-2.5">
@@ -1567,7 +1574,7 @@
                     </div>
 
                     <!-- Dynamic Slot Confirmation Notice -->
-                    <div id="slotNotice" class="text-xs notice-ok border p-3 rounded-2xl flex items-center gap-2.5 mt-3 shadow-sm">
+                    <div id="slotNotice" role="status" aria-live="polite" class="text-xs notice-ok border p-3 rounded-2xl flex items-center gap-2.5 mt-3 shadow-sm">
                         <i data-lucide="clock" class="w-4 h-4 flex-shrink-0"></i>
                         <span id="slotNoticeText">Загружаем актуальное расписание...</span>
                     </div>
@@ -1752,10 +1759,10 @@
                 <div class="flex flex-wrap items-center justify-between gap-2">
                     <label class="block text-xs font-extrabold uppercase tracking-wider text-slateDark/70">Точечная настройка на конкретную дату</label>
                     <div class="flex flex-wrap items-center gap-1.5">
-                        <button type="button" onclick="runBulkDayAction('open_daytime')" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] font-bold">☀ Открыть день 10–14</button>
-                        <button type="button" onclick="runBulkDayAction('open_fullday')" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] font-bold">🕒 Открыть 10–20</button>
-                        <button type="button" onclick="runBulkDayAction('close_day')" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] font-bold">⛔ Закрыть весь день</button>
-                        <button type="button" onclick="runBulkDayAction('reset_day')" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] font-bold">↺ Сбросить по неделе</button>
+                        <button type="button" id="bulkOpenFullBtn" onclick="runBulkDayAction('open_fullday')" title="Открыть все свободные окна с 10:00 до 20:00 на выбранную дату" class="btn-primary px-3 py-1.5 rounded-xl text-[11px] font-bold shadow-sm">🕒 Открыть весь день (10–20)</button>
+                        <button type="button" id="bulkOpenDaytimeBtn" onclick="runBulkDayAction('open_daytime')" title="Открыть только дневные окна 10:00–14:00" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] font-bold">☀ День 10–14</button>
+                        <button type="button" id="bulkCloseDayBtn" onclick="runBulkDayAction('close_day')" title="Закрыть все свободные окна на эту дату" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] font-bold">⛔ Закрыть день</button>
+                        <button type="button" id="bulkResetDayBtn" onclick="runBulkDayAction('reset_day')" title="Вернуть день к постоянному недельному графику" class="btn-secondary px-2.5 py-1.5 rounded-xl text-[11px] font-bold">↺ По неделе</button>
                     </div>
                 </div>
                 <div id="teacherDaysBar" class="flex gap-2 overflow-x-auto pb-1 max-w-full">
@@ -1777,6 +1784,12 @@
                     </div>
                 </div>
 
+                <!-- Next lesson at a glance (pair round 1) -->
+                <div id="teacherNextLessonBox" class="hidden items-center gap-2 p-3 rounded-2xl bg-peach-light/60 border border-peach/25 text-xs font-bold text-slateDark">
+                    <span class="flex-shrink-0">🔔</span>
+                    <span id="teacherNextLessonText"></span>
+                </div>
+
                 <!-- Timeline Rows -->
                 <div id="teacherTimeline" class="space-y-2.5">
                     <!-- Populated by JS -->
@@ -1787,6 +1800,7 @@
             <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-4">
                 <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-cream-200">
                     <h3 class="font-display font-extrabold text-base sm:text-lg text-slateDark">Все ученики и заявки (<span id="teacherTotalCount">0</span>)</h3>
+                    <button type="button" id="exportStudentsBtn" onclick="exportStudentsCsv()" title="Скачать базу учеников файлом для Excel" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1.5">📥 Выгрузить в Excel</button>
                     <button onclick="exportTeacherCalendarAll()" class="btn-secondary px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-colors">
                         <i data-lucide="calendar" class="w-3.5 h-3.5 text-peach"></i>
                         <span>В Яндекс.Календарь</span>
@@ -2135,6 +2149,32 @@
         </div>
     </div>
 
+    <!-- STUDENT DOSSIER MODAL (pair round 2) -->
+    <div id="studentModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl border border-cream-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-start justify-between gap-2 pb-3 border-b border-cream-200">
+                <div class="min-w-0">
+                    <h3 id="studentModalTitle" class="font-display font-extrabold text-lg text-slateDark leading-tight">Ученик</h3>
+                    <p id="studentModalStats" class="text-[11px] text-slateDark/60 mt-0.5"></p>
+                </div>
+                <button onclick="closeStudentModal()" class="text-slateDark/40 hover:text-slateDark text-xl font-bold flex-shrink-0">&times;</button>
+            </div>
+            <div id="studentModalHistory" class="space-y-2 text-xs"></div>
+            <div>
+                <label for="studentNotes" class="font-bold text-slateDark block mb-1 text-xs">Заметки (синхронизируются через облако)</label>
+                <textarea id="studentNotes" rows="3" placeholder="Например: перешёл в 8 класс, нужен акцент на геометрию" class="w-full px-3 py-2 border rounded-xl text-xs"></textarea>
+                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                    <button type="button" onclick="saveStudentNotes()" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">Сохранить заметку</button>
+                    <button type="button" onclick="exportStudentNotesTxt()" title="Скачать все заметки текстовым файлом для бэкапа" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">📄 Заметки в файл</button>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <a id="studentCallBtn" href="#" class="btn-secondary flex-1 py-2.5 rounded-xl font-bold text-xs text-center">📞 Позвонить</a>
+                <button type="button" id="studentRebookBtn" class="btn-primary flex-1 py-2.5 rounded-xl font-bold text-xs">+ Записать ещё</button>
+            </div>
+        </div>
+    </div>
+
     <!-- CLIENT CONFIRMATION MODAL -->
     <div id="confirmModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
         <div class="max-w-md w-full rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-cream-200 space-y-5 text-center relative">
@@ -2170,6 +2210,10 @@
                 <button onclick="downloadCurrentICS()" class="btn-secondary w-full py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors">
                     <i data-lucide="download" class="w-3.5 h-3.5"></i>
                     <span>Скачать .ICS файл</span>
+                </button>
+
+                <button onclick="copyBookingDetails()" id="copyBookingBtn" class="btn-secondary w-full py-2 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-colors">
+                    <span>📋 Скопировать детали записи</span>
                 </button>
             </div>
 
@@ -2854,6 +2898,20 @@
             return active.length ? active : list.slice(0, 1);
         }
 
+        function getSelectedDurationMin() {
+            const progs = getActivePrograms();
+            const p = progs.find(x => x.id === selectedFormatId) || progs[0];
+            const d = Number(p?.duration || siteConfig.slot_step_min || 60);
+            return Number.isFinite(d) && d >= 15 ? d : 60;
+        }
+
+        function pluralMinutes(n) {
+            const a = n % 10, b = n % 100;
+            if (a === 1 && b !== 11) return 'минута';
+            if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return 'минуты';
+            return 'минут';
+        }
+
         function escapeHtml(str) {
             return String(str ?? '').replace(/[&<>"']/g, s => ({
                 '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -3187,29 +3245,31 @@
             const dow = String(new Date(dateIso + 'T12:00:00').getDay());
             const weeklyOpen = Array.isArray(siteConfig.weekly_open_slots?.[dow]) ? siteConfig.weekly_open_slots[dow] : [];
             const stepMin = Number(siteConfig.slot_step_min || 60);
+            const lessonMin = getSelectedDurationMin();
 
             return getAllHours().map(timeStr => {
                 const startMin = parseInt(timeStr.split(':')[0], 10) * 60 + parseInt(timeStr.split(':')[1], 10);
-                const endStr = minToTime(startMin + stepMin);
+                const endStr = minToTime(startMin + lessonMin);
                 const matching = dayEntries.filter(e => e.time === timeStr || (Number(e.startMin) === startMin));
 
                 const bookingEntry = matching.find(e => e.entryType === 'booking' || (!e.isBlocked && e.name && e.entryType !== 'open_override'));
                 if (bookingEntry) {
-                    return { date: dateIso, time: timeStr, endTime: endStr, startMin, status: 'booked', isOverride: true, booking: bookingEntry };
+                    const bookedDur = Number(bookingEntry.duration || stepMin);
+                    return { date: dateIso, time: timeStr, endTime: minToTime(startMin + bookedDur), startMin, durationMin: bookedDur, status: 'booked', isOverride: true, booking: bookingEntry };
                 }
 
                 const blockedEntry = matching.find(e => e.entryType === 'blocked' || (e.isBlocked && e.entryType !== 'open_override'));
                 if (blockedEntry) {
-                    return { date: dateIso, time: timeStr, endTime: endStr, startMin, status: 'closed', isOverride: true, booking: null };
+                    return { date: dateIso, time: timeStr, endTime: endStr, startMin, durationMin: lessonMin, status: 'closed', isOverride: true, booking: null };
                 }
 
                 const openOverride = matching.find(e => e.entryType === 'open_override');
                 if (openOverride) {
-                    return { date: dateIso, time: timeStr, endTime: endStr, startMin, status: 'open', isOverride: true, booking: null };
+                    return { date: dateIso, time: timeStr, endTime: endStr, startMin, durationMin: lessonMin, status: 'open', isOverride: true, booking: null };
                 }
 
                 const isWeeklyOpen = weeklyOpen.includes(timeStr);
-                return { date: dateIso, time: timeStr, endTime: endStr, startMin, status: isWeeklyOpen ? 'open' : 'closed', isOverride: false, booking: null };
+                return { date: dateIso, time: timeStr, endTime: endStr, startMin, durationMin: lessonMin, status: isWeeklyOpen ? 'open' : 'closed', isOverride: false, booking: null };
             });
         }
 
@@ -3234,7 +3294,7 @@
                 if (open) found = { iso, open };
             }
             if (!found) { box.classList.add('hidden'); box.classList.remove('flex'); return; }
-            txt.innerText = `Ближайшее свободное окно: ${formatRuDate(found.iso)} в ${found.open.time}`;
+            txt.innerText = `Ближайшее свободное окно: ${formatRuDate(found.iso)} в ${found.open.time} (${found.open.durationMin || getSelectedDurationMin()} мин)`;
             box.classList.remove('hidden'); box.classList.add('flex');
             if (jump) jump.onclick = () => {
                 selectedDateIso = found.iso;
@@ -3379,6 +3439,7 @@
             const rating = Math.max(1, Math.min(5, Number(r?.rating || 5)));
             const dateStr = String(r?.date || '').trim();
             const text = String(r?.text || '');
+            const reply = String((siteConfig.review_replies || {})[String(r?.id)] || '').trim();
             const starsHtml = Array.from({ length: 5 }, (_, idx) =>
                 `<span class="${idx < rating ? 'text-amber-400' : 'text-slate-300'} text-sm">★</span>`
             ).join('');
@@ -3401,6 +3462,7 @@
                         </div>
                     </div>
                     <p class="text-xs sm:text-sm text-slateDark/85 leading-relaxed">${escapeHtml(text)}</p>
+                    ${reply ? `<div class="p-3 rounded-2xl bg-peach-light/50 border border-peach/25 text-xs text-slateDark/85 leading-relaxed"><span class="font-extrabold" style="color: color-mix(in srgb, var(--color-accent) 62%, var(--text-heading))">Ответ Марии:</span> ${escapeHtml(reply)}</div>` : ''}
                 </div>
             `;
         }
@@ -3585,6 +3647,8 @@
                 const rating = Math.max(1, Math.min(5, Number(r.rating || 5)));
                 const isHidden = r.visible === false;
                 const safeId = Number.isFinite(Number(r.id)) ? Number(r.id) : `'${escapeHtml(String(r.id))}'`;
+                const rid = replyDomId(r.id);
+                const reply = String((siteConfig.review_replies || {})[String(r.id)] || '').trim();
                 return `
                     <div class="teacher-subcard p-3.5 rounded-2xl border flex flex-wrap items-start justify-between gap-3 text-xs ${isHidden ? 'opacity-85' : ''}">
                         <div class="space-y-1 flex-1 min-w-[210px]">
@@ -3595,11 +3659,23 @@
                                 <span class="${isHidden ? 'badge-status-hidden' : 'badge-status-visible'} px-2 py-0.5 rounded-full border text-[10px] font-bold">
                                     ${isHidden ? 'Скрыт' : 'Виден'}
                                 </span>
+                                ${reply ? '<span class="px-2 py-0.5 rounded-full border border-peach/30 bg-peach-light text-peach text-[10px] font-bold">Ответ опубликован</span>' : ''}
                             </div>
                             <div class="text-slateDark/75 leading-snug">${escapeHtml(r.text)}</div>
                             <div class="text-[10px] text-slateDark/45">${escapeHtml(r.date || '')}</div>
+                            <div id="replyBox_${rid}" class="hidden space-y-1.5 pt-1">
+                                <textarea id="replyText_${rid}" rows="2" placeholder="Ответ увидят все посетители сайта под этим отзывом" class="w-full px-3 py-2 border rounded-xl text-xs">${escapeHtml(reply)}</textarea>
+                                <div class="flex flex-wrap gap-1.5">
+                                    ${REPLY_TEMPLATES.map((t, i) => `<button type="button" onclick="fillReplyTemplate(${safeId}, ${i})" title="${escapeHtml(t)}" class="btn-secondary px-2 py-1 rounded-lg text-[10px] font-bold">Шаблон ${i + 1}</button>`).join('')}
+                                    <button type="button" onclick="saveReviewReply(${safeId})" class="btn-primary px-2.5 py-1 rounded-lg text-[10px] font-bold">Опубликовать ответ</button>
+                                    ${reply ? `<button type="button" onclick="clearReviewReply(${safeId})" class="btn-danger px-2.5 py-1 rounded-lg text-[10px] font-bold">Убрать ответ</button>` : ''}
+                                </div>
+                            </div>
                         </div>
                         <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                            <button type="button" onclick="toggleReplyBox(${safeId})" class="btn-secondary px-2.5 py-1.5 rounded-lg font-bold transition-colors">
+                                💬 Ответить
+                            </button>
                             <button type="button" onclick="toggleReviewVisibility(${safeId}, ${isHidden ? 'true' : 'false'})" class="btn-secondary px-2.5 py-1.5 rounded-lg font-bold transition-colors">
                                 ${isHidden ? 'Показать' : 'Скрыть'}
                             </button>
@@ -3610,6 +3686,60 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // --- OWNER REVIEW REPLIES (pair round 5, stored in cloud config) ---
+        const REPLY_TEMPLATES = [
+            'Спасибо за тёплые слова! Очень рада стараться для вас. До встречи на уроках! 🐾',
+            'Благодарю за отзыв! Мне важно видеть прогресс учеников. Жду на следующих занятиях!',
+            'Спасибо, что поделились! Если есть пожелания по занятиям — напишите мне в Telegram или МАКС.'
+        ];
+
+        function replyDomId(id) {
+            return String(id).replace(/[^a-zA-Z0-9_-]/g, '');
+        }
+
+        function toggleReplyBox(id) {
+            const box = document.getElementById('replyBox_' + replyDomId(id));
+            if (box) box.classList.toggle('hidden');
+        }
+
+        function fillReplyTemplate(id, idx) {
+            const t = document.getElementById('replyText_' + replyDomId(id));
+            if (t) t.value = REPLY_TEMPLATES[idx] || '';
+        }
+
+        async function saveReviewReply(id) {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const t = document.getElementById('replyText_' + replyDomId(id));
+            const text = t ? t.value.trim() : '';
+            if (!text) return showTeacherToast('Напишите текст ответа перед публикацией.', true);
+            const map = { ...(siteConfig.review_replies || {}) };
+            map[String(id)] = text;
+            try {
+                const res = await sbRpc('admin_save_config', { p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_config: { ...siteConfig, review_replies: map } });
+                siteConfig = mergeSiteConfig(res?.site?.config || res?.config || { ...siteConfig, review_replies: map });
+                renderTeacherReviews();
+                renderReviews();
+                showTeacherToast('Ответ опубликован под отзывом на сайте.');
+            } catch (err) {
+                alert(err.message || 'Не удалось сохранить ответ.');
+            }
+        }
+
+        async function clearReviewReply(id) {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const map = { ...(siteConfig.review_replies || {}) };
+            delete map[String(id)];
+            try {
+                const res = await sbRpc('admin_save_config', { p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_config: { ...siteConfig, review_replies: map } });
+                siteConfig = mergeSiteConfig(res?.site?.config || res?.config || { ...siteConfig, review_replies: map });
+                renderTeacherReviews();
+                renderReviews();
+                showTeacherToast('Ответ убран с сайта.');
+            } catch (err) {
+                alert(err.message || 'Не удалось убрать ответ.');
+            }
         }
         // --- FORMATS ---
         function renderFormatCards() {
@@ -3722,6 +3852,12 @@
             const daySlots = getDaySlotsInfo(selectedDateIso, publicSlotEntries);
             const visibleSlots = daySlots.filter(s => s.status === 'open' || s.status === 'booked');
 
+            const durLabel = document.getElementById('slotDurationLabel');
+            if (durLabel) {
+                const d = getSelectedDurationMin();
+                durLabel.innerText = `Длительность урока: ${d} ${pluralMinutes(d)}`;
+            }
+
             const stillOpen = selectedTime && visibleSlots.some(s => s.time === selectedTime && s.status === 'open');
             if (!stillOpen) selectedTime = '';
 
@@ -3733,12 +3869,15 @@
 
                 if (slot.status === 'booked') {
                     slotBtn.disabled = true;
+                    slotBtn.setAttribute('aria-label', `${slot.time} — занято до ${slot.endTime}`);
                     slotBtn.className = 'py-3 px-2 rounded-2xl border border-cream-200/80 bg-cream-100/60 text-slateDark/35 text-xs font-semibold cursor-not-allowed line-through text-center';
-                    slotBtn.innerHTML = `<div>${slot.time}</div><div class="text-[9px] uppercase tracking-wider text-rose-400 font-bold">Занято</div>`;
+                    slotBtn.innerHTML = `<div>${slot.time}</div><div class="text-[9px] uppercase tracking-wider text-rose-400 font-bold">Занято</div><div class="text-[9px] font-normal opacity-70">до ${slot.endTime}</div>`;
                 } else {
                     if (!firstOpen) firstOpen = slot;
                     const isSelected = selectedTime === slot.time;
-                    slotBtn.className = `py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all ${
+                    slotBtn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+                    slotBtn.setAttribute('aria-label', `${slot.time} — свободно, урок до ${slot.endTime}`);
+                    slotBtn.className = `py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-peach/70 focus-visible:ring-offset-1 ${
                         isSelected ? 'bg-peach text-white border-peach shadow-md ring-2 ring-peach/30' : 'bg-white text-slateDark border-cream-200 hover:border-peach shadow-sm'
                     }`;
                     slotBtn.innerHTML = `<div>${slot.time}</div><div class="text-[10px] font-normal opacity-75">до ${slot.endTime}</div>`;
@@ -3758,6 +3897,41 @@
                 noticeText.innerText = 'На этот день свободных окон нет или все часы заняты. Выберите другой день выше!';
             }
             updateNearestSlotHint();
+            renderWeeklyOverview();
+        }
+
+        function renderWeeklyOverview() {
+            const grid = document.getElementById('weeklyOverviewGrid');
+            if (!grid) return;
+            const step = Number(siteConfig.slot_step_min || 60);
+            const days = [['1', 'Пн'], ['2', 'Вт'], ['3', 'Ср'], ['4', 'Чт'], ['5', 'Пт'], ['6', 'Сб'], ['0', 'Вс']];
+            grid.innerHTML = days.map(([key, label]) => {
+                const times = [...(siteConfig.weekly_open_slots?.[key] || [])].sort();
+                const ranges = [];
+                times.forEach(t => {
+                    const m = parseInt(t.split(':')[0], 10) * 60 + parseInt(t.split(':')[1], 10);
+                    const last = ranges[ranges.length - 1];
+                    if (last && m === last.end) last.end = m + step;
+                    else ranges.push({ start: m, end: m + step });
+                });
+                const txt = ranges.length ? ranges.map(r => minToTime(r.start) + '–' + minToTime(r.end)).join(', ') : 'выходной';
+                return `<div class="p-2.5 rounded-xl border ${ranges.length ? 'border-cream-200 bg-cream-50' : 'border-cream-200/60 bg-cream-100/40 opacity-70'}"><div class="font-extrabold text-slateDark">${label}</div><div class="text-[11px] text-slateDark/70 font-semibold mt-0.5">${txt}</div></div>`;
+            }).join('');
+        }
+
+        async function shareBookingLink() {
+            const btn = document.getElementById('shareBookingLinkBtn');
+            const url = location.origin + location.pathname + (selectedDateIso ? '?day=' + selectedDateIso : '') + '#booking';
+            const original = btn ? btn.innerHTML : '';
+            try {
+                await navigator.clipboard.writeText(url);
+                if (btn) {
+                    btn.innerHTML = '✓ Скопировано';
+                    setTimeout(() => { btn.innerHTML = original; }, 2000);
+                }
+            } catch (_) {
+                prompt('Ссылка на запись (скопируйте):', url);
+            }
         }
 
         function selectSlot(timeStr, endStr, playSfx = true) {
@@ -3765,16 +3939,18 @@
             if (playSfx) playAudioPop(650, 0.08);
             document.querySelectorAll('#slotsGrid button').forEach(b => {
                 if (b.disabled) return;
-                if (b.getAttribute('data-time') === timeStr) {
-                    b.className = 'py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all bg-peach text-white border-peach shadow-md ring-2 ring-peach/30';
+                const isSel = b.getAttribute('data-time') === timeStr;
+                b.setAttribute('aria-pressed', isSel ? 'true' : 'false');
+                if (isSel) {
+                    b.className = 'py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-peach/70 focus-visible:ring-offset-1 bg-peach text-white border-peach shadow-md ring-2 ring-peach/30';
                 } else {
-                    b.className = 'py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all bg-white text-slateDark border-cream-200 hover:border-peach shadow-sm';
+                    b.className = 'py-3 px-2 rounded-2xl border text-center text-xs font-bold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-peach/70 focus-visible:ring-offset-1 bg-white text-slateDark border-cream-200 hover:border-peach shadow-sm';
                 }
             });
             const notice = document.getElementById('slotNotice');
             const noticeText = document.getElementById('slotNoticeText');
             if (notice) notice.className = 'text-xs notice-ok border p-3 rounded-2xl flex items-center gap-2.5 mt-3 shadow-sm';
-            if (noticeText) noticeText.innerText = `Выбрано: ${formatRuDate(selectedDateIso)} в ${timeStr} (урок до ${endStr})`;
+            if (noticeText) noticeText.innerText = `Выбрано: ${formatRuDate(selectedDateIso)} в ${timeStr} — урок ${getSelectedDurationMin()} мин, до ${endStr}`;
         }
 
         // --- CLIENT BOOKING SUBMIT (ATOMIC CLOUD RPC) ---
@@ -3818,10 +3994,14 @@
 
                 playAudioPurr();
 
+                const startMinsBooked = parseInt(selectedTime.split(':')[0], 10) * 60 + parseInt(selectedTime.split(':')[1], 10);
+                const endTimeBooked = minToTime(startMinsBooked + durationMin);
+
                 const summary = document.getElementById('modalSummaryBox');
                 if (summary) {
                     summary.innerHTML = `
                         <div><b>Дата:</b> ${escapeHtml(formatRuDate(selectedDateIso))} в <b>${escapeHtml(selectedTime)}</b></div>
+                        <div><b>Длительность:</b> ${durationMin} мин (урок до ${escapeHtml(endTimeBooked)})</div>
                         <div><b>Формат:</b> ${escapeHtml(formatTitle)} (${priceVal} ₽)</div>
                         <div><b>Ученик:</b> ${escapeHtml(name)} (${escapeHtml(gradeLabel)})</div>
                         <div><b>Связь:</b> ${escapeHtml(phone)} (${escapeHtml(messenger)})</div>
@@ -3829,7 +4009,7 @@
                 }
 
                 const contacts = siteConfig.contacts || DEFAULT_SITE_CONFIG.contacts;
-                const tgMsg = `Здравствуйте, Мария! Записались через сайт на вводный урок.\nДата: ${formatRuDate(selectedDateIso)} в ${selectedTime}\nФормат: ${formatTitle} (${priceVal} ₽)\nУченик: ${name} (${gradeLabel})\nТелефон: ${phone}\nСвязь: ${messenger}`;
+                const tgMsg = `Здравствуйте, Мария! Записались через сайт на вводный урок.\nДата: ${formatRuDate(selectedDateIso)} в ${selectedTime}\nДлительность: ${durationMin} мин (до ${endTimeBooked})\nФормат: ${formatTitle} (${priceVal} ₽)\nУченик: ${name} (${gradeLabel})\nТелефон: ${phone}\nСвязь: ${messenger}`;
                 const phoneRaw = normalizeRuPhone(contacts.phone_raw || contacts.phone_display, '+79195784289');
                 const tgParsed = normalizeTelegramTarget(contacts.tg_url || contacts.tg_handle);
                 const tgHref = safeExternalUrl(contacts.tg_url || tgParsed.url);
@@ -3859,6 +4039,25 @@
         function closeConfirmModal() {
             const modal = document.getElementById('confirmModal');
             if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+        }
+
+        async function copyBookingDetails() {
+            if (!lastBookedEvent) return;
+            const b = lastBookedEvent;
+            const startMins = parseInt(b.time.split(':')[0], 10) * 60 + parseInt(b.time.split(':')[1], 10);
+            const endTime = minToTime(startMins + Number(b.duration || 60));
+            const text = `Запись к репетитору Мария Дружинина\nДата: ${formatRuDate(b.date)} в ${b.time} (урок ${Number(b.duration || 60)} мин, до ${endTime})\nФормат: ${b.format} (${b.price} ₽)\nУченик: ${b.name} (${b.grade})\nСвязь: ${b.phone} (${b.messenger})`;
+            const btn = document.getElementById('copyBookingBtn');
+            const original = btn ? btn.innerHTML : '';
+            try {
+                await navigator.clipboard.writeText(text);
+                if (btn) {
+                    btn.innerHTML = '<span>✓ Детали скопированы</span>';
+                    setTimeout(() => { btn.innerHTML = original; }, 2000);
+                }
+            } catch (_) {
+                prompt('Детали записи (скопируйте):', text);
+            }
         }
 
         function addCurrentToYandex() {
@@ -4241,6 +4440,21 @@
                     </div>
                 `;
             }).join('');
+            updateTeacherNextLesson();
+        }
+
+        function updateTeacherNextLesson() {
+            const box = document.getElementById('teacherNextLessonBox');
+            const txt = document.getElementById('teacherNextLessonText');
+            if (!box || !txt) return;
+            const todayIso = getIso(0);
+            const upcoming = (teacherBookings || [])
+                .filter(b => b && b.entryType === 'booking' && b.date >= todayIso)
+                .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))[0];
+            if (!upcoming) { box.classList.add('hidden'); box.classList.remove('flex'); return; }
+            const when = upcoming.date === todayIso ? 'сегодня' : formatRuDate(upcoming.date);
+            txt.innerText = `Ближайший урок: ${when} в ${upcoming.time} — ${upcoming.name || 'ученик'}${upcoming.grade ? ' (' + upcoming.grade + ')' : ''} · ${upcoming.format || 'урок'} · ${Number(upcoming.duration || 60)} мин`;
+            box.classList.remove('hidden'); box.classList.add('flex');
         }
 
         async function toggleDaySlot(timeStr, action) {
@@ -4258,12 +4472,23 @@
 
         async function runBulkDayAction(action) {
             if (!activeTeacherPin) return requestTeacherAccess();
+            const dateLabel = formatRuDate(teacherSelectedDateIso);
+            const confirmMsg = {
+                open_daytime: `Открыть дневные окна (10:00–14:00) на ${dateLabel}? Уже записанные уроки не изменятся.`,
+                open_fullday: `Открыть все окна с 10:00 до 20:00 на ${dateLabel}? Уже записанные уроки не изменятся.`,
+                close_day: `Закрыть все свободные окна на ${dateLabel}? Записанные уроки останутся.`,
+                reset_day: `Вернуть расписание на ${dateLabel} к недельному графику? Ручные открытия и закрытия этого дня сбросятся.`
+            }[action];
+            if (confirmMsg && !confirm(confirmMsg)) return;
             try {
                 await sbRpc('admin_bulk_day_action_v2', {
                     p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_date: teacherSelectedDateIso, p_action: action
                 });
                 await refreshTeacherBundle();
-                showTeacherToast('Расписание на дату обновлено!');
+                const slots = getDaySlotsInfo(teacherSelectedDateIso, teacherBookings);
+                const openN = slots.filter(s => s.status === 'open').length;
+                const bookedN = slots.filter(s => s.status === 'booked').length;
+                showTeacherToast(`Готово: ${dateLabel} — свободных окон: ${openN}, уроков: ${bookedN}.`);
             } catch (err) {
                 alert(err.message || 'Ошибка массового обновления дня.');
             }
@@ -4299,13 +4524,15 @@
                 return;
             }
 
+            const students = buildStudentIndex();
             container.innerHTML = list.map(b => {
                 const safeTel = normalizeRuPhone(b.phone, '');
+                const idx = students.findIndex(s => s.key === studentKey(b));
                 return `
                     <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div class="space-y-0.5 min-w-0">
-                            <div class="font-extrabold text-slateDark">${escapeHtml(b.name)}${b.grade ? ` <span class="text-peach">(${escapeHtml(b.grade)})</span>` : ''} — <span class="text-peach">${escapeHtml(formatRuDate(b.date))} в ${escapeHtml(b.time)}</span></div>
-                            <div class="text-[11px] text-slateDark/65">${escapeHtml(b.format || '')} • ${Number(b.price || 0)} ₽ • ${escapeHtml(b.messenger || '')}</div>
+                            <div class="font-extrabold text-slateDark"><button type="button" onclick="openStudentModal(${idx})" title="Открыть карточку ученика" class="font-extrabold text-slateDark underline decoration-peach/50 underline-offset-2 hover:text-peach transition-colors text-left">${escapeHtml(b.name)}</button>${b.grade ? ` <span class="text-peach">(${escapeHtml(b.grade)})</span>` : ''} — <span class="text-peach">${escapeHtml(formatRuDate(b.date))} в ${escapeHtml(b.time)}</span></div>
+                            <div class="text-[11px] text-slateDark/65">${escapeHtml(b.format || '')} • ${Number(b.price || 0)} ₽ • ${Number(b.duration || 60)} мин • ${escapeHtml(b.messenger || '')}</div>
                         </div>
                         <div class="flex items-center gap-2 flex-shrink-0">
                             ${b.phone && b.phone !== '—' ? `<a href="tel:${escapeHtml(safeTel)}" class="btn-secondary px-2.5 py-1.5 rounded-xl font-bold">Звонок</a>` : ''}
@@ -4314,6 +4541,155 @@
                     </div>
                 `;
             }).join('');
+        }
+
+        // --- STUDENT DOSSIERS & EXPORT (pair round 2) ---
+        function studentKey(b) {
+            return normalizeRuPhone(b.phone, '') || String(b.name || '').trim().toLowerCase();
+        }
+
+        function buildStudentIndex() {
+            const map = new Map();
+            (teacherBookings || []).filter(b => b && b.entryType === 'booking').forEach(b => {
+                const k = studentKey(b);
+                if (!k) return;
+                if (!map.has(k)) map.set(k, { key: k, name: b.name || 'Ученик', grade: b.grade || '', phone: b.phone || '', messenger: b.messenger || '', bookings: [], total: 0 });
+                const s = map.get(k);
+                s.bookings.push(b);
+                s.total += Number(b.price || 0);
+                if (b.grade) s.grade = b.grade;
+            });
+            return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+        }
+
+        function pluralRu(n, one, few, many) {
+            const a = n % 10, b = n % 100;
+            if (a === 1 && b !== 11) return one;
+            if (a >= 2 && a <= 4 && (b < 12 || b > 14)) return few;
+            return many;
+        }
+
+        let activeStudentKey = null;
+
+        function openStudentModal(idx) {
+            const s = buildStudentIndex()[idx];
+            if (!s) return;
+            activeStudentKey = s.key;
+            const title = document.getElementById('studentModalTitle');
+            const stats = document.getElementById('studentModalStats');
+            const history = document.getElementById('studentModalHistory');
+            const notes = document.getElementById('studentNotes');
+            const callBtn = document.getElementById('studentCallBtn');
+            const rebookBtn = document.getElementById('studentRebookBtn');
+            if (title) title.innerText = `${s.name}${s.grade ? ' (' + s.grade + ')' : ''}`;
+            if (stats) stats.innerText = `${s.bookings.length} ${pluralRu(s.bookings.length, 'урок', 'урока', 'уроков')} · ${s.total.toLocaleString('ru-RU')} ₽${s.phone ? ' · ' + s.phone : ''}${s.messenger ? ' · ' + s.messenger : ''}`;
+            if (history) {
+                const sorted = [...s.bookings].sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+                history.innerHTML = sorted.map(b => `
+                    <div class="p-2.5 rounded-xl bg-cream-50 border border-cream-200 flex flex-wrap items-center justify-between gap-1.5">
+                        <span class="font-bold text-slateDark">${escapeHtml(formatRuDate(b.date))} в ${escapeHtml(b.time)}</span>
+                        <span class="text-slateDark/65">${escapeHtml(b.format || 'урок')} · ${Number(b.duration || 60)} мин · ${Number(b.price || 0)} ₽</span>
+                    </div>
+                `).join('');
+            }
+            if (notes) notes.value = loadStudentNotesMap()[s.key] || '';
+            if (callBtn) callBtn.href = s.phone ? 'tel:' + normalizeRuPhone(s.phone, '') : '#';
+            if (rebookBtn) rebookBtn.onclick = () => {
+                closeStudentModal();
+                openManualAddModal();
+                const nameEl = document.getElementById('manualCustName');
+                const phoneEl = document.getElementById('manualCustPhone');
+                const gradeEl = document.getElementById('manualCustGrade');
+                if (nameEl) nameEl.value = s.name;
+                if (phoneEl) phoneEl.value = s.phone;
+                const g = parseInt(s.grade, 10);
+                if (gradeEl && Number.isFinite(g)) gradeEl.value = String(g);
+            };
+            const modal = document.getElementById('studentModal');
+            if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+        }
+
+        function closeStudentModal() {
+            const modal = document.getElementById('studentModal');
+            if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+            activeStudentKey = null;
+        }
+
+        function loadStudentNotesMap() {
+            let local = {};
+            try { local = JSON.parse(localStorage.getItem('maria_student_notes') || '{}'); } catch (_) {}
+            const cloud = siteConfig && siteConfig.student_notes && typeof siteConfig.student_notes === 'object' ? siteConfig.student_notes : {};
+            return { ...local, ...cloud };
+        }
+
+        async function saveStudentNotes() {
+            if (!activeStudentKey) return;
+            const notes = document.getElementById('studentNotes');
+            const map = loadStudentNotesMap();
+            map[activeStudentKey] = notes ? notes.value.trim() : '';
+            localStorage.setItem('maria_student_notes', JSON.stringify(map));
+            siteConfig.student_notes = map;
+            if (!activeTeacherPin) {
+                showTeacherToast('Заметка сохранена на этом устройстве.');
+                return;
+            }
+            try {
+                const res = await sbRpc('admin_save_config', { p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_config: { ...siteConfig, student_notes: map } });
+                siteConfig = mergeSiteConfig(res?.site?.config || res?.config || { ...siteConfig, student_notes: map });
+                showTeacherToast('Заметка сохранена в облако — видна на всех устройствах.');
+            } catch (err) {
+                showTeacherToast('Облако недоступно: заметка сохранена на этом устройстве.', true);
+            }
+        }
+
+        function exportStudentNotesTxt() {
+            const map = loadStudentNotesMap();
+            const students = buildStudentIndex();
+            const lines = ['Заметки об учениках — Мария Дружинина', 'Выгружено: ' + formatRuDate(getIso(0)), ''];
+            let any = false;
+            students.forEach(s => {
+                const note = map[s.key];
+                if (!note) return;
+                any = true;
+                lines.push(`${s.name}${s.grade ? ' (' + s.grade + ')' : ''}${s.phone ? ' · ' + s.phone : ''}`);
+                lines.push(note, '');
+            });
+            Object.keys(map).forEach(k => {
+                if (!students.some(s => s.key === k) && map[k]) {
+                    any = true;
+                    lines.push(k, map[k], '');
+                }
+            });
+            if (!any) lines.push('Пока заметок нет.');
+            const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'заметки-ученики.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showTeacherToast('Заметки выгружены в текстовый файл.');
+        }
+
+        function exportStudentsCsv() {
+            const rows = [['Имя', 'Класс', 'Телефон', 'Связь', 'Формат', 'Длительность (мин)', 'Цена (руб)', 'Дата', 'Время']];
+            (teacherBookings || [])
+                .filter(b => b && b.entryType === 'booking')
+                .sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
+                .forEach(b => rows.push([b.name || '', b.grade || '', b.phone || '', b.messenger || '', b.format || '', Number(b.duration || 60), Number(b.price || 0), b.date || '', b.time || '']));
+            const csv = '\uFEFF' + rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(';')).join('\r\n');
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ученики-мария.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showTeacherToast('База учеников выгружена в файл для Excel.');
         }
 
         // --- MANUAL ADD MODAL ---
@@ -4516,6 +4892,9 @@
                             <div class="sm:col-span-2">
                                 <label for="cfgProgDuration_${id}" class="font-bold text-slateDark block mb-1">Мин</label>
                                 <input type="number" id="cfgProgDuration_${id}" value="${Number(p.duration || 60)}" min="15" max="240" step="5" class="w-full px-3 py-2 rounded-xl border text-xs font-bold">
+                                <div class="flex flex-wrap gap-1 mt-1.5">
+                                    ${[40, 45, 60, 90].map(v => `<button type="button" onclick="document.getElementById('cfgProgDuration_${id}').value=${v}" class="btn-secondary px-2 py-0.5 rounded-lg text-[10px] font-bold" title="Урок ${v} минут">${v}</button>`).join('')}
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -4716,6 +5095,12 @@
             populateAdminReviewDefaults();
 
             selectedDateIso = '';
+            const urlDay = new URLSearchParams(location.search).get('day');
+            if (urlDay && /^\d{4}-\d{2}-\d{2}$/.test(urlDay)) {
+                const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
+                const diff = Math.round((new Date(urlDay + 'T00:00:00') - midnight) / 86400000);
+                if (diff >= 0 && diff < 14) selectedDateIso = urlDay;
+            }
             teacherSelectedDateIso = getIso(0);
             applySiteConfigToDom();
             lucide.createIcons();
