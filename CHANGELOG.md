@@ -1,6 +1,39 @@
 # Changelog — maria-math
 
-## 2026-11-12 — Telegram auto-notifications for new bookings (LOCAL, not deployed/pushed)
+## 2026-11-12 — Obvious «Пройти обучение заново» button + post-skip hint, local only
+- Faint «Экскурсия» pill → prominent white button «Пройти обучение заново» (tooltip «Повторить экскурсию по кабинету»), always in the cabinet tab bar.
+- On accidental skip (Пропустить / Esc): bottom toast «Ничего страшного! Жми «Пройти обучение заново» вверху — покажу всё ещё раз.» for ~6s + the button pulses. Toast is `pointer-events:none` so it never blocks clicks.
+- Same change ported to natalia-math, elena-beauty, tutor-platform-template.
+- **Verified**: `verify_tour.py` 11/8/8 PASS; template `verify.py` PASS; live `skip_hint_check.py` PASS (relabel, hint shown, pulse, relaunch→step0, 0 overflow @360 with hint, 0 errors). Read-only/mocked, **zero DB writes**. NOT pushed.
+
+## 2026-11-12 — Plain-language connect guide + VPN links in Telegram card, local only
+- Card now self-explains for owners «с компьютером на вы»: persistent «Как подключить (2 минуты)» numbered list (1. VPN if Telegram blocked → 2. «Подключить уведомления» → 3. «Запустить» /start → 4. «Я подписался — обновить статус»). Added Pavel's VPN referral links (`quattro.app/register?ref=HEmqibBsi5vz1Qz2` / `QuattroVPN_BOT?start=r_HEmqibBsi5vz1Qz2`) in the how-to + a slim VPN line when connected.
+- Tour Telegram section expanded to 3 steps («Уведомления в Telegram» → «Шаг 1 — VPN и кнопка» → «Шаг 2 — Запустить и вернуться»), each switches to the card's tab first.
+- Same how-to + VPN + 3-step tour ported to natalia-math, elena-beauty, tutor-platform-template.
+- **Verified**: `verify_platform.py` 3/3 PASS (card, shared-bot link, how-to + both VPN hrefs, save/connect/disable/notify, 0 overflow 1440/360, 0 errors); `verify_tour.py` 11/8/8 PASS; template `verify.py` PASS. Mocked RPC, **zero DB writes**. NOT pushed.
+
+## 2026-11-12 — Universal booking-notification platform (one shared bot for ANY niche), local only
+- **Bot is now a common platform**, not tutor-only: branding redeployed universal («единый бот… для любого бизнеса: репетитор, бьюти, услуги»), notify text niche-neutral («Клиент», 📋 услуга). `/start <slug>` / `/stop` unchanged.
+- **One shared bot for all sites**: `DEFAULT_SITE_CONFIG.telegram.bot_username='GojoNotifyBot'` everywhere → connect is one click (`t.me/GojoNotifyBot?start=<slug>`), no per-site BotFather needed.
+- **Ported connect-card + auto-notify** to elena-beauty, natalia-math, tutor-platform-template (maria already had it): `TG_NOTIFY_URL`, `notifyNewBooking()` fired after booking success, Telegram card in cabinet (Texts tab; maria=Today), save/enable/refresh helpers adapted per site.
+- Tour Telegram step now switches to the tab holding the card (spotlight no longer targets hidden panel).
+- **Verified**: `verify_platform.py` (mocked RPC + tg-notify, **zero DB writes**) PASS on all 3 (card, shared-bot link, save, connect/disable, notify payload, 0 overflow 1440/360, 0 errors); `verify_tour.py` 9/6/6 PASS; template `verify.py` PASS. NOT pushed.
+
+## 2026-11-12 — Cabinet mini-tour (onboarding «Экскурсия»), local only
+- **Self-contained tour** appended before `</body>`: on first cabinet login a spotlight + white card walks the tabs step-by-step («Сегодня», «Расписание», «Тексты», «Отзывы», «Аналитика», «Ученики», Telegram card), plain-language «куда жать». Auto-detects `teacherView`/`masterView` + tab buttons, so the same snippet fits any tutor site.
+- Controls: Дальше / Назад / Пропустить, Esc closes; «Экскурсия» pill in the tab bar replays anytime; `localStorage cabinetTourDone:<path>` shows it once. Theme-safe (own white card + dark scrim), mobile-clamped.
+- **Verified** `verify_tour.py` (mocked RPC, **zero DB writes**): maria 9 steps, natalia/elena 5; auto-start, tab switching, spotlight/scrim, card inside viewport, finish/skip flag, relaunch, 0 overflow 1440/360, 0 console errors — PASS on all 3 sites. Same snippet added to natalia-math, elena-beauty, tutor-platform-template/template.html. NOT pushed.
+
+## 2026-11-12 — Telegram bot: live link + real unsubscribe + branding (function DEPLOYED; site push pending)
+- **Deployed** `tg-notify` to Supabase (`ngsonqwylcwcziwxurkc`, verify_jwt OFF). Webhook registered; bot **@GojoNotifyBot**; Pavel subscribed (chat_id 576326824) and received 4 test bookings with cabinet links.
+- **Link in every notification**: `🔗 Открыть день в кабинете: <site>/?day=<date>#admin` — tap opens that day + cabinet PIN. Site sends `url` in the notify payload.
+- **Real unsubscribe**: `/stop` (bare) disables every site this chat is subscribed to; `/stop <slug>` disables one. Sets `config.telegram.enabled=false` server-side. Each notification ends with `🚪 Отписаться: /stop`. Bare `/start` now explains the bot is shared by ALL tutor sites (self-service in Telegram).
+- **Branding applied via API** (`?action=branding`): name «Уведомления о записях», short/full description, commands `start`/`stop` («Отписаться от уведомлений»). All 4 returned ok.
+- **Avatar**: generated `vibe_images/gojo-notify-bot-avatar_*.png` (smiling bell + π). Bot's own photo can ONLY be set via BotFather `/setuserpic` (no Bot API method) — file + instructions handed to user.
+- **Verified**: branding ok×4; `/stop` no-write probes (unknown slug, unsubscribed chat) returned ok and left maria-math `enabled:true` intact (read-only check). **Zero DB writes in tests.** Elena/Natalia sites untouched.
+- **Pending**: push `index.html` (link payload + Telegram card) to Sssunder/maria-math so REAL bookings auto-notify on the live site — needs explicit user OK. Revoke Supabase token when done.
+
+## 2026-11-12 — Telegram auto-notifications for new bookings (function deployed; site push pending)
 - **Goal**: hands-off alerts — when a student books via the site, Maria gets a Telegram message automatically (no tapping). One shared bot for all tutor sites; each tutor subscribes once via `/start`.
 - **Edge Function** `supabase/functions/tg-notify/index.ts` (Deno, no external imports): `?action=webhook` stores `chat_id` into `client_sites.config.telegram` on `/start <slug>`; `?action=notify` sends a formatted new-booking message to the subscribed chat (15s per-slug rate-limit); `?action=setup` self-registers the Telegram webhook + prefills `bot_username` (open from browser, RF-reachable via Supabase). Bot token lives ONLY in the `TG_BOT_TOKEN` secret — never in HTML. Deploy with **verify_jwt = false** (Telegram webhook sends no JWT).
 - **Site (`index.html`)**: `TG_NOTIFY_URL`; `notifyTutorNewBooking()` fired right after `create_public_booking_v2` success (fire-and-forget, function decides subscription server-side); `DEFAULT_SITE_CONFIG.telegram` + deep-merge in `mergeSiteConfig`; Telegram card in **Today** tab (`#tgNotifyStatus`/`#tgNotifySetup`, `renderTelegramCard`): bot-username input + save, `/start` deep-link `t.me/<bot>?start=maria-math`, connected status, enable/disable. New JS: `saveTelegramBotUsername`, `setTelegramEnabled`.

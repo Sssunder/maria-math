@@ -58,6 +58,12 @@ async function writeTelegram(slug: string, tg: Record<string, any>): Promise<voi
   });
 }
 
+async function listSites(): Promise<Array<{ slug: string; config: Record<string, any> }>> {
+  const res = await fetch(`${SB_URL}/rest/v1/client_sites?select=slug,config`, { headers: sbHeaders });
+  const rows = await res.json();
+  return Array.isArray(rows) ? rows : [];
+}
+
 // Best-effort антиспам: не чаще одного уведомления на сайт за 15 секунд.
 const lastNotify = new Map<string, number>();
 
@@ -77,9 +83,17 @@ async function handleWebhook(req: Request): Promise<Response> {
   if (text.startsWith("/start")) {
     const slug = text.split(/\s+/)[1]?.trim();
     if (!slug) {
+      const me = await tg("getMe", {});
+      const uname = me?.result?.username ?? "";
+      const link = uname ? `https://t.me/${uname}?start=maria-math` : "";
       await tg("sendMessage", {
         chat_id: chatId,
-        text: "Привет! Чтобы получать уведомления о новых записях, открой сайт репетитора и нажми «Подключить уведомления» в кабинете (вкладка «Сегодня»).",
+        text:
+          "Привет! Я единый бот уведомлений о новых записях — общая платформа для любых сайтов (репетитор, бьюти, услуги).\n\n" +
+          "🔔 Ученик записался через сайт — тебе сразу приходит сообщение со ссылкой на кабинет.\n\n" +
+          "Как подключить: открой кабинет своего сайта → вкладка «Сегодня» → «Подключить уведомления» и нажми ссылку.\n" +
+          (link ? `Например, сайт Марии: ${link}\n\n` : "") +
+          "Отписаться в любой момент: /stop",
       });
       return json({ ok: true });
     }
@@ -96,16 +110,32 @@ async function handleWebhook(req: Request): Promise<Response> {
     });
     await tg("sendMessage", {
       chat_id: chatId,
-      text: `Готово! Теперь я буду присылать сюда новые записи с сайта «${slug}». Ничего нажимать не нужно — уведомления приходят сами.`,
+      text: `Готово! Теперь я буду присылать сюда новые записи с сайта «${slug}». Ничего нажимать не нужно — уведомления приходят сами.\n\nОтписаться: /stop`,
     });
     return json({ ok: true });
   }
 
   if (text.startsWith("/stop")) {
-    await tg("sendMessage", {
-      chat_id: chatId,
-      text: "Отключить уведомления можно в кабинете сайта: вкладка «Сегодня» → карточка Telegram → «Выключить».",
-    });
+    const slug = text.split(/\s+/)[1]?.trim();
+    if (slug) {
+      const cfg = await readConfig(slug);
+      if (cfg === null) {
+        await tg("sendMessage", { chat_id: chatId, text: "Не нашёл такой сайт. Проверь название." });
+        return json({ ok: true });
+      }
+      await writeTelegram(slug, { enabled: false });
+      await tg("sendMessage", { chat_id: chatId, text: `Готово, уведомления с сайта «${slug}» отключены. Снова подключить: /start ${slug}` });
+      return json({ ok: true });
+    }
+    const sites = await listSites();
+    const mine = sites.filter((s) => s.config?.telegram?.chat_id === chatId && s.config?.telegram?.enabled !== false);
+    if (mine.length === 0) {
+      await tg("sendMessage", { chat_id: chatId, text: "Ты пока не подключён к уведомлениям. Подключить: /start" });
+      return json({ ok: true });
+    }
+    for (const s of mine) await writeTelegram(s.slug, { enabled: false });
+    const names = mine.map((s) => s.slug).join(", ");
+    await tg("sendMessage", { chat_id: chatId, text: `Готово, уведомления отключены (${names}). Больше ничего не пришлю. Снова подключить: /start` });
     return json({ ok: true });
   }
 
@@ -131,6 +161,30 @@ async function handleSetup(req: Request): Promise<Response> {
   });
 }
 
+async function handleBranding(): Promise<Response> {
+  const name = "Уведомления о записях";
+  const short_description = "Единый бот уведомлений о записях для любых сайтов: новая запись приходит сама, со ссылкой на кабинет.";
+  const description =
+    "Я присылаю уведомления о новых записях с твоего сайта. Общий бот-платформа для любого бизнеса: репетитор, бьюти, услуги — кто угодно, у кого есть запись через сайт.\n\n" +
+    "🔔 Клиент записался через сайт — тебе сразу приходит сообщение: имя, дата/время, услуга/формат и телефон.\n" +
+    "🔗 В каждом уведомлении — ссылка «Открыть день в кабинете»: тапнул и редактируешь.\n" +
+    "🙌 Ничего нажимать не нужно — уведомления приходят сами.\n" +
+    "🚪 Отписаться в любой момент — /stop.\n\n" +
+    "Подключение: кабинет сайта → «Подключить уведомления» → /start.";
+  const commands = [
+    { command: "start", description: "Подключить уведомления к сайту" },
+    { command: "stop", description: "Отписаться от уведомлений" },
+  ];
+  const results = {
+    name: await tg("setMyName", { name }),
+    short_description: await tg("setMyShortDescription", { short_description }),
+    description: await tg("setMyDescription", { description }),
+    commands: await tg("setMyCommands", { commands }),
+  };
+  const ok = Object.values(results).every((r: any) => r?.ok === true);
+  return json({ ok, results });
+}
+
 async function handleNotify(req: Request): Promise<Response> {
   let body: any = {};
   try { body = await req.json(); } catch (_) { return json({ ok: false, reason: "bad_json" }, 400); }
@@ -147,12 +201,16 @@ async function handleNotify(req: Request): Promise<Response> {
 
   const grade = body.grade ? ` (${body.grade})` : "";
   const messenger = body.messenger ? ` · ${body.messenger}` : "";
+  const base = String(body.url || "https://sssunder.github.io/maria-math").replace(/\/+$/, "");
+  const link = `${base}/?day=${encodeURIComponent(String(body.date ?? ""))}#admin`;
   const text =
     `🔔 Новая запись!\n` +
     `📅 ${fmtDate(body.date)} в ${body.time ?? ""}\n` +
-    `👤 ${body.name ?? "Ученик"}${grade}\n` +
-    `📚 ${body.format ?? "Урок"} · ${Number(body.duration ?? 60)} мин · ${Number(body.price ?? 0)} ₽\n` +
-    `📞 ${body.phone ?? ""}${messenger}`;
+    `👤 ${body.name ?? "Клиент"}${grade}\n` +
+    `📋 ${body.format ?? "Запись"} · ${Number(body.duration ?? 60)} мин · ${Number(body.price ?? 0)} ₽\n` +
+    `📞 ${body.phone ?? ""}${messenger}\n\n` +
+    `🔗 Открыть день в кабинете: ${link}\n\n` +
+    `🚪 Отписаться: /stop`;
   const r = await tg("sendMessage", { chat_id: t.chat_id, text });
   return json({ ok: true, sent: r?.ok === true });
 }
@@ -164,6 +222,7 @@ Deno.serve(async (req: Request): Promise<Response> => {
   try {
     if (action === "notify") return await handleNotify(req);
     if (action === "setup") return await handleSetup(req);
+    if (action === "branding") return await handleBranding();
     return await handleWebhook(req);
   } catch (e) {
     return json({ ok: false, reason: String(e) }, 500);

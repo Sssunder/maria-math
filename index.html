@@ -3150,7 +3150,7 @@
 
         const DEFAULT_SITE_CONFIG = {
             default_theme: 'cozy-cat',
-            telegram: { bot_username: '', chat_id: null, enabled: false },
+            telegram: { bot_username: 'GojoNotifyBot', chat_id: null, enabled: false },
             slot_step_min: 60,
             work_start_min: 600,
             work_end_min: 1260,
@@ -4764,11 +4764,20 @@
                     body: JSON.stringify({
                         slug: SITE_SLUG, date: ev.date, time: ev.time, name: ev.name,
                         grade: ev.grade, phone: ev.phone, format: ev.format,
-                        price: ev.price, duration: ev.duration, messenger: ev.messenger
+                        price: ev.price, duration: ev.duration, messenger: ev.messenger,
+                        url: location.origin + location.pathname
                     })
                 }).catch(() => {});
             } catch (_) {}
         }
+
+        const TG_VPN_LINKS = '<a href="https://quattro.app/register?ref=HEmqibBsi5vz1Qz2" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">quattro.app</a> / <a href="https://telegram.me/QuattroVPN_BOT?start=r_HEmqibBsi5vz1Qz2" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">VPN-бот</a>';
+        const TG_HOWTO = '<div style="font-size:12px;line-height:1.6;opacity:.9"><b>Как подключить (2 минуты):</b><ol style="margin:6px 0 0 18px;padding:0">' +
+            '<li>Telegram не открывается? Включи VPN: ' + TG_VPN_LINKS + '.</li>' +
+            '<li>Нажми «Подключить уведомления» ниже.</li>' +
+            '<li>В Telegram нажми «Запустить» (/start).</li>' +
+            '<li>Вернись сюда → «Я подписался — обновить статус». Записи будут приходить сами.</li></ol></div>';
+        const TG_VPN_LINE = '<div style="font-size:11px;opacity:.7">Telegram не открывается? VPN: ' + TG_VPN_LINKS + '</div>';
 
         function renderTelegramCard() {
             const status = document.getElementById('tgNotifyStatus');
@@ -4782,6 +4791,7 @@
                 const uname = t.bot_username ? '@' + escapeHtml(t.bot_username) : 'бот';
                 setup.innerHTML = `
                     <div class="text-xs text-slateDark/70">Уведомления приходят в Telegram (${uname}). Новая запись → сообщение само.</div>
+                    ${TG_VPN_LINE}
                     <div class="flex flex-wrap gap-2">
                         <button type="button" onclick="refreshTeacherBundle()" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">🔄 Обновить статус</button>
                         <button type="button" onclick="setTelegramEnabled(false)" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">Выключить</button>
@@ -4793,6 +4803,7 @@
             const uname = String(t.bot_username || '').trim();
             const link = uname ? ('https://t.me/' + encodeURIComponent(uname) + '?start=' + SITE_SLUG) : '';
             setup.innerHTML = `
+                ${TG_HOWTO}
                 <div class="flex flex-wrap items-end gap-2">
                     <label class="flex-1 min-w-[180px] text-[11px] font-semibold text-slateDark/70">Username бота (из @BotFather)
                         <input id="tgBotUsernameInput" type="text" value="${escapeHtml(uname)}" placeholder="например maria_math_bot" class="mt-1 w-full px-3 py-2 rounded-xl border border-cream-200 text-xs text-slateDark bg-white" />
@@ -6494,6 +6505,168 @@
         });
     </script>
     <div id="printDaySheet" aria-hidden="true"></div>
+    <script>
+    (function () {
+        if (window.__cabinetTour) return; window.__cabinetTour = true;
+        var view = document.getElementById('teacherView') || document.getElementById('masterView');
+        if (!view) return;
+        var isTeacher = !!document.getElementById('teacherView');
+        var tabAttr = isTeacher ? 'data-teacher-tab' : 'data-master-tab';
+        var panelPrefix = isTeacher ? 'teacherTab' : 'masterTab';
+        function tabBtns() { return Array.prototype.slice.call(view.querySelectorAll('[' + tabAttr + ']')); }
+        var tabbar = (tabBtns()[0] || {}).parentElement || view;
+        var KEY = 'cabinetTourDone:' + location.pathname;
+
+        var style = document.createElement('style');
+        style.textContent =
+            '.ct-scrim{position:fixed;inset:0;background:rgba(15,18,25,.62);z-index:9997;display:none}' +
+            '.ct-ring{position:fixed;z-index:9998;border:3px solid #fff;border-radius:14px;box-shadow:0 0 0 9999px rgba(15,18,25,.62);pointer-events:none;transition:all .25s ease;display:none}' +
+            '.ct-card{position:fixed;z-index:9999;background:#fff;color:#171C25;border-radius:16px;padding:16px;width:min(340px,calc(100vw - 24px));box-shadow:0 12px 40px rgba(0,0,0,.35);display:none}' +
+            '.ct-card .ct-count{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#8a93a9}' +
+            '.ct-card .ct-title{font-size:16px;font-weight:800;margin:4px 0 6px}' +
+            '.ct-card .ct-text{font-size:13.5px;line-height:1.5;color:#3c4454}' +
+            '.ct-card .ct-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}' +
+            '.ct-btn{border:0;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:700;cursor:pointer}' +
+            '.ct-next{background:#171C25;color:#fff}' +
+            '.ct-back{background:#eef1f5;color:#3c4454}' +
+            '.ct-skip{background:transparent;color:#8a93a9;border:1px solid #d6dae2}' +
+            '.ct-relaunch{border:1px solid #d6dae2;background:#fff;color:#171C25;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18)}' +
+            '.ct-relaunch.ct-pulse{animation:ctPulse 1s ease 2}' +
+            '@keyframes ctPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}' +
+            '.ct-hint{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;z-index:9996;background:#171C25;color:#fff;border-radius:12px;padding:10px 16px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:calc(100vw - 24px);text-align:center;display:none;pointer-events:none}';
+        document.head.appendChild(style);
+
+        var scrim = document.createElement('div'); scrim.className = 'ct-scrim';
+        var ring = document.createElement('div'); ring.className = 'ct-ring';
+        var card = document.createElement('div'); card.className = 'ct-card';
+        card.innerHTML = '<div class="ct-count"></div><div class="ct-title"></div><div class="ct-text"></div>' +
+            '<div class="ct-row"><button type="button" class="ct-btn ct-back">Назад</button>' +
+            '<button type="button" class="ct-btn ct-skip">Пропустить</button>' +
+            '<button type="button" class="ct-btn ct-next">Дальше</button></div>';
+        document.body.appendChild(scrim); document.body.appendChild(ring); document.body.appendChild(card);
+        var elCount = card.querySelector('.ct-count'), elTitle = card.querySelector('.ct-title'), elText = card.querySelector('.ct-text');
+        var bBack = card.querySelector('.ct-back'), bSkip = card.querySelector('.ct-skip'), bNext = card.querySelector('.ct-next');
+
+        var TAB_TEXT = {
+            today: ['«Сегодня»', 'Твой пульт на день: уроки, выручка, долги и кому напомнить. С него начинай утро.'],
+            slots: ['«Расписание»', 'Тут окошки для записи. Открывай свободные часы, закрывай занятые — ученики видят только открытые.'],
+            texts: ['«Тексты и цены»', 'Описание, форматы и стоимость. Меняешь тут — на сайте обновляется само.'],
+            reviews: ['«Отзывы»', 'Что пишут ученики. Можно добавить отзыв вручную или скрыть лишний.'],
+            analytics: ['«Аналитика»', 'Сколько уроков и денег за неделю/месяц — чтобы понимать, как идут дела.'],
+            students: ['«Ученики»', 'База: кто давно не был, у кого долг, кому задать домашку. Напоминания в один тап.']
+        };
+        function buildSteps() {
+            var steps = [{ tabbar: true, title: 'Это твой кабинет', text: 'Тут всё управление сайтом. Пройдём по шагам и покажу, куда жать. Просто смотри — ничего нажимать не нужно.' }];
+            tabBtns().forEach(function (b) {
+                var t = b.getAttribute(tabAttr);
+                if (TAB_TEXT[t]) steps.push({ tab: t, title: TAB_TEXT[t][0], text: TAB_TEXT[t][1] });
+            });
+            var tgEl = document.getElementById('tgNotifyStatus');
+            if (tgEl) {
+                var tgPanel = tgEl.closest('[id^="teacherTab"],[id^="masterTab"]');
+                var tgTab = tgPanel ? tgPanel.id.replace(/^(teacher|master)Tab/, '').toLowerCase() : null;
+                steps.push({ tab: tgTab, sel: '#tgNotifyStatus', title: 'Уведомления в Telegram', text: 'Новая запись с сайта будет приходить тебе в Telegram сама, со ссылкой сюда. Подключим за пару минут.' });
+                steps.push({ tab: tgTab, sel: '#tgNotifySetup', title: 'Шаг 1 — VPN и кнопка', text: 'Если Telegram не открывается — включи VPN (ссылки в карточке). Потом нажми «Подключить уведомления».' });
+                steps.push({ tab: tgTab, sel: '#tgNotifySetup', title: 'Шаг 2 — Запустить и вернуться', text: 'В Telegram нажми «Запустить». Вернись сюда и нажми «Я подписался — обновить статус». Готово!' });
+            }
+            steps.push({ title: 'Готово!', text: 'Забудешь, где что — жми «Пройти обучение заново» сверху, повторим. Изменения сохраняются в облако: зайдёшь с телефона — всё на месте.' });
+            return steps;
+        }
+
+        var steps = [], idx = 0, active = false, autoStarted = false;
+        function switchFn() { return isTeacher ? window.switchTeacherTab : window.switchMasterTab; }
+        function resolveTarget(s) {
+            if (s.tabbar) return tabbar;
+            if (s.sel) return document.querySelector(s.sel);
+            if (s.tab) {
+                var panel = document.getElementById(panelPrefix + s.tab.charAt(0).toUpperCase() + s.tab.slice(1));
+                if (panel) return panel.firstElementChild || panel;
+            }
+            return null;
+        }
+        function position() {
+            if (!active) return;
+            var target = resolveTarget(steps[idx]);
+            var vw = window.innerWidth, vh = window.innerHeight;
+            if (target) {
+                var r = target.getBoundingClientRect(), pad = 6;
+                ring.style.display = 'block'; scrim.style.display = 'none';
+                ring.style.left = Math.max(8, r.left - pad) + 'px';
+                ring.style.top = Math.max(8, r.top - pad) + 'px';
+                ring.style.width = Math.min(r.width + pad * 2, vw - 16) + 'px';
+                ring.style.height = Math.min(r.height + pad * 2, vh - 16) + 'px';
+            } else { ring.style.display = 'none'; scrim.style.display = 'block'; }
+            var cw = card.offsetWidth, ch = card.offsetHeight, left, top;
+            if (target) {
+                var rr = target.getBoundingClientRect();
+                left = Math.min(Math.max(12, rr.left), vw - cw - 12);
+                top = rr.bottom + 14;
+                if (top + ch > vh - 12) top = rr.top - ch - 14;
+                if (top < 12) top = Math.min(Math.max(12, (vh - ch) / 2), vh - ch - 12);
+            } else { left = (vw - cw) / 2; top = (vh - ch) / 2; }
+            card.style.left = Math.max(12, left) + 'px';
+            card.style.top = Math.max(12, top) + 'px';
+        }
+        function show(i) {
+            idx = i; var s = steps[i];
+            if (s.tab && typeof switchFn() === 'function') switchFn()(s.tab);
+            elCount.textContent = 'Шаг ' + (i + 1) + ' из ' + steps.length;
+            elTitle.textContent = s.title; elText.textContent = s.text;
+            bBack.style.visibility = i === 0 ? 'hidden' : 'visible';
+            bNext.textContent = i === steps.length - 1 ? 'Готово' : 'Дальше';
+            setTimeout(function () {
+                var t = resolveTarget(s);
+                if (t && t.scrollIntoView) t.scrollIntoView({ block: 'center', behavior: 'auto' });
+                requestAnimationFrame(position);
+            }, 120);
+        }
+        function onKey(e) { if (e.key === 'Escape') close(true, true); }
+        function close(done, skipped) {
+            active = false; ring.style.display = 'none'; scrim.style.display = 'none'; card.style.display = 'none';
+            window.removeEventListener('resize', position); window.removeEventListener('scroll', position, true);
+            document.removeEventListener('keydown', onKey);
+            if (done) { try { localStorage.setItem(KEY, '1'); } catch (_) {} }
+            if (skipped) showHint();
+        }
+        function start() {
+            steps = buildSteps(); if (!steps.length) return;
+            active = true; card.style.display = 'block';
+            window.addEventListener('resize', position); window.addEventListener('scroll', position, true);
+            document.addEventListener('keydown', onKey);
+            show(0);
+        }
+        bNext.addEventListener('click', function () { if (idx >= steps.length - 1) close(true); else show(idx + 1); });
+        bBack.addEventListener('click', function () { if (idx > 0) show(idx - 1); });
+        bSkip.addEventListener('click', function () { close(true, true); });
+
+        var rel = document.createElement('button');
+        rel.type = 'button'; rel.className = 'ct-relaunch'; rel.textContent = 'Пройти обучение заново';
+        rel.title = 'Повторить экскурсию по кабинету';
+        rel.addEventListener('click', function () { start(); });
+        tabbar.appendChild(rel);
+
+        var hint = document.createElement('div'); hint.className = 'ct-hint';
+        hint.textContent = 'Ничего страшного! Жми «Пройти обучение заново» вверху — покажу всё ещё раз.';
+        document.body.appendChild(hint);
+        var hintTimer = null;
+        function showHint() {
+            hint.style.display = 'block';
+            rel.classList.remove('ct-pulse'); void rel.offsetWidth; rel.classList.add('ct-pulse');
+            clearTimeout(hintTimer);
+            hintTimer = setTimeout(function () { hint.style.display = 'none'; rel.classList.remove('ct-pulse'); }, 6000);
+        }
+
+        var mo = new MutationObserver(function () {
+            if (autoStarted || active) return;
+            if (view.classList.contains('hidden')) return;
+            var done = false; try { done = localStorage.getItem(KEY) === '1'; } catch (_) {}
+            if (done) return;
+            autoStarted = true; setTimeout(start, 600);
+        });
+        mo.observe(view, { attributes: true, attributeFilter: ['class'] });
+        window.startCabinetTour = start;
+    })();
+    </script>
 </body>
 </html>
 
