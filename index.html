@@ -1775,6 +1775,14 @@
                 <span class="text-sm font-extrabold text-slateDark">💰 Кто должен</span>
                 <div id="todayDebt" class="space-y-2"></div>
             </div>
+            <div class="p-4 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-sm font-extrabold text-slateDark">🔔 Telegram-уведомления о новых записях</span>
+                    <span id="tgNotifyStatus" class="text-[11px] font-bold"></span>
+                </div>
+                <p class="text-xs text-slateDark/60">Бот сам пришлёт тебе в Telegram «новая запись», когда ученик запишется через сайт. Ничего нажимать не нужно.</p>
+                <div id="tgNotifySetup" class="space-y-2"></div>
+            </div>
         </div>
 
         <!-- TAB 1: SCHEDULE & SLOTS -->
@@ -3138,9 +3146,11 @@
         const SUPABASE_KEY = 'sb_publishable_yW45_DoFX6OHfZHYYNcStA_tRDiM_z_';
         const SITE_SLUG = 'maria-math';
         const SESSION_PIN_KEY = 'maria_teacher_pin';
+        const TG_NOTIFY_URL = SUPABASE_URL + '/functions/v1/tg-notify';
 
         const DEFAULT_SITE_CONFIG = {
             default_theme: 'cozy-cat',
+            telegram: { bot_username: '', chat_id: null, enabled: false },
             slot_step_min: 60,
             work_start_min: 600,
             work_end_min: 1260,
@@ -3273,6 +3283,7 @@
                 work_start_min: Number(cfg.work_start_min ?? DEFAULT_SITE_CONFIG.work_start_min),
                 work_end_min: Number(cfg.work_end_min ?? DEFAULT_SITE_CONFIG.work_end_min),
                 contacts,
+                telegram: { ...DEFAULT_SITE_CONFIG.telegram, ...(cfg.telegram || {}) },
                 programs,
                 weekly_open_slots
             };
@@ -4379,6 +4390,7 @@
                     name, grade: gradeLabel, phone, format: formatTitle, price: priceVal, messenger
                 };
 
+                notifyTutorNewBooking(lastBookedEvent);
                 playAudioPurr();
 
                 const startMinsBooked = parseInt(selectedTime.split(':')[0], 10) * 60 + parseInt(selectedTime.split(':')[1], 10);
@@ -4724,6 +4736,7 @@
                     <span class="text-rose-600 font-extrabold">${x.debt.toLocaleString('ru-RU')} ₽</span>
                 </div>`).join('') : '<div class="text-xs text-slateDark/50 py-2">Долгов нет — все прошедшие уроки оплачены.</div>';
             }
+            renderTelegramCard();
         }
         function printDaySchedule() {
             const t = getIso(0);
@@ -4740,6 +4753,81 @@
                 <div class="print-sub">Мария · математика · уроков: ${list.length} · выручка за день: ${revenue.toLocaleString('ru-RU')} ₽</div>
                 <table><thead><tr><th>Время</th><th>Ученик</th><th>Формат</th><th>Длит.</th><th>Цена</th><th>Оплата</th><th>Статус</th></tr></thead><tbody>${rows}</tbody></table>`;
             window.print();
+        }
+
+        // --- TELEGRAM NOTIFY (hands-off new-booking alerts) ---
+        function notifyTutorNewBooking(ev) {
+            try {
+                fetch(TG_NOTIFY_URL + '?action=notify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        slug: SITE_SLUG, date: ev.date, time: ev.time, name: ev.name,
+                        grade: ev.grade, phone: ev.phone, format: ev.format,
+                        price: ev.price, duration: ev.duration, messenger: ev.messenger
+                    })
+                }).catch(() => {});
+            } catch (_) {}
+        }
+
+        function renderTelegramCard() {
+            const status = document.getElementById('tgNotifyStatus');
+            const setup = document.getElementById('tgNotifySetup');
+            if (!status || !setup) return;
+            const t = (siteConfig && siteConfig.telegram) || {};
+            const connected = Boolean(t.chat_id && t.enabled);
+            if (connected) {
+                status.innerText = 'Подключено ✓';
+                status.className = 'text-[11px] font-bold text-emerald-600';
+                const uname = t.bot_username ? '@' + escapeHtml(t.bot_username) : 'бот';
+                setup.innerHTML = `
+                    <div class="text-xs text-slateDark/70">Уведомления приходят в Telegram (${uname}). Новая запись → сообщение само.</div>
+                    <div class="flex flex-wrap gap-2">
+                        <button type="button" onclick="refreshTeacherBundle()" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">🔄 Обновить статус</button>
+                        <button type="button" onclick="setTelegramEnabled(false)" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">Выключить</button>
+                    </div>`;
+                return;
+            }
+            status.innerText = 'Не подключено';
+            status.className = 'text-[11px] font-bold text-amber-600';
+            const uname = String(t.bot_username || '').trim();
+            const link = uname ? ('https://t.me/' + encodeURIComponent(uname) + '?start=' + SITE_SLUG) : '';
+            setup.innerHTML = `
+                <div class="flex flex-wrap items-end gap-2">
+                    <label class="flex-1 min-w-[180px] text-[11px] font-semibold text-slateDark/70">Username бота (из @BotFather)
+                        <input id="tgBotUsernameInput" type="text" value="${escapeHtml(uname)}" placeholder="например maria_math_bot" class="mt-1 w-full px-3 py-2 rounded-xl border border-cream-200 text-xs text-slateDark bg-white" />
+                    </label>
+                    <button type="button" onclick="saveTelegramBotUsername()" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold flex-shrink-0">Сохранить</button>
+                </div>
+                ${uname ? `
+                    <a href="${link}" target="_blank" rel="noopener noreferrer" class="btn-primary px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5">🔔 Подключить уведомления</a>
+                    <div class="text-[11px] text-slateDark/60">Нажми кнопку → в Telegram нажми «Запустить» (/start). Потом вернись сюда и нажми «Обновить статус».</div>
+                    <button type="button" onclick="refreshTeacherBundle()" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">🔄 Я подписался — обновить статус</button>
+                ` : `
+                    <div class="text-[11px] text-slateDark/60">Сначала создай бота: в Telegram открой <b>@BotFather</b> → <b>/newbot</b> → придумай имя → скопируй username и впиши сюда.</div>
+                `}`;
+        }
+
+        async function saveTelegramBotUsername() {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const inp = document.getElementById('tgBotUsernameInput');
+            const u = String(inp ? inp.value : '').trim().replace(/^@/, '').replace(/^https?:\/\/t\.me\//i, '').replace(/\/.*$/, '');
+            siteConfig.telegram = { ...(siteConfig.telegram || {}), bot_username: u };
+            try {
+                await persistProtectionConfig();
+                renderTelegramCard();
+                showTeacherToast(u ? ('Бот @' + u + ' сохранён. Нажми «Подключить уведомления».') : 'Username бота очищен.');
+            } catch (err) { alert(err.message || 'Не удалось сохранить username бота.'); }
+        }
+
+        async function setTelegramEnabled(flag) {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            siteConfig.telegram = { ...(siteConfig.telegram || {}), enabled: Boolean(flag) };
+            try {
+                await persistProtectionConfig();
+                renderTelegramCard();
+                showTeacherToast(flag ? 'Telegram-уведомления включены.' : 'Telegram-уведомления выключены.');
+            } catch (err) { alert(err.message || 'Не удалось сохранить настройки уведомлений.'); }
         }
 
         // --- ANALYTICS (cycle-2 round 6): revenue, hours, format leaders ---
