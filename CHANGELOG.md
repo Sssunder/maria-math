@@ -1,6 +1,21 @@
 # Changelog — maria-math
 
-## 2026-11-12 — Lesson durations + 5-round dev/passenger loop (UNCOMMITTED, no push)
+## 2026-11-12 — Cycle 2: 10 substantial cabinet rounds (dev/passenger loop, all accepted)
+- **Pair loop** (OmniRoute passenger `cfp/moonshotai/kimi-k2.7-code`, read-only mocked RPC, **zero DB writes**); 10 rounds, each accepted by passenger. Backend RPC set unchanged — all new per-lesson/per-student data lives in cloud config via `admin_save_config` (`mergeSiteConfig` passes new keys through).
+  - **R6 Analytics** (`#teacherTabAnalytics`): revenue/lessons/hours/avg KPIs, week/month/all periods, bar chart, format-leader table.
+  - **R7 Revenue protection**: prepaid balance, lesson statuses (done/noshow/cancelled), cancel policy + public note; no-show consumes prepaid (money kept) else logged as loss; cancel frees slot. `siteConfig.lesson_status/prepaid/cancel_policy`.
+  - **R8 Waitlist** (`siteConfig.waitlist`): queue + free-slot matcher; cancel auto-suggests waiting students; offer prefills manual booking; save refills slot + marks booked.
+  - **R9 Student CRM** (`#teacherTabStudents`): search, format/activity filters, sort, "давно не был" lapse threshold, copy-text reminders, rebook prefill, global lapsed count.
+  - **R10 Homework & goals** (dossier, `siteConfig.student_learning`): homework text+due (done/overdue), goals with 0–100% progress slider.
+  - **R11 Review request** (`siteConfig.review_requests`): after "Проведён" → ready parent message + `#reviews` form link + Telegram/WhatsApp/MAX send; "отзыв запрошен" badge prevents duplicates.
+  - **R12 Payments & debt** (`siteConfig.payments`): per-lesson paid/overdue/pending table + quick toggle; per-student debt/pending badges; global "Долг учеников" in CRM.
+  - **R13 Today dashboard** (`#teacherTabToday`, first tab): day lessons/revenue/debt/lapsed KPIs, "кому напомнить", "что задать" (homework due), "кто должен"; quick done/pay actions; **print day schedule** (`#printDaySheet` `@media print`).
+  - **R14 Recurring lessons** (`siteConfig.recurring`): per-student weekday+time+format template; "Создать уроки на N недель" bulk-generates bookings (skips occupied, idempotent); save/remove template.
+  - **R15 Lesson reminder**: "Напомнить" per scheduled today lesson → ready text + WhatsApp/Telegram/MAX send + copy (done/cancelled excluded).
+- **Verified**: 12 Playwright mocked-RPC E2E scripts (ports 8731–8744) at 360/393/1440 + 4 themes: 0 overflow, 0 console errors; exact figures asserted (revenue, debt, generated dates, messenger links). All 12 green after the final round.
+- **Open / Next**: passenger's standing wish — Telegram notifications for new bookings (needs bot/backend, not implemented).
+
+## 2026-11-12 — Lesson durations + 5-round dev/passenger loop (committed `654e23d`)
 - **Durations 40/45/60**: `getSelectedDurationMin()` + `pluralMinutes()`; open-slot end follows selected program duration, booked slot shows real `booking.duration` end; duration label, select notice, confirm-modal summary and Telegram handoff all show "N мин (до HH:MM)". Cabinet program editor got 40/45/60/90 preset chips.
 - **Pair loop (OmniRoute passenger `cfp/moonshotai/kimi-k2.7-code`, read-only mocked RPC, zero DB writes)** — 5 substantial cabinet rounds, each accepted by passenger:
   - **R1**: one-click "Открыть весь день (10–20)" + per-action confirm + result toast; "Ближайший урок" strip.
@@ -10,7 +25,7 @@
   - **R5**: owner review replies (3 templates, publish/remove, stored in `siteConfig.review_replies`, shown publicly as "Ответ Марии") + "Канал с отзывами" link + "Скопировать детали записи" in confirm modal.
 - **Theme-safety fix**: reply label uses `color-mix(accent 62%, text-heading)` (removed `.text-peach` `!important` clash) — contrast now 5.2–8.1 across all 4 themes (was 2.95 in sakura).
 - **Verified**: Playwright mocked-RPC E2E at 360/1440 + 4 themes: 0 overflow, 0 errors; bulk/dossier/CSV/cloud-note-reload/reply-publish/booking-copy/deep-link all green. Backend RPC set unchanged; no new RPCs.
-- **Open / Next**: passenger's standing wish — Telegram notifications for new bookings (needs bot/backend, not implemented). NOT committed/pushed (awaiting explicit user request).
+- **Open / Next**: passenger's standing wish — Telegram notifications for new bookings (needs bot/backend, not implemented). Committed as `654e23d`; cycle 2 (rounds 6–15) built on top.
 
 ## 2026-11-12 — UX loop, 3 rounds (native maker-checker, read-only verify)
 - **R1**: `#nearestSlotHint` — banner above day-scroll shows nearest open slot ("Ближайшее свободное окно: …") with "Показать" jump; refreshed in `recomputeSlots()`.

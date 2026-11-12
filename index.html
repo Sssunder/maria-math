@@ -721,6 +721,19 @@
         .camera-pulse {
             animation: cameraPulse 2s infinite ease-in-out;
         }
+        /* Day schedule print sheet (cycle-2 round 13) */
+        #printDaySheet { display: none; }
+        @media print {
+            body * { visibility: hidden !important; }
+            #printDaySheet, #printDaySheet * { visibility: visible !important; }
+            #printDaySheet { display: block !important; position: absolute; left: 0; top: 0; width: 100%; padding: 24px; color: #171C25; background: #fff; }
+            #printDaySheet h1 { font-size: 20px; margin: 0 0 4px; }
+            #printDaySheet .print-sub { font-size: 12px; color: #475569; margin-bottom: 16px; }
+            #printDaySheet table { width: 100%; border-collapse: collapse; font-size: 13px; }
+            #printDaySheet th, #printDaySheet td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
+            #printDaySheet th { background: #f1f5f9; }
+            @page { margin: 16mm; }
+        }
     </style>
 </head>
 <body class="bg-cream-50 text-slateDark font-sans antialiased min-h-screen selection:bg-peach selection:text-white">
@@ -1581,6 +1594,7 @@
                 </div>
 
                 <!-- 3. CLIENT INFO & MESSENGER CHOICE -->
+                <div id="publicCancelPolicyNote" class="text-[11px] text-slateDark/60 bg-cream-100/70 border border-cream-200 rounded-xl px-3 py-2 leading-snug"></div>
                 <form id="bookingForm" onsubmit="submitClientBooking(event)" class="space-y-4 pt-2 border-t border-cream-200">
                     
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1693,6 +1707,9 @@
 
         <!-- Cabinet Section Tabs -->
         <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="switchTeacherTab('today')" data-teacher-tab="today" class="teacher-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold btn-secondary transition-all">
+                ☀️ Сегодня
+            </button>
             <button type="button" onclick="switchTeacherTab('slots')" data-teacher-tab="slots" class="teacher-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold btn-primary shadow-sm transition-all">
                 🗓 Расписание и окна
             </button>
@@ -1702,6 +1719,62 @@
             <button type="button" onclick="switchTeacherTab('reviews')" data-teacher-tab="reviews" class="teacher-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold btn-secondary transition-all">
                 ⭐ Отзывы и PIN
             </button>
+            <button type="button" onclick="switchTeacherTab('analytics')" data-teacher-tab="analytics" class="teacher-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold btn-secondary transition-all">
+                📊 Аналитика
+            </button>
+            <button type="button" onclick="switchTeacherTab('students')" data-teacher-tab="students" class="teacher-tab-btn px-4 py-2.5 rounded-2xl text-xs font-bold btn-secondary transition-all">
+                👥 Ученики
+            </button>
+        </div>
+
+        <!-- TAB 0: TODAY (cycle-2 round 13) -->
+        <div id="teacherTabToday" class="hidden space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+                <div class="min-w-0">
+                    <h3 class="text-lg font-extrabold text-slateDark">☀️ Сегодня</h3>
+                    <p id="todayDateLabel" class="text-xs text-slateDark/60"></p>
+                </div>
+                <button type="button" onclick="printDaySchedule()" class="btn-secondary px-3 py-2 rounded-xl text-xs font-bold flex-shrink-0">🖨 Печать расписания на день</button>
+            </div>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                <div class="p-4 rounded-2xl bg-white border border-cream-200 text-center shadow-sm">
+                    <div id="todayLessonCount" class="text-2xl font-extrabold text-slateDark">0</div>
+                    <div class="text-[11px] text-slateDark/60 font-semibold mt-0.5">уроков сегодня</div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white border border-cream-200 text-center shadow-sm">
+                    <div id="todayRevenue" class="text-2xl font-extrabold text-slateDark">0 ₽</div>
+                    <div class="text-[11px] text-slateDark/60 font-semibold mt-0.5">выручка за день</div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white border border-cream-200 text-center shadow-sm">
+                    <div id="todayDebtKpi" class="text-2xl font-extrabold text-rose-600">0 ₽</div>
+                    <div class="text-[11px] text-slateDark/60 font-semibold mt-0.5">долг учеников</div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white border border-cream-200 text-center shadow-sm">
+                    <div id="todayLapsedKpi" class="text-2xl font-extrabold text-amber-600">0</div>
+                    <div class="text-[11px] text-slateDark/60 font-semibold mt-0.5">давно не было</div>
+                </div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-3">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-sm font-extrabold text-slateDark">🗓 Уроки сегодня</span>
+                    <span id="todayNextLabel" class="text-[11px] text-peach font-bold"></span>
+                </div>
+                <div id="todayLessons" class="space-y-2"></div>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="p-4 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
+                    <span class="text-sm font-extrabold text-slateDark">✉️ Кому напомнить</span>
+                    <div id="todayRemind" class="space-y-2"></div>
+                </div>
+                <div class="p-4 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
+                    <span class="text-sm font-extrabold text-slateDark">📚 Что задать / проверить</span>
+                    <div id="todayHomework" class="space-y-2"></div>
+                </div>
+            </div>
+            <div class="p-4 rounded-2xl bg-white border border-cream-200 shadow-sm space-y-2">
+                <span class="text-sm font-extrabold text-slateDark">💰 Кто должен</span>
+                <div id="todayDebt" class="space-y-2"></div>
+            </div>
         </div>
 
         <!-- TAB 1: SCHEDULE & SLOTS -->
@@ -1720,6 +1793,85 @@
                     <div class="text-xs text-slateDark/60 font-semibold">Открытых окон на дату</div>
                     <div id="teacherDayFreeSlots" class="font-display text-2xl font-black text-peach mt-1">0</div>
                 </div>
+            </div>
+
+            <!-- REVENUE PROTECTION (cycle-2 round 7) -->
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-3">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                        <h3 class="font-display font-extrabold text-base sm:text-lg text-slateDark">🛡 Защита выручки от отмен и неявок</h3>
+                        <p class="text-xs text-slateDark/60 mt-0.5">Берите предоплату (абонемент) в карточке ученика — тогда неявка списывает оплаченный урок, а не сжигает деньги. Отмечайте статус урока в списке ниже.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-center">
+                        <div class="text-[11px] text-rose-700/70 font-semibold">Потеряно на неявках</div>
+                        <div id="protLost" class="font-display text-xl font-black text-rose-600 mt-1">0 ₽</div>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-center">
+                        <div class="text-[11px] text-emerald-700/70 font-semibold">Сохранено предоплатой</div>
+                        <div id="protSaved" class="font-display text-xl font-black text-emerald-600 mt-1">0 ₽</div>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 text-center">
+                        <div class="text-[11px] text-slateDark/60 font-semibold">Неявок</div>
+                        <div id="protNoshow" class="font-display text-xl font-black text-slateDark mt-1">0</div>
+                    </div>
+                    <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 text-center">
+                        <div class="text-[11px] text-slateDark/60 font-semibold">Отмен</div>
+                        <div id="protCancelled" class="font-display text-xl font-black text-slateDark mt-1">0</div>
+                    </div>
+                </div>
+                <div class="flex flex-wrap items-center gap-3 pt-1 border-t border-cream-200 text-xs">
+                    <span class="font-bold text-slateDark">Правило отмены:</span>
+                    <label class="flex items-center gap-1.5 font-semibold text-slateDark/70">бесплатно за
+                        <input type="number" id="cfgCancelFreeHours" min="0" max="72" value="24" class="w-16 px-2 py-1 border rounded-lg text-xs"> ч
+                    </label>
+                    <label class="flex items-center gap-1.5 font-semibold text-slateDark/70">
+                        <input type="checkbox" id="cfgNoshowUsesPrepaid" checked class="accent-emerald-600"> неявка списывает оплаченный урок
+                    </label>
+                    <button type="button" onclick="saveCancelPolicy()" class="btn-primary px-3 py-1.5 rounded-xl text-[11px] font-bold">Сохранить правило</button>
+                </div>
+            </div>
+
+            <!-- WAITLIST (cycle-2 round 8): refill freed slots from a queue -->
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-3">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                    <div>
+                        <h3 class="font-display font-extrabold text-base sm:text-lg text-slateDark">📋 Лист ожидания — заполняем освободившиеся окна</h3>
+                        <p class="text-xs text-slateDark/60 mt-0.5">Ученик ждёт удобное время? Добавьте его в очередь. Когда окно освободится после отмены, кабинет подскажет, кому его предложить, и подставит запись.</p>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full bg-peach/15 text-peach border border-peach/30 text-[11px] font-bold whitespace-nowrap">В очереди: <span id="waitlistCount">0</span></span>
+                </div>
+
+                <div id="waitlistSuggestion" class="hidden p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs"></div>
+
+                <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 space-y-2 text-xs">
+                    <div class="flex flex-wrap gap-2">
+                        <input type="text" id="wlName" placeholder="Имя ученика" class="flex-1 min-w-[130px] px-2.5 py-1.5 border rounded-lg">
+                        <input type="tel" id="wlPhone" placeholder="Телефон" class="flex-1 min-w-[120px] px-2.5 py-1.5 border rounded-lg">
+                        <select id="wlFormat" class="flex-1 min-w-[150px] px-2.5 py-1.5 border rounded-lg"></select>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-semibold text-slateDark/70">Дни:</span>
+                        <label class="flex items-center gap-1"><input type="checkbox" class="wl-day accent-peach" data-dow="1" checked>Пн</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" class="wl-day accent-peach" data-dow="2">Вт</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" class="wl-day accent-peach" data-dow="3" checked>Ср</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" class="wl-day accent-peach" data-dow="4">Чт</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" class="wl-day accent-peach" data-dow="5" checked>Пт</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" class="wl-day accent-peach" data-dow="6">Сб</label>
+                        <label class="flex items-center gap-1"><input type="checkbox" class="wl-day accent-peach" data-dow="0">Вс</label>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-semibold text-slateDark/70">Окно:</span>
+                        <select id="wlFrom" class="px-2 py-1.5 border rounded-lg"></select>
+                        <span class="text-slateDark/50">—</span>
+                        <select id="wlTo" class="px-2 py-1.5 border rounded-lg"></select>
+                        <input type="text" id="wlNote" placeholder="Пометка (напр. «только после 17:00»)" class="flex-1 min-w-[150px] px-2.5 py-1.5 border rounded-lg">
+                        <button type="button" onclick="addWaitlistEntry()" class="btn-primary px-3 py-1.5 rounded-xl font-bold whitespace-nowrap">+ В очередь</button>
+                    </div>
+                </div>
+
+                <div id="waitlistList" class="space-y-2"></div>
             </div>
 
             <!-- WEEKLY TEMPLATE SCHEDULE (WHITELIST) -->
@@ -2075,6 +2227,113 @@
             </div>
         </div>
 
+        <!-- TAB 4: ANALYTICS (cycle-2 round 6) -->
+        <div id="teacherTabAnalytics" class="hidden space-y-5">
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h3 class="font-display font-extrabold text-base text-slateDark">📊 Аналитика занятий и выручки</h3>
+                        <p class="text-xs text-slateDark/60 mt-0.5">Считается по активным записям учеников. Обновляется автоматически.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5" id="analyticsPeriodBtns">
+                        <button type="button" onclick="setAnalyticsPeriod('week')" data-analytics-period="week" class="btn-primary px-3 py-1.5 rounded-xl text-[11px] font-bold">Неделя</button>
+                        <button type="button" onclick="setAnalyticsPeriod('month')" data-analytics-period="month" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">Месяц</button>
+                        <button type="button" onclick="setAnalyticsPeriod('all')" data-analytics-period="all" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">Всё время</button>
+                    </div>
+                </div>
+                <div id="analyticsRangeLabel" class="text-[11px] font-semibold text-peach"></div>
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 text-center">
+                        <div class="text-[11px] text-slateDark/60 font-semibold">Выручка</div>
+                        <div id="analyticsRevenue" class="font-display text-xl font-black text-emerald-600 mt-1">0 ₽</div>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 text-center">
+                        <div class="text-[11px] text-slateDark/60 font-semibold">Уроков</div>
+                        <div id="analyticsLessons" class="font-display text-xl font-black text-slateDark mt-1">0</div>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 text-center">
+                        <div class="text-[11px] text-slateDark/60 font-semibold">Часов занятий</div>
+                        <div id="analyticsHours" class="font-display text-xl font-black text-slateDark mt-1">0</div>
+                    </div>
+                    <div class="p-3.5 rounded-2xl bg-cream-50 border border-cream-200 text-center">
+                        <div class="text-[11px] text-slateDark/60 font-semibold">Средний чек</div>
+                        <div id="analyticsAvg" class="font-display text-xl font-black text-peach mt-1">0 ₽</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-3">
+                <h4 class="font-display font-extrabold text-sm text-slateDark">Выручка по дням</h4>
+                <div id="analyticsChart" class="flex items-end gap-1 h-40 overflow-x-auto pb-1"></div>
+                <div id="analyticsChartEmpty" class="hidden text-xs text-slateDark/50 py-4 text-center">За выбранный период записей нет.</div>
+            </div>
+
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-3">
+                <h4 class="font-display font-extrabold text-sm text-slateDark">Форматы: что приносит больше денег</h4>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs min-w-[420px]">
+                        <thead>
+                            <tr class="text-left text-slateDark/55 border-b border-cream-200">
+                                <th class="py-2 pr-2 font-semibold">Формат</th>
+                                <th class="py-2 px-2 font-semibold text-center">Уроков</th>
+                                <th class="py-2 px-2 font-semibold text-center">Часов</th>
+                                <th class="py-2 px-2 font-semibold text-right">Выручка</th>
+                                <th class="py-2 pl-2 font-semibold text-right">Доля</th>
+                            </tr>
+                        </thead>
+                        <tbody id="analyticsFormatTable"></tbody>
+                    </table>
+                </div>
+                <div id="analyticsLeader" class="text-xs font-bold text-peach"></div>
+            </div>
+        </div>
+
+        <!-- TAB 5: STUDENT CRM (cycle-2 round 9) -->
+        <div id="teacherTabStudents" class="hidden space-y-5">
+            <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-sm border border-cream-200 space-y-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h3 class="font-display font-extrabold text-base sm:text-lg text-slateDark">👥 Картотека учеников</h3>
+                        <p class="text-xs text-slateDark/60 mt-0.5">Поиск, фильтры и удержание: видно, кто давно не приходил, чтобы вернуть его до того, как он уйдёт.</p>
+                    </div>
+                    <span class="flex flex-wrap gap-1.5">
+                        <span class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-[11px] font-bold whitespace-nowrap">Долг учеников: <span id="studentDebtTotal">0 ₽</span></span>
+                        <span class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-200 text-[11px] font-bold whitespace-nowrap">Давно не было: <span id="studentLapsedCount">0</span></span>
+                    </span>
+                </div>
+
+                <div class="flex flex-wrap gap-2 text-xs">
+                    <input type="text" id="studentSearch" oninput="renderStudentRoster()" placeholder="🔍 Поиск по имени или телефону" class="flex-1 min-w-[180px] px-3 py-2 border rounded-xl">
+                    <select id="studentFormatFilter" onchange="renderStudentRoster()" class="px-2.5 py-2 border rounded-xl font-semibold"></select>
+                    <select id="studentActivityFilter" onchange="renderStudentRoster()" class="px-2.5 py-2 border rounded-xl font-semibold">
+                        <option value="all">Все ученики</option>
+                        <option value="active">Активные</option>
+                        <option value="lapsed">Давно не был</option>
+                    </select>
+                    <select id="studentSort" onchange="renderStudentRoster()" class="px-2.5 py-2 border rounded-xl font-semibold">
+                        <option value="last">Сначала недавние</option>
+                        <option value="lapsed">Сначала пропавшие</option>
+                        <option value="revenue">По выручке</option>
+                        <option value="name">По имени</option>
+                    </select>
+                    <label class="flex items-center gap-1.5 font-semibold text-slateDark/70 whitespace-nowrap">«давно» =
+                        <select id="studentLapseDays" onchange="renderStudentRoster()" class="px-2 py-2 border rounded-xl">
+                            <option value="7">7 дн</option>
+                            <option value="14" selected>14 дн</option>
+                            <option value="30">30 дн</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-2">
+                    <button type="button" onclick="remindLapsedStudents()" class="btn-primary px-3 py-2 rounded-xl text-[11px] font-bold">✉️ Напомнить всем пропавшим</button>
+                    <span id="studentRosterMeta" class="text-[11px] text-slateDark/55"></span>
+                </div>
+
+                <div id="studentRosterList" class="space-y-2"></div>
+            </div>
+        </div>
+
     </div>
 
     <!-- PIN MODAL FOR TEACHER ACCESS -->
@@ -2160,6 +2419,78 @@
                 <button onclick="closeStudentModal()" class="text-slateDark/40 hover:text-slateDark text-xl font-bold flex-shrink-0">&times;</button>
             </div>
             <div id="studentModalHistory" class="space-y-2 text-xs"></div>
+            <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-1.5">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-emerald-800">💳 Предоплата (абонемент)</span>
+                    <span id="studentPrepaidCount" class="text-xs font-extrabold text-emerald-700">0 уроков в запасе</span>
+                </div>
+                <p class="text-[10px] text-emerald-800/70 leading-snug">Оплаченные уроки списываются при проведении или неявке — деньги не теряются. Пополните запас после оплаты родителем.</p>
+                <div class="flex flex-wrap gap-1.5">
+                    <button type="button" onclick="addPrepaid(activeStudentKey, 1)" class="btn-secondary px-2.5 py-1 rounded-lg text-[10px] font-bold">+1 урок</button>
+                    <button type="button" onclick="addPrepaid(activeStudentKey, 4)" class="btn-secondary px-2.5 py-1 rounded-lg text-[10px] font-bold">+4 (абонемент)</button>
+                    <button type="button" onclick="addPrepaid(activeStudentKey, 8)" class="btn-secondary px-2.5 py-1 rounded-lg text-[10px] font-bold">+8</button>
+                </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 space-y-2">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-slateDark">📚 Домашнее задание</span>
+                    <span id="studentHwCount" class="text-[10px] text-slateDark/55"></span>
+                </div>
+                <div id="studentHomeworkList" class="space-y-1.5 text-xs"></div>
+                <div class="flex flex-wrap gap-1.5">
+                    <input type="text" id="hwText" placeholder="Новое задание (напр. № 345–350)" class="flex-1 min-w-[150px] px-2.5 py-1.5 border rounded-lg text-xs">
+                    <input type="date" id="hwDue" title="Срок сдачи" class="px-2 py-1.5 border rounded-lg text-xs">
+                    <button type="button" onclick="addHomework()" class="btn-secondary px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap">+ Задание</button>
+                </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 space-y-2">
+                <span class="text-xs font-bold text-slateDark block">🎯 Цели и прогресс</span>
+                <div id="studentGoalsList" class="space-y-2 text-xs"></div>
+                <div class="flex flex-wrap gap-1.5">
+                    <input type="text" id="goalText" placeholder="Цель (напр. сдать ОГЭ на 4+)" class="flex-1 min-w-[150px] px-2.5 py-1.5 border rounded-lg text-xs">
+                    <button type="button" onclick="addGoal()" class="btn-secondary px-2.5 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap">+ Цель</button>
+                </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-slateDark">💰 Оплаты и долг</span>
+                    <span class="flex flex-wrap gap-1.5">
+                        <span id="studentDebtBadge" class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold">Долг: 0 ₽</span>
+                        <span id="studentPendingBadge" class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold">Ожидается: 0 ₽</span>
+                    </span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-[11px] min-w-[300px]">
+                        <thead><tr class="text-left text-slateDark/55 border-b border-cream-200">
+                            <th class="py-1.5 pr-2 font-semibold">Дата урока</th>
+                            <th class="py-1.5 px-2 font-semibold text-right">Сумма</th>
+                            <th class="py-1.5 px-2 font-semibold">Статус</th>
+                            <th class="py-1.5 pl-2 font-semibold text-right">Отметка</th>
+                        </tr></thead>
+                        <tbody id="studentPaymentTable"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 space-y-2">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-bold text-slateDark">🔁 Постоянное расписание</span>
+                    <span id="recurringSummary" class="text-[10px] text-slateDark/60 font-semibold">шаблон не задан</span>
+                </div>
+                <div id="recDow" class="flex flex-wrap gap-1"></div>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                    <label class="text-[10px] text-slateDark/60 font-semibold space-y-0.5">Время<input type="time" id="recTime" value="16:00" class="w-full px-2 py-1.5 border rounded-lg text-xs font-normal"></label>
+                    <label class="text-[10px] text-slateDark/60 font-semibold space-y-0.5">Формат<select id="recFormat" class="w-full px-2 py-1.5 border rounded-lg text-xs font-normal"></select></label>
+                    <label class="text-[10px] text-slateDark/60 font-semibold space-y-0.5">Длит., мин<input type="number" id="recDuration" value="60" min="15" step="5" class="w-full px-2 py-1.5 border rounded-lg text-xs font-normal"></label>
+                    <label class="text-[10px] text-slateDark/60 font-semibold space-y-0.5">Цена, ₽<input type="number" id="recPrice" value="1400" min="0" step="50" class="w-full px-2 py-1.5 border rounded-lg text-xs font-normal"></label>
+                </div>
+                <div class="flex flex-wrap items-end gap-1.5">
+                    <label class="text-[10px] text-slateDark/60 font-semibold space-y-0.5">Недель вперёд<input type="number" id="recWeeks" value="4" min="1" max="12" class="w-20 px-2 py-1.5 border rounded-lg text-xs font-normal"></label>
+                    <button type="button" onclick="generateRecurringLessons()" class="btn-primary px-3 py-1.5 rounded-lg text-[11px] font-bold">🔁 Создать уроки</button>
+                    <button type="button" onclick="saveRecurringTemplate()" class="btn-secondary px-3 py-1.5 rounded-lg text-[11px] font-bold">Сохранить шаблон</button>
+                    <button type="button" onclick="removeRecurringTemplate()" class="btn-secondary px-3 py-1.5 rounded-lg text-[11px] font-bold">Удалить</button>
+                </div>
+                <p class="text-[10px] text-slateDark/55">Уроки создаются на выбранные дни недели вперёд. Уже занятые окна пропускаются.</p>
+            </div>
             <div>
                 <label for="studentNotes" class="font-bold text-slateDark block mb-1 text-xs">Заметки (синхронизируются через облако)</label>
                 <textarea id="studentNotes" rows="3" placeholder="Например: перешёл в 8 класс, нужен акцент на геометрию" class="w-full px-3 py-2 border rounded-xl text-xs"></textarea>
@@ -2172,6 +2503,61 @@
                 <a id="studentCallBtn" href="#" class="btn-secondary flex-1 py-2.5 rounded-xl font-bold text-xs text-center">📞 Позвонить</a>
                 <button type="button" id="studentRebookBtn" class="btn-primary flex-1 py-2.5 rounded-xl font-bold text-xs">+ Записать ещё</button>
             </div>
+        </div>
+    </div>
+
+    <!-- REVIEW REQUEST MODAL (cycle-2 round 11) -->
+    <div id="reviewRequestModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl border border-cream-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-start justify-between gap-2 pb-3 border-b border-cream-200">
+                <div class="min-w-0">
+                    <h3 class="font-display font-extrabold text-lg text-slateDark">⭐ Запросить отзыв</h3>
+                    <p id="reviewRequestSub" class="text-[11px] text-slateDark/60 mt-0.5"></p>
+                </div>
+                <button onclick="closeReviewRequest()" class="text-slateDark/40 hover:text-slateDark text-xl font-bold flex-shrink-0">&times;</button>
+            </div>
+            <div>
+                <label for="reviewRequestText" class="font-bold text-slateDark block mb-1 text-xs">Текст сообщения родителю</label>
+                <textarea id="reviewRequestText" rows="5" class="w-full px-3 py-2 border rounded-xl text-xs"></textarea>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="copyReviewRequest()" class="btn-primary px-3 py-2 rounded-xl text-[11px] font-bold">📋 Скопировать текст</button>
+                <button type="button" onclick="openReviewFormLink()" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold">🔗 Открыть форму отзыва</button>
+            </div>
+            <div class="text-[11px] font-semibold text-slateDark/70">Отправить родителю в мессенджер:</div>
+            <div class="flex flex-wrap gap-1.5">
+                <a id="rrTelegram" href="#" target="_blank" rel="noopener noreferrer" onclick="markReviewRequested()" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold">Telegram</a>
+                <a id="rrWhatsApp" href="#" target="_blank" rel="noopener noreferrer" onclick="markReviewRequested()" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold">WhatsApp</a>
+                <a id="rrMax" href="#" target="_blank" rel="noopener noreferrer" onclick="markReviewRequested()" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold">МАКС</a>
+            </div>
+            <p class="text-[10px] text-slateDark/50 leading-snug">Ссылка ведёт на форму отзыва на сайте. Когда родитель отправит отзыв, он появится во вкладке «Отзывы» — там можно опубликовать ответ.</p>
+        </div>
+    </div>
+
+    <!-- LESSON REMINDER MODAL (cycle-2 round 15) -->
+    <div id="lessonReminderModal" class="fixed inset-0 z-50 bg-slateDark/70 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-5 sm:p-6 shadow-2xl border border-cream-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-start justify-between gap-2 pb-3 border-b border-cream-200">
+                <div class="min-w-0">
+                    <h3 class="font-display font-extrabold text-lg text-slateDark">✉️ Напомнить об уроке</h3>
+                    <p id="lessonReminderSub" class="text-[11px] text-slateDark/60 mt-0.5"></p>
+                </div>
+                <button onclick="closeLessonReminder()" class="text-slateDark/40 hover:text-slateDark text-xl font-bold flex-shrink-0">&times;</button>
+            </div>
+            <div>
+                <label for="lessonReminderText" class="font-bold text-slateDark block mb-1 text-xs">Текст напоминания родителю</label>
+                <textarea id="lessonReminderText" rows="5" class="w-full px-3 py-2 border rounded-xl text-xs"></textarea>
+            </div>
+            <div class="flex flex-wrap gap-1.5">
+                <button type="button" onclick="copyLessonReminder()" class="btn-primary px-3 py-2 rounded-xl text-[11px] font-bold">📋 Скопировать текст</button>
+            </div>
+            <div class="text-[11px] font-semibold text-slateDark/70">Отправить родителю в мессенджер:</div>
+            <div class="flex flex-wrap gap-1.5">
+                <a id="lrTelegram" href="#" target="_blank" rel="noopener noreferrer" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold">Telegram</a>
+                <a id="lrWhatsApp" href="#" target="_blank" rel="noopener noreferrer" class="btn-primary px-3 py-2 rounded-xl text-[11px] font-bold">WhatsApp · Отправить</a>
+                <a id="lrMax" href="#" target="_blank" rel="noopener noreferrer" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold">МАКС</a>
+            </div>
+            <p class="text-[10px] text-slateDark/50 leading-snug">Готовый текст можно поправить перед отправкой. WhatsApp откроется с номером родителя и текстом напоминания.</p>
         </div>
     </div>
 
@@ -3236,6 +3622,7 @@
 
             renderFormatCards();
             populateManualProgramOptions();
+            renderProtection();
         }
 
         // --- SLOT STATE MODEL (WEEKLY WHITELIST + CONCRETE OVERRIDES) ---
@@ -4141,6 +4528,13 @@
                 renderTeacherTimeline();
                 renderTeacherAllBookings();
                 renderTeacherReviews();
+                renderAnalytics();
+                renderProtection();
+                populateWaitlistForm();
+                renderWaitlist();
+                populateStudentFormatFilter();
+                renderStudentRoster();
+                renderToday();
                 populateTeacherTextsForm();
                 lucide.createIcons();
             }
@@ -4208,6 +4602,11 @@
             renderTeacherTimeline();
             renderTeacherAllBookings();
             renderTeacherReviews();
+            renderProtection();
+            populateWaitlistForm();
+            renderWaitlist();
+            populateStudentFormatFilter();
+            renderStudentRoster();
             populateAdminReviewDefaults();
             populateTeacherTextsForm();
             switchTeacherTab(teacherActiveTab || 'slots');
@@ -4216,7 +4615,7 @@
 
         function switchTeacherTab(tabName) {
             teacherActiveTab = tabName;
-            const tabMap = { slots: 'teacherTabSlots', texts: 'teacherTabTexts', reviews: 'teacherTabReviews' };
+            const tabMap = { today: 'teacherTabToday', slots: 'teacherTabSlots', texts: 'teacherTabTexts', reviews: 'teacherTabReviews', analytics: 'teacherTabAnalytics', students: 'teacherTabStudents' };
             Object.entries(tabMap).forEach(([key, panelId]) => {
                 const panel = document.getElementById(panelId);
                 if (panel) {
@@ -4235,7 +4634,243 @@
                 renderTeacherReviews();
                 populateAdminReviewDefaults();
             }
+            if (tabName === 'analytics') renderAnalytics();
+            if (tabName === 'students') { populateStudentFormatFilter(); renderStudentRoster(); }
+            if (tabName === 'today') renderToday();
             lucide.createIcons();
+        }
+
+        // --- TODAY DASHBOARD (cycle-2 round 13): day lessons, reminders, homework due, debtors + print ---
+        function todayBookings() {
+            const t = getIso(0);
+            return (teacherBookings || []).filter(b => b && b.entryType === 'booking' && b.date === t)
+                .sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+        }
+        function todayLessonRow(b) {
+            const st = getLessonStatus(b.date, b.time);
+            const status = st ? st.status : 'scheduled';
+            const paid = isLessonPaid(b.date, b.time);
+            const payBadge = paid
+                ? '<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">оплачено</span>'
+                : '<span class="px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold">не оплачен</span>';
+            let statusBadge = '';
+            if (status === 'done') statusBadge = '<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">✓ проведён</span>';
+            else if (status === 'noshow') statusBadge = '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold">⚠ неявка</span>';
+            else if (status === 'cancelled') statusBadge = '<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-bold">отменён</span>';
+            const remindBtn = status === 'scheduled' ? `<button type="button" onclick="openLessonReminder('${escapeHtml(b.date)}','${escapeHtml(b.time)}')" class="btn-secondary px-2 py-1 rounded-lg text-[10px] font-bold">✉️ Напомнить</button>` : '';
+            const actions = status === 'cancelled' ? '' : `${remindBtn}
+                <button type="button" onclick="setLessonStatus('${escapeHtml(b.date)}','${escapeHtml(b.time)}','done')" class="btn-secondary px-2 py-1 rounded-lg text-[10px] font-bold">✓ Проведён</button>
+                <button type="button" onclick="toggleLessonPaid('${escapeHtml(b.date)}','${escapeHtml(b.time)}')" class="${paid ? 'btn-secondary' : 'btn-primary'} px-2 py-1 rounded-lg text-[10px] font-bold">${paid ? 'Снять оплату' : 'Оплачен'}</button>`;
+            return `<div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div class="space-y-0.5 min-w-0">
+                    <div class="font-extrabold text-slateDark flex flex-wrap items-center gap-1.5">
+                        <span class="text-peach">${escapeHtml(b.time)}</span>
+                        <button type="button" onclick="openStudentModalByKey('${escapeHtml(studentKey(b))}')" class="font-extrabold text-slateDark underline decoration-peach/50 underline-offset-2 hover:text-peach transition-colors text-left">${escapeHtml(b.name)}</button>
+                        ${b.grade ? `<span class="text-peach">(${escapeHtml(b.grade)})</span>` : ''} ${statusBadge} ${payBadge}
+                    </div>
+                    <div class="text-[11px] text-slateDark/65">${escapeHtml(b.format || '')} • ${Number(b.duration || 60)} мин • ${Number(b.price || 0)} ₽</div>
+                </div>
+                <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">${actions}</div>
+            </div>`;
+        }
+        function renderToday() {
+            const t = getIso(0);
+            const dl = document.getElementById('todayDateLabel'); if (dl) dl.innerText = formatRuDate(t);
+            const list = todayBookings();
+            const revenue = list.reduce((a, b) => a + Number(b.price || 0), 0);
+            const lc = document.getElementById('todayLessonCount'); if (lc) lc.innerText = list.length;
+            const rv = document.getElementById('todayRevenue'); if (rv) rv.innerText = revenue.toLocaleString('ru-RU') + ' ₽';
+            const dk = document.getElementById('todayDebtKpi'); if (dk) dk.innerText = totalDebt().toLocaleString('ru-RU') + ' ₽';
+            const all = buildStudentIndex();
+            const lapsed = all.filter(s => studentIsLapsed(s));
+            const lk = document.getElementById('todayLapsedKpi'); if (lk) lk.innerText = lapsed.length;
+
+            const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
+            const next = list.find(b => timeToMin(b.time) >= nowMin && (!getLessonStatus(b.date, b.time) || getLessonStatus(b.date, b.time).status === 'scheduled'));
+            const nl = document.getElementById('todayNextLabel');
+            if (nl) nl.innerText = next ? `Ближайший: ${next.time} — ${next.name}` : (list.length ? 'Все уроки на сегодня прошли' : '');
+
+            const box = document.getElementById('todayLessons');
+            if (box) box.innerHTML = list.length ? list.map(b => todayLessonRow(b)).join('')
+                : '<div class="text-xs text-slateDark/50 py-3 text-center">На сегодня уроков нет. Откройте окна во вкладке «Расписание и окна».</div>';
+
+            const rb = document.getElementById('todayRemind');
+            if (rb) rb.innerHTML = lapsed.length ? lapsed.map(s => `<div class="p-2.5 rounded-xl bg-cream-50 border border-rose-200 flex flex-wrap items-center justify-between gap-1.5 text-xs">
+                <div class="min-w-0"><span class="font-bold text-slateDark">${escapeHtml(s.name)}</span> <span class="text-rose-600 font-semibold">не был(а) ${daysSinceDate(s.lastDate)} дн</span></div>
+                <button type="button" onclick="remindStudent('${escapeHtml(s.key)}')" class="btn-primary px-2.5 py-1 rounded-lg font-bold flex-shrink-0">✉️ Напомнить</button>
+            </div>`).join('') : '<div class="text-xs text-slateDark/50 py-2">Все ученики были недавно — напоминания не нужны.</div>';
+
+            const hb = document.getElementById('todayHomework');
+            if (hb) {
+                const items = [];
+                all.forEach(s => (getLearning(s.key).homework || []).forEach(h => {
+                    if (!h.done && h.due && h.due <= t) items.push({ name: s.name, key: s.key, text: h.text, due: h.due, overdue: h.due < t });
+                }));
+                items.sort((a, b) => (a.due || '').localeCompare(b.due || ''));
+                hb.innerHTML = items.length ? items.map(it => `<div class="p-2.5 rounded-xl bg-cream-50 border ${it.overdue ? 'border-rose-200' : 'border-amber-200'} text-xs space-y-0.5">
+                    <div class="flex flex-wrap items-center justify-between gap-1.5">
+                        <button type="button" onclick="openStudentModalByKey('${escapeHtml(it.key)}')" class="font-bold text-slateDark underline decoration-peach/50 underline-offset-2 hover:text-peach transition-colors text-left">${escapeHtml(it.name)}</button>
+                        <span class="${it.overdue ? 'text-rose-600' : 'text-amber-600'} font-semibold">${it.overdue ? 'просрочено' : 'к сдаче сегодня'} · ${formatRuDate(it.due)}</span>
+                    </div>
+                    <div class="text-slateDark/75">${escapeHtml(it.text)}</div>
+                </div>`).join('') : '<div class="text-xs text-slateDark/50 py-2">Нет заданий к сдаче сегодня. Задайте новое в карточке ученика.</div>';
+            }
+
+            const db = document.getElementById('todayDebt');
+            if (db) {
+                const debtors = all.map(s => ({ s, debt: studentDebt(s.key) })).filter(x => x.debt > 0).sort((a, b) => b.debt - a.debt);
+                db.innerHTML = debtors.length ? debtors.map(x => `<div class="p-2.5 rounded-xl bg-cream-50 border border-rose-200 flex flex-wrap items-center justify-between gap-1.5 text-xs">
+                    <button type="button" onclick="openStudentModalByKey('${escapeHtml(x.s.key)}')" class="font-bold text-slateDark underline decoration-peach/50 underline-offset-2 hover:text-peach transition-colors text-left">${escapeHtml(x.s.name)}</button>
+                    <span class="text-rose-600 font-extrabold">${x.debt.toLocaleString('ru-RU')} ₽</span>
+                </div>`).join('') : '<div class="text-xs text-slateDark/50 py-2">Долгов нет — все прошедшие уроки оплачены.</div>';
+            }
+        }
+        function printDaySchedule() {
+            const t = getIso(0);
+            const list = todayBookings();
+            const sheet = document.getElementById('printDaySheet');
+            if (!sheet) return;
+            const rows = list.length ? list.map(b => {
+                const st = getLessonStatus(b.date, b.time); const status = st ? st.status : 'scheduled';
+                const statusRu = status === 'done' ? 'проведён' : status === 'noshow' ? 'неявка' : status === 'cancelled' ? 'отменён' : 'запланирован';
+                return `<tr><td>${escapeHtml(b.time)}</td><td>${escapeHtml(b.name)}${b.grade ? ' (' + escapeHtml(b.grade) + ')' : ''}</td><td>${escapeHtml(b.format || '')}</td><td>${Number(b.duration || 60)} мин</td><td>${Number(b.price || 0)} ₽</td><td>${isLessonPaid(b.date, b.time) ? 'оплачено' : 'не оплачен'}</td><td>${statusRu}</td></tr>`;
+            }).join('') : '<tr><td colspan="7">На сегодня уроков нет.</td></tr>';
+            const revenue = list.reduce((a, b) => a + Number(b.price || 0), 0);
+            sheet.innerHTML = `<h1>Расписание на ${formatRuDate(t)}</h1>
+                <div class="print-sub">Мария · математика · уроков: ${list.length} · выручка за день: ${revenue.toLocaleString('ru-RU')} ₽</div>
+                <table><thead><tr><th>Время</th><th>Ученик</th><th>Формат</th><th>Длит.</th><th>Цена</th><th>Оплата</th><th>Статус</th></tr></thead><tbody>${rows}</tbody></table>`;
+            window.print();
+        }
+
+        // --- ANALYTICS (cycle-2 round 6): revenue, hours, format leaders ---
+        let analyticsPeriod = 'week';
+
+        function setAnalyticsPeriod(p) {
+            analyticsPeriod = p;
+            document.querySelectorAll('#analyticsPeriodBtns [data-analytics-period]').forEach(btn => {
+                const active = btn.getAttribute('data-analytics-period') === p;
+                btn.className = (active ? 'btn-primary' : 'btn-secondary') + ' px-3 py-1.5 rounded-xl text-[11px] font-bold';
+            });
+            renderAnalytics();
+        }
+
+        function analyticsRange() {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            if (analyticsPeriod === 'week') {
+                const start = new Date(today); start.setDate(start.getDate() - 6);
+                return { start, end: today, days: 7 };
+            }
+            if (analyticsPeriod === 'month') {
+                const start = new Date(today); start.setDate(start.getDate() - 29);
+                return { start, end: today, days: 30 };
+            }
+            return { start: null, end: null, days: 0 };
+        }
+
+        function renderAnalytics() {
+            const chartEl = document.getElementById('analyticsChart');
+            if (!chartEl) return;
+            const range = analyticsRange();
+            const bookings = (teacherBookings || []).filter(b => {
+                if (!b || b.entryType !== 'booking' || !b.date) return false;
+                if (!range.start) return true;
+                const d = new Date(b.date + 'T00:00:00');
+                return d >= range.start && d <= range.end;
+            });
+
+            const revenue = bookings.reduce((s, b) => s + Number(b.price || 0), 0);
+            const minutes = bookings.reduce((s, b) => s + Number(b.duration || 60), 0);
+            const lessons = bookings.length;
+            const hours = Math.round(minutes / 60 * 10) / 10;
+            const avg = lessons ? Math.round(revenue / lessons) : 0;
+            const fmtRub = n => Number(n).toLocaleString('ru-RU') + ' ₽';
+
+            document.getElementById('analyticsRevenue').innerText = fmtRub(revenue);
+            document.getElementById('analyticsLessons').innerText = lessons;
+            document.getElementById('analyticsHours').innerText = hours.toLocaleString('ru-RU');
+            document.getElementById('analyticsAvg').innerText = fmtRub(avg);
+
+            const rangeLabel = document.getElementById('analyticsRangeLabel');
+            if (rangeLabel) {
+                rangeLabel.innerText = range.start
+                    ? `Период: ${formatRuDate(toLocalIso(range.start))} — ${formatRuDate(toLocalIso(range.end))}`
+                    : 'Период: всё время (все активные записи)';
+            }
+
+            // revenue buckets: daily for week/month, monthly for all-time
+            const buckets = new Map();
+            if (range.start) {
+                for (let i = 0; i < range.days; i++) {
+                    const d = new Date(range.start); d.setDate(d.getDate() + i);
+                    buckets.set(toLocalIso(d), 0);
+                }
+                bookings.forEach(b => { if (buckets.has(b.date)) buckets.set(b.date, buckets.get(b.date) + Number(b.price || 0)); });
+            } else {
+                bookings.forEach(b => {
+                    const mk = b.date.slice(0, 7);
+                    buckets.set(mk, (buckets.get(mk) || 0) + Number(b.price || 0));
+                });
+            }
+            const entries = [...buckets.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+            const maxVal = Math.max(1, ...entries.map(e => e[1]));
+            const emptyEl = document.getElementById('analyticsChartEmpty');
+            if (revenue === 0) {
+                chartEl.innerHTML = '';
+                if (emptyEl) emptyEl.classList.remove('hidden');
+            } else {
+                if (emptyEl) emptyEl.classList.add('hidden');
+                const monthNames = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+                chartEl.innerHTML = entries.map(([key, val]) => {
+                    const h = Math.max(val > 0 ? 6 : 2, Math.round(val / maxVal * 100));
+                    let label;
+                    if (range.start) {
+                        const d = new Date(key + 'T00:00:00');
+                        label = analyticsPeriod === 'week'
+                            ? ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'][d.getDay()]
+                            : String(d.getDate());
+                    } else {
+                        const [y, m] = key.split('-');
+                        label = monthNames[Number(m) - 1] + ' ' + String(y).slice(2);
+                    }
+                    const title = (range.start ? formatRuDate(key) : key) + ': ' + fmtRub(val);
+                    return `<div class="flex flex-col items-center gap-1 flex-1 min-w-[18px] h-full" title="${escapeHtml(title)}">
+                        <div class="text-[9px] font-bold text-slateDark/60 h-3">${val > 0 ? Number(val).toLocaleString('ru-RU') : ''}</div>
+                        <div class="relative w-full flex-1">
+                            <div class="absolute bottom-0 left-0 right-0 rounded-t-lg bg-peach" style="height:${h}%"></div>
+                        </div>
+                        <div class="text-[9px] text-slateDark/55 font-semibold whitespace-nowrap">${escapeHtml(label)}</div>
+                    </div>`;
+                }).join('');
+            }
+
+            // format breakdown
+            const byFormat = new Map();
+            bookings.forEach(b => {
+                const f = b.format || 'Без формата';
+                const cur = byFormat.get(f) || { count: 0, minutes: 0, revenue: 0 };
+                cur.count++; cur.minutes += Number(b.duration || 60); cur.revenue += Number(b.price || 0);
+                byFormat.set(f, cur);
+            });
+            const rows = [...byFormat.entries()].sort((a, b) => b[1].revenue - a[1].revenue);
+            const tbody = document.getElementById('analyticsFormatTable');
+            const leaderEl = document.getElementById('analyticsLeader');
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="py-3 text-center text-slateDark/50">Нет данных за период.</td></tr>';
+                if (leaderEl) leaderEl.innerText = '';
+            } else {
+                tbody.innerHTML = rows.map(([f, d], i) => {
+                    const share = revenue ? Math.round(d.revenue / revenue * 100) : 0;
+                    const fh = Math.round(d.minutes / 60 * 10) / 10;
+                    return `<tr class="border-b border-cream-100 ${i === 0 ? 'bg-peach-light/40' : ''}">
+                        <td class="py-2 pr-2 font-bold text-slateDark">${escapeHtml(f)}${i === 0 ? ' <span class="text-peach">🏆</span>' : ''}</td>
+                        <td class="py-2 px-2 text-center text-slateDark/75">${d.count}</td>
+                        <td class="py-2 px-2 text-center text-slateDark/75">${fh.toLocaleString('ru-RU')}</td>
+                        <td class="py-2 px-2 text-right font-bold text-slateDark">${fmtRub(d.revenue)}</td>
+                        <td class="py-2 pl-2 text-right text-slateDark/75">${share}%</td>
+                    </tr>`;
+                }).join('');
+                if (leaderEl) leaderEl.innerText = `Лидер по выручке: «${rows[0][0]}» — ${fmtRub(rows[0][1].revenue)} (${rows[0][1].count} ${pluralRu(rows[0][1].count, 'урок', 'урока', 'уроков')}).`;
+            }
         }
 
         function toggleTeacherModeView(forceTeacher) {
@@ -4528,15 +5163,27 @@
             container.innerHTML = list.map(b => {
                 const safeTel = normalizeRuPhone(b.phone, '');
                 const idx = students.findIndex(s => s.key === studentKey(b));
+                const st = getLessonStatus(b.date, b.time);
+                const prepaid = getPrepaid(studentKey(b));
+                const statusBadge = !st ? '' :
+                    st.status === 'done' ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 text-[10px] font-bold">✓ проведён</span>' :
+                    st.status === 'noshow' ? (st.protected
+                        ? '<span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 text-[10px] font-bold">неявка · оплачен</span>'
+                        : '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold">неявка · потеря</span>') :
+                    '<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200 text-[10px] font-bold">отменён</span>';
                 return `
                     <div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 flex flex-wrap items-center justify-between gap-2 text-xs">
                         <div class="space-y-0.5 min-w-0">
-                            <div class="font-extrabold text-slateDark"><button type="button" onclick="openStudentModal(${idx})" title="Открыть карточку ученика" class="font-extrabold text-slateDark underline decoration-peach/50 underline-offset-2 hover:text-peach transition-colors text-left">${escapeHtml(b.name)}</button>${b.grade ? ` <span class="text-peach">(${escapeHtml(b.grade)})</span>` : ''} — <span class="text-peach">${escapeHtml(formatRuDate(b.date))} в ${escapeHtml(b.time)}</span></div>
+                            <div class="font-extrabold text-slateDark flex flex-wrap items-center gap-1.5"><button type="button" onclick="openStudentModal(${idx})" title="Открыть карточку ученика" class="font-extrabold text-slateDark underline decoration-peach/50 underline-offset-2 hover:text-peach transition-colors text-left">${escapeHtml(b.name)}</button>${b.grade ? ` <span class="text-peach">(${escapeHtml(b.grade)})</span>` : ''} — <span class="text-peach">${escapeHtml(formatRuDate(b.date))} в ${escapeHtml(b.time)}</span>${statusBadge}${prepaid > 0 ? `<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">💳 ${prepaid}</span>` : ''}${isReviewRequested(b.date, b.time) ? `<span class="px-2 py-0.5 rounded-full bg-peach/15 text-peach border border-peach/30 text-[10px] font-bold">⭐ отзыв запрошен</span>` : ''}</div>
                             <div class="text-[11px] text-slateDark/65">${escapeHtml(b.format || '')} • ${Number(b.price || 0)} ₽ • ${Number(b.duration || 60)} мин • ${escapeHtml(b.messenger || '')}</div>
                         </div>
-                        <div class="flex items-center gap-2 flex-shrink-0">
+                        <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
                             ${b.phone && b.phone !== '—' ? `<a href="tel:${escapeHtml(safeTel)}" class="btn-secondary px-2.5 py-1.5 rounded-xl font-bold">Звонок</a>` : ''}
-                            <button type="button" onclick="deleteBookingBySlot('${escapeHtml(b.date)}', '${escapeHtml(b.time)}')" class="btn-danger px-2.5 py-1.5 rounded-xl font-bold">&times; Удалить</button>
+                            ${st && st.status === 'cancelled' ? '' : `
+                            <button type="button" onclick="setLessonStatus('${escapeHtml(b.date)}', '${escapeHtml(b.time)}', 'done')" class="btn-secondary px-2.5 py-1.5 rounded-xl font-bold" title="Урок состоялся">✓ Проведён</button>
+                            <button type="button" onclick="setLessonStatus('${escapeHtml(b.date)}', '${escapeHtml(b.time)}', 'noshow')" class="btn-secondary px-2.5 py-1.5 rounded-xl font-bold" title="Ученик не пришёл">⚠ Неявка</button>
+                            <button type="button" onclick="setLessonStatus('${escapeHtml(b.date)}', '${escapeHtml(b.time)}', 'cancelled')" class="btn-danger px-2.5 py-1.5 rounded-xl font-bold" title="Отменить и освободить окно">✗ Отменён</button>`}
+                            ${st && st.status === 'done' ? `<button type="button" onclick="openReviewRequest('${escapeHtml(b.date)}', '${escapeHtml(b.time)}')" class="btn-primary px-2.5 py-1.5 rounded-xl font-bold" title="Запросить отзыв у родителя">⭐ Запросить отзыв</button>` : ''}
                         </div>
                     </div>
                 `;
@@ -4553,13 +5200,23 @@
             (teacherBookings || []).filter(b => b && b.entryType === 'booking').forEach(b => {
                 const k = studentKey(b);
                 if (!k) return;
-                if (!map.has(k)) map.set(k, { key: k, name: b.name || 'Ученик', grade: b.grade || '', phone: b.phone || '', messenger: b.messenger || '', bookings: [], total: 0 });
+                if (!map.has(k)) map.set(k, { key: k, name: b.name || 'Ученик', grade: b.grade || '', phone: b.phone || '', messenger: b.messenger || '', bookings: [], total: 0, lastDate: '', lastTime: '', formats: new Set() });
                 const s = map.get(k);
                 s.bookings.push(b);
                 s.total += Number(b.price || 0);
                 if (b.grade) s.grade = b.grade;
+                if (b.format) s.formats.add(b.format);
+                const stamp = (b.date || '') + ' ' + (b.time || '');
+                if (stamp > (s.lastDate + ' ' + s.lastTime)) { s.lastDate = b.date || ''; s.lastTime = b.time || ''; }
             });
             return [...map.values()].sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+        }
+
+        function daysSinceDate(iso) {
+            if (!iso) return Infinity;
+            const then = new Date(iso + 'T12:00:00'); const now = new Date();
+            now.setHours(12, 0, 0, 0);
+            return Math.round((now - then) / 86400000);
         }
 
         function pluralRu(n, one, few, many) {
@@ -4569,7 +5226,331 @@
             return many;
         }
 
+        // --- REVENUE PROTECTION (cycle-2 round 7): lesson statuses, prepayment, cancel policy ---
+        function lessonKey(date, time) { return date + '|' + time; }
+        function getLessonStatus(date, time) {
+            return (siteConfig.lesson_status || {})[lessonKey(date, time)] || null;
+        }
+        function getCancelPolicy() {
+            const p = siteConfig.cancel_policy || {};
+            return { free_hours: Number.isFinite(Number(p.free_hours)) ? Number(p.free_hours) : 24,
+                     noshow_uses_prepaid: p.noshow_uses_prepaid !== false };
+        }
+        function getPrepaid(key) { return Number((siteConfig.prepaid || {})[key] || 0); }
+
+        async function persistProtectionConfig() {
+            const res = await sbRpc('admin_save_config', { p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_config: { ...siteConfig } });
+            siteConfig = mergeSiteConfig(res?.site?.config || res?.config || siteConfig);
+        }
+
+        async function addPrepaid(key, n) {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const map = { ...(siteConfig.prepaid || {}) };
+            map[key] = Math.max(0, getPrepaid(key) + n);
+            siteConfig.prepaid = map;
+            try {
+                await persistProtectionConfig();
+                renderTeacherAllBookings(); openStudentModalByKey(key);
+                showTeacherToast(`Предоплата: ${map[key]} ${pluralRu(map[key], 'урок', 'урока', 'уроков')} в запасе.`);
+            } catch (err) { alert(err.message || 'Не удалось сохранить предоплату.'); }
+        }
+
+        async function setLessonStatus(date, time, status) {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const booking = (teacherBookings || []).find(b => b.date === date && b.time === time && b.entryType === 'booking');
+            const key = booking ? studentKey(booking) : '';
+            const policy = getCancelPolicy();
+            const map = { ...(siteConfig.lesson_status || {}) };
+            let isProtected = false;
+            let msg = '';
+            if (status === 'noshow' && key && policy.noshow_uses_prepaid && getPrepaid(key) > 0) isProtected = true;
+            map[lessonKey(date, time)] = { status, ts: Date.now(), protected: isProtected };
+            siteConfig.lesson_status = map;
+            try {
+                if (status === 'cancelled') {
+                    await sbRpc('admin_set_slot_state_v2', { p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_date: date, p_time: time, p_action: 'delete_booking' });
+                    msg = `Запись отменена, окно ${time} свободно для новой записи.`;
+                } else if (status === 'noshow') {
+                    if (isProtected) {
+                        const pm = { ...(siteConfig.prepaid || {}) }; pm[key] = getPrepaid(key) - 1; siteConfig.prepaid = pm;
+                        msg = 'Неявка: списан 1 оплаченный урок — деньги сохранены.';
+                    } else {
+                        msg = `Неявка без предоплаты: потеряно ${Number(booking?.price || 0)} ₽. Возьмите предоплату со следующего урока.`;
+                    }
+                } else if (status === 'done') {
+                    if (key && getPrepaid(key) > 0) {
+                        const pm = { ...(siteConfig.prepaid || {}) }; pm[key] = getPrepaid(key) - 1; siteConfig.prepaid = pm;
+                        msg = 'Урок проведён, списан 1 оплаченный урок.';
+                    } else msg = 'Урок отмечен проведённым.';
+                }
+                await persistProtectionConfig();
+                await refreshTeacherBundle();
+                if (status === 'cancelled') showFreedSlotSuggestions(date, time);
+                showTeacherToast(msg);
+            } catch (err) { alert(err.message || 'Не удалось сохранить статус урока.'); }
+        }
+
+        function protectionSummary() {
+            const st = siteConfig.lesson_status || {};
+            let lost = 0, protectedRub = 0, noshow = 0, cancelled = 0;
+            Object.values(st).forEach(s => { if (s && s.status === 'cancelled') cancelled++; });
+            (teacherBookings || []).forEach(b => {
+                if (!b || b.entryType !== 'booking') return;
+                const s = st[lessonKey(b.date, b.time)];
+                if (!s) return;
+                if (s.status === 'noshow') { noshow++; if (s.protected) protectedRub += Number(b.price || 0); else lost += Number(b.price || 0); }
+            });
+            return { lost, protectedRub, noshow, cancelled };
+        }
+
+        function openStudentModalByKey(key) {
+            const idx = buildStudentIndex().findIndex(s => s.key === key);
+            if (idx >= 0) openStudentModal(idx);
+        }
+
+        function renderProtection() {
+            const s = protectionSummary();
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+            set('protLost', s.lost.toLocaleString('ru-RU') + ' ₽');
+            set('protSaved', s.protectedRub.toLocaleString('ru-RU') + ' ₽');
+            set('protNoshow', s.noshow);
+            set('protCancelled', s.cancelled);
+            const p = getCancelPolicy();
+            const h = document.getElementById('cfgCancelFreeHours');
+            const c = document.getElementById('cfgNoshowUsesPrepaid');
+            if (h) h.value = p.free_hours;
+            if (c) c.checked = p.noshow_uses_prepaid;
+            const note = document.getElementById('publicCancelPolicyNote');
+            if (note) note.innerText = `Отмена бесплатна не позднее чем за ${p.free_hours} ч до урока. Позже или при неявке урок списывается из предоплаты.`;
+        }
+
+        async function saveCancelPolicy() {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const h = parseInt(document.getElementById('cfgCancelFreeHours')?.value, 10);
+            const c = document.getElementById('cfgNoshowUsesPrepaid')?.checked;
+            siteConfig.cancel_policy = { free_hours: Number.isFinite(h) ? Math.max(0, Math.min(72, h)) : 24, noshow_uses_prepaid: !!c };
+            try {
+                await persistProtectionConfig();
+                renderProtection();
+                showTeacherToast('Правило отмены сохранено и показано родителям на сайте.');
+            } catch (err) { alert(err.message || 'Не удалось сохранить правило.'); }
+        }
+
+        // --- WAITLIST (cycle-2 round 8): refill freed slots from a queue ---
+        let pendingWaitlistId = null;
+        const WL_DOW = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+        function getWaitlist() { return Array.isArray(siteConfig.waitlist) ? siteConfig.waitlist : []; }
+        function timeToMin(t) { const p = String(t || '').split(':'); return (parseInt(p[0], 10) || 0) * 60 + (parseInt(p[1], 10) || 0); }
+        function wlDaysLabel(days) { return (days || []).map(d => WL_DOW[Number(d)]).filter(Boolean).join('/') || 'любой день'; }
+        function copyTextToClipboard(text) {
+            return navigator.clipboard.writeText(text).catch(() => { prompt('Скопируйте текст:', text); });
+        }
+        function entryFitsSlot(e, dateIso, time) {
+            if (!e || e.status !== 'waiting') return false;
+            const dow = String(new Date(dateIso + 'T12:00:00').getDay());
+            if (Array.isArray(e.days) && e.days.length && !e.days.includes(dow)) return false;
+            const start = timeToMin(time), dur = Number(e.durationMin || 60);
+            return start >= timeToMin(e.from || '00:00') && start + dur <= timeToMin(e.to || '23:59');
+        }
+        function freeSlotsForEntry(e, horizon = 14) {
+            const out = [];
+            for (let i = 0; i < horizon; i++) {
+                const iso = getIso(i);
+                getDaySlotsInfo(iso, publicSlotEntries).forEach(s => { if (s.status === 'open' && entryFitsSlot(e, iso, s.time)) out.push({ date: iso, time: s.time }); });
+            }
+            return out;
+        }
+        function waitlistMatchesForFreedSlot(dateIso, time) { return getWaitlist().filter(e => entryFitsSlot(e, dateIso, time)); }
+
+        function populateWaitlistForm() {
+            const fmt = document.getElementById('wlFormat');
+            if (fmt) {
+                const prev = fmt.value;
+                fmt.innerHTML = getActivePrograms().map(p => `<option value="${escapeHtml(p.id)}">${escapeHtml(p.title)} · ${Number(p.duration || 60)} мин · ${Number(p.price || 0)} ₽</option>`).join('');
+                if (prev && [...fmt.options].some(o => o.value === prev)) fmt.value = prev;
+            }
+            const hours = getAllHours(); const endMin = Number(siteConfig.work_end_min ?? 1260);
+            const from = document.getElementById('wlFrom'), to = document.getElementById('wlTo');
+            if (from) { from.innerHTML = hours.map(t => `<option>${t}</option>`).join(''); from.value = hours.includes('16:00') ? '16:00' : hours[0]; }
+            if (to) { const opts = [...hours, minToTime(endMin)]; to.innerHTML = opts.map(t => `<option>${t}</option>`).join(''); to.value = opts.includes('20:00') ? '20:00' : opts[opts.length - 1]; }
+        }
+
+        async function addWaitlistEntry() {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const name = (document.getElementById('wlName')?.value || '').trim();
+            if (!name) return alert('Укажите имя ученика для очереди.');
+            const phone = (document.getElementById('wlPhone')?.value || '').trim();
+            const fmtId = document.getElementById('wlFormat')?.value;
+            const prog = getActivePrograms().find(p => p.id === fmtId) || getActivePrograms()[0];
+            const days = [...document.querySelectorAll('.wl-day:checked')].map(c => c.getAttribute('data-dow'));
+            const from = document.getElementById('wlFrom')?.value || '16:00';
+            const to = document.getElementById('wlTo')?.value || '20:00';
+            if (timeToMin(to) <= timeToMin(from)) return alert('Окончание окна должно быть позже начала.');
+            const note = (document.getElementById('wlNote')?.value || '').trim();
+            const entry = { id: 'wl_' + Date.now(), name, phone, grade: '', format: prog?.title || 'Урок', formatId: prog?.id || '', durationMin: Number(prog?.duration || 60), price: Number(prog?.price || 0), days, from, to, note, ts: Date.now(), status: 'waiting' };
+            siteConfig.waitlist = [...getWaitlist(), entry];
+            try {
+                await persistProtectionConfig();
+                document.getElementById('wlName').value = ''; document.getElementById('wlPhone').value = ''; document.getElementById('wlNote').value = '';
+                renderWaitlist(); showTeacherToast(`${name} — в листе ожидания. Подскажем, когда освободится подходящее окно.`);
+            } catch (err) { alert(err.message || 'Не удалось сохранить очередь.'); }
+        }
+
+        async function removeWaitlistEntry(id) {
+            siteConfig.waitlist = getWaitlist().filter(e => e.id !== id);
+            try { await persistProtectionConfig(); renderWaitlist(); showTeacherToast('Ученик убран из очереди.'); }
+            catch (err) { alert(err.message || 'Не удалось сохранить очередь.'); }
+        }
+
+        function renderWaitlistOffers(id) {
+            const e = getWaitlist().find(x => x.id === id); const box = document.getElementById('wlOffers-' + id);
+            if (!e || !box) return;
+            const slots = freeSlotsForEntry(e).slice(0, 6);
+            box.innerHTML = slots.length
+                ? slots.map(s => `<button type="button" onclick="offerWaitlistSlot('${id}','${s.date}','${s.time}')" class="btn-secondary px-2 py-1 rounded-lg text-[10px] font-bold">${formatRuDate(s.date)} · ${s.time}</button>`).join('')
+                : '<span class="text-[11px] text-slateDark/50">Пока нет подходящих свободных окон.</span>';
+        }
+
+        function offerWaitlistSlot(id, date, time) {
+            const e = getWaitlist().find(x => x.id === id); if (!e) return;
+            pendingWaitlistId = id;
+            openManualAddModal();
+            const set = (el, v) => { if (el) el.value = v; };
+            set(document.getElementById('manualCustName'), e.name);
+            set(document.getElementById('manualCustPhone'), e.phone || '');
+            set(document.getElementById('manualCustGrade'), (e.grade || '').replace(' класс', ''));
+            const fmt = document.getElementById('manualCustFormat'); if (fmt && e.formatId) fmt.value = e.formatId;
+            set(document.getElementById('manualCustDateSelect'), date);
+            set(document.getElementById('manualCustTimeSelect'), time);
+            const msg = `Здравствуйте, ${e.name}! Освободилось окно ${formatRuDate(date)} в ${time} (${e.durationMin} мин, ${e.format}). Хотите занять? Ответьте — и я закреплю его за вами.`;
+            copyTextToClipboard(msg).then(() => showTeacherToast('Запись заполнена, текст предложения скопирован — отправьте ученику и сохраните запись.'));
+        }
+
+        function showFreedSlotSuggestions(date, time) {
+            const box = document.getElementById('waitlistSuggestion'); if (!box) return;
+            const matches = waitlistMatchesForFreedSlot(date, time);
+            if (!matches.length) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+            box.classList.remove('hidden');
+            box.innerHTML = `<div class="font-bold text-slateDark mb-1.5">Освободилось окно ${formatRuDate(date)} в ${time}. Из очереди подходят:</div>` +
+                matches.map(e => `<div class="flex flex-wrap items-center justify-between gap-2 py-1">
+                    <span class="font-semibold text-slateDark">${escapeHtml(e.name)} <span class="text-slateDark/60">(${escapeHtml(e.format)}, ждёт ${wlDaysLabel(e.days)} ${escapeHtml(e.from)}–${escapeHtml(e.to)})</span></span>
+                    <button type="button" onclick="offerWaitlistSlot('${e.id}','${date}','${time}')" class="btn-primary px-2.5 py-1 rounded-lg text-[11px] font-bold">Предложить окно</button>
+                </div>`).join('');
+        }
+
+        function renderWaitlist() {
+            const list = getWaitlist().filter(e => e.status === 'waiting');
+            const countEl = document.getElementById('waitlistCount'); if (countEl) countEl.innerText = list.length;
+            const container = document.getElementById('waitlistList'); if (!container) return;
+            if (!list.length) {
+                container.innerHTML = '<div class="text-xs text-slateDark/50 py-3 text-center">Очередь пуста. Добавьте ученика, который ждёт удобное время — когда окно освободится, подскажем, кому предложить.</div>';
+                return;
+            }
+            container.innerHTML = list.map(e => {
+                const n = freeSlotsForEntry(e).length;
+                return `<div class="p-3 rounded-2xl bg-cream-50 border border-cream-200 space-y-2 text-xs">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="font-extrabold text-slateDark">${escapeHtml(e.name)} <span class="text-peach">· ${escapeHtml(e.format)}</span></div>
+                            <div class="text-[11px] text-slateDark/65">${wlDaysLabel(e.days)} · ${escapeHtml(e.from)}–${escapeHtml(e.to)} · ${Number(e.durationMin || 60)} мин · ${Number(e.price || 0)} ₽${e.phone ? ' · ' + escapeHtml(e.phone) : ''}</div>
+                            ${e.note ? `<div class="text-[11px] text-slateDark/50 italic">${escapeHtml(e.note)}</div>` : ''}
+                        </div>
+                        <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                            <span class="px-2 py-0.5 rounded-full ${n ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-500 border border-slate-200'} text-[10px] font-bold">окон: ${n}</span>
+                            <button type="button" onclick="renderWaitlistOffers('${e.id}')" class="btn-secondary px-2.5 py-1.5 rounded-xl font-bold">Подобрать окно</button>
+                            <button type="button" onclick="removeWaitlistEntry('${e.id}')" class="btn-danger px-2.5 py-1.5 rounded-xl font-bold">Убрать</button>
+                        </div>
+                    </div>
+                    <div id="wlOffers-${e.id}" class="flex flex-wrap gap-1.5"></div>
+                </div>`;
+            }).join('');
+        }
+
         let activeStudentKey = null;
+
+        // --- STUDENT CRM (cycle-2 round 9): search, filters, retention ---
+        function getLapseDays() { const v = parseInt(document.getElementById('studentLapseDays')?.value, 10); return Number.isFinite(v) ? v : 14; }
+        function studentIsLapsed(s) { return daysSinceDate(s.lastDate) > getLapseDays(); }
+        function populateStudentFormatFilter() {
+            const sel = document.getElementById('studentFormatFilter'); if (!sel) return;
+            const prev = sel.value;
+            const set = new Set();
+            buildStudentIndex().forEach(s => s.formats.forEach(f => set.add(f)));
+            const fmts = [...set].sort((a, b) => a.localeCompare(b, 'ru'));
+            sel.innerHTML = '<option value="all">Все форматы</option>' + fmts.map(f => `<option value="${escapeHtml(f)}">${escapeHtml(f)}</option>`).join('');
+            if (prev && [...sel.options].some(o => o.value === prev)) sel.value = prev;
+        }
+        function filteredStudentRoster() {
+            const q = (document.getElementById('studentSearch')?.value || '').trim().toLowerCase();
+            const fmt = document.getElementById('studentFormatFilter')?.value || 'all';
+            const act = document.getElementById('studentActivityFilter')?.value || 'all';
+            const sort = document.getElementById('studentSort')?.value || 'last';
+            let list = buildStudentIndex().map(s => ({ ...s, daysSince: daysSinceDate(s.lastDate), lapsed: studentIsLapsed(s), prepaid: getPrepaid(s.key) }));
+            if (q) list = list.filter(s => s.name.toLowerCase().includes(q) || String(s.phone || '').toLowerCase().includes(q));
+            if (fmt !== 'all') list = list.filter(s => [...s.formats].includes(fmt));
+            if (act === 'active') list = list.filter(s => !s.lapsed);
+            if (act === 'lapsed') list = list.filter(s => s.lapsed);
+            if (sort === 'last') list.sort((a, b) => a.daysSince - b.daysSince);
+            else if (sort === 'lapsed') list.sort((a, b) => b.daysSince - a.daysSince);
+            else if (sort === 'revenue') list.sort((a, b) => b.total - a.total);
+            else list.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+            return list;
+        }
+        function renderStudentRoster() {
+            const container = document.getElementById('studentRosterList'); if (!container) return;
+            const all = buildStudentIndex();
+            const lapsedCount = all.filter(s => studentIsLapsed(s)).length;
+            const lc = document.getElementById('studentLapsedCount'); if (lc) lc.innerText = lapsedCount;
+            const dt = document.getElementById('studentDebtTotal'); if (dt) dt.innerText = totalDebt().toLocaleString('ru-RU') + ' ₽';
+            const list = filteredStudentRoster();
+            const meta = document.getElementById('studentRosterMeta');
+            if (meta) meta.innerText = `Показано ${list.length} из ${all.length} · выручка ${list.reduce((a, s) => a + s.total, 0).toLocaleString('ru-RU')} ₽`;
+            if (!list.length) { container.innerHTML = '<div class="text-xs text-slateDark/50 py-4 text-center">Никто не найден. Измените поиск или фильтр.</div>'; return; }
+            container.innerHTML = list.map(s => {
+                const idx = all.findIndex(x => x.key === s.key);
+                const when = s.daysSince === Infinity ? 'ещё не было уроков' :
+                    s.daysSince < 0 ? `ближайший урок ${formatRuDate(s.lastDate)}` :
+                    s.daysSince === 0 ? 'был(а) сегодня' : `был(а) ${s.daysSince} ${pluralRu(s.daysSince, 'день', 'дня', 'дней')} назад`;
+                const badge = s.lapsed
+                    ? `<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold">давно не был · ${s.daysSince} дн</span>`
+                    : `<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">${when}</span>`;
+                return `<div class="p-3 rounded-2xl bg-cream-50 border ${s.lapsed ? 'border-rose-200' : 'border-cream-200'} space-y-1.5 text-xs">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="font-extrabold text-slateDark flex flex-wrap items-center gap-1.5">
+                                <button type="button" onclick="openStudentModal(${idx})" class="font-extrabold text-slateDark underline decoration-peach/50 underline-offset-2 hover:text-peach transition-colors text-left">${escapeHtml(s.name)}</button>
+                                ${s.grade ? `<span class="text-peach">(${escapeHtml(s.grade)})</span>` : ''} ${badge}
+                                ${s.prepaid > 0 ? `<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">💳 ${s.prepaid}</span>` : ''}
+                            </div>
+                            <div class="text-[11px] text-slateDark/65 mt-0.5">${s.bookings.length} ${pluralRu(s.bookings.length, 'урок', 'урока', 'уроков')} · ${s.total.toLocaleString('ru-RU')} ₽ · ${[...s.formats].map(escapeHtml).join(', ') || 'формат не указан'}${s.phone ? ' · ' + escapeHtml(s.phone) : ''}</div>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-1.5 flex-shrink-0">
+                            ${s.lapsed ? `<button type="button" onclick="remindStudent('${escapeHtml(s.key)}')" class="btn-primary px-2.5 py-1.5 rounded-xl font-bold">✉️ Напомнить</button>` : ''}
+                            <button type="button" onclick="rebookStudent('${escapeHtml(s.key)}')" class="btn-secondary px-2.5 py-1.5 rounded-xl font-bold">Записать ещё</button>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        function remindStudent(key) {
+            const s = buildStudentIndex().find(x => x.key === key); if (!s) return;
+            const msg = `Здравствуйте, ${s.name}! Давно не виделись на математике. Хотите вернуться к занятиям? Подберу удобное окно — напишите, какой день и время подходят. Мария.`;
+            copyTextToClipboard(msg).then(() => showTeacherToast(`Напоминание для ${s.name} скопировано — отправьте в мессенджер.`));
+        }
+        function remindLapsedStudents() {
+            const lapsed = buildStudentIndex().filter(s => studentIsLapsed(s));
+            if (!lapsed.length) return showTeacherToast('Пропавших учеников нет — все были недавно.', true);
+            const text = lapsed.map(s => `${s.name}${s.phone ? ' (' + s.phone + ')' : ''} — не был(а) ${daysSinceDate(s.lastDate)} дн. Напомнить о возвращении.`).join('\n');
+            copyTextToClipboard(text).then(() => showTeacherToast(`Список из ${lapsed.length} пропавших скопирован — отправьте каждому напоминание.`));
+        }
+        function rebookStudent(key) {
+            const s = buildStudentIndex().find(x => x.key === key); if (!s) return;
+            openManualAddModal();
+            const set = (el, v) => { if (el) el.value = v; };
+            set(document.getElementById('manualCustName'), s.name);
+            set(document.getElementById('manualCustPhone'), s.phone || '');
+            set(document.getElementById('manualCustGrade'), (s.grade || '').replace(' класс', ''));
+        }
 
         function openStudentModal(idx) {
             const s = buildStudentIndex()[idx];
@@ -4583,6 +5564,14 @@
             const rebookBtn = document.getElementById('studentRebookBtn');
             if (title) title.innerText = `${s.name}${s.grade ? ' (' + s.grade + ')' : ''}`;
             if (stats) stats.innerText = `${s.bookings.length} ${pluralRu(s.bookings.length, 'урок', 'урока', 'уроков')} · ${s.total.toLocaleString('ru-RU')} ₽${s.phone ? ' · ' + s.phone : ''}${s.messenger ? ' · ' + s.messenger : ''}`;
+            const prepaidEl = document.getElementById('studentPrepaidCount');
+            if (prepaidEl) {
+                const n = getPrepaid(s.key);
+                prepaidEl.innerText = n > 0 ? `${n} ${pluralRu(n, 'урок', 'урока', 'уроков')} в запасе` : 'нет предоплаты';
+            }
+            renderStudentLearning();
+            renderStudentPayments();
+            populateRecurringForm();
             if (history) {
                 const sorted = [...s.bookings].sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
                 history.innerHTML = sorted.map(b => `
@@ -4614,6 +5603,302 @@
             if (modal) { modal.classList.add('hidden'); modal.classList.remove('flex'); }
             activeStudentKey = null;
         }
+
+        // --- STUDENT LEARNING (cycle-2 round 10): homework + goals/progress ---
+        function getLearning(key) {
+            const all = siteConfig.student_learning && typeof siteConfig.student_learning === 'object' ? siteConfig.student_learning : {};
+            const d = all[key] || {};
+            return { homework: Array.isArray(d.homework) ? d.homework : [], goals: Array.isArray(d.goals) ? d.goals : [] };
+        }
+        async function persistLearning(key, data) {
+            const all = { ...(siteConfig.student_learning || {}) };
+            all[key] = data;
+            siteConfig.student_learning = all;
+            await persistProtectionConfig();
+        }
+        function renderStudentLearning() {
+            if (!activeStudentKey) return;
+            const d = getLearning(activeStudentKey);
+            const hwBox = document.getElementById('studentHomeworkList');
+            const hwCount = document.getElementById('studentHwCount');
+            const today = getIso(0);
+            if (hwCount) { const open = d.homework.filter(h => !h.done).length; hwCount.innerText = open ? `${open} не сдано` : 'всё сдано'; }
+            if (hwBox) {
+                hwBox.innerHTML = d.homework.length ? d.homework.map(h => {
+                    const overdue = !h.done && h.due && h.due < today;
+                    return `<div class="flex flex-wrap items-center gap-2 p-2 rounded-xl bg-white border ${overdue ? 'border-rose-200' : 'border-cream-200'}">
+                        <input type="checkbox" ${h.done ? 'checked' : ''} onchange="toggleHomework('${h.id}')" class="accent-emerald-600 flex-shrink-0" title="Сдано">
+                        <span class="flex-1 min-w-0 ${h.done ? 'line-through text-slateDark/45' : 'text-slateDark'} font-semibold">${escapeHtml(h.text)}</span>
+                        ${h.due ? `<span class="text-[10px] ${overdue ? 'text-rose-600 font-bold' : 'text-slateDark/55'} whitespace-nowrap">${overdue ? 'просрочено · ' : 'до '}${formatRuDate(h.due)}</span>` : ''}
+                        <button type="button" onclick="removeHomework('${h.id}')" class="text-slateDark/35 hover:text-rose-500 font-bold flex-shrink-0" title="Удалить">&times;</button>
+                    </div>`;
+                }).join('') : '<div class="text-[11px] text-slateDark/50">Заданий пока нет. Добавьте, что задать на этой неделе.</div>';
+            }
+            const goalBox = document.getElementById('studentGoalsList');
+            if (goalBox) {
+                goalBox.innerHTML = d.goals.length ? d.goals.map(g => {
+                    const lv = Number(g.level || 0);
+                    return `<div class="p-2 rounded-xl bg-white border border-cream-200 space-y-1">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="font-semibold text-slateDark flex-1 min-w-0">${escapeHtml(g.text)}</span>
+                            <span class="text-[10px] font-bold text-peach whitespace-nowrap" id="goalLabel-${g.id}">${lv}%</span>
+                            <button type="button" onclick="removeGoal('${g.id}')" class="text-slateDark/35 hover:text-rose-500 font-bold flex-shrink-0" title="Удалить">&times;</button>
+                        </div>
+                        <input type="range" min="0" max="100" step="5" value="${lv}" oninput="document.getElementById('goalLabel-${g.id}').innerText=this.value+'%'" onchange="setGoalLevel('${g.id}', this.value)" class="w-full accent-peach" title="Прогресс по цели">
+                    </div>`;
+                }).join('') : '<div class="text-[11px] text-slateDark/50">Целей пока нет. Поставьте цель и двигайте прогресс.</div>';
+            }
+        }
+        async function addHomework() {
+            if (!activeStudentKey) return;
+            const text = (document.getElementById('hwText')?.value || '').trim();
+            if (!text) return alert('Напишите текст задания.');
+            const due = document.getElementById('hwDue')?.value || '';
+            const d = getLearning(activeStudentKey);
+            d.homework.push({ id: 'hw_' + Date.now(), text, due, done: false, ts: Date.now() });
+            try { await persistLearning(activeStudentKey, d); document.getElementById('hwText').value = ''; document.getElementById('hwDue').value = ''; renderStudentLearning(); showTeacherToast('Задание добавлено и сохранено в облако.'); }
+            catch (err) { alert(err.message || 'Не удалось сохранить задание.'); }
+        }
+        async function toggleHomework(id) {
+            if (!activeStudentKey) return;
+            const d = getLearning(activeStudentKey);
+            d.homework = d.homework.map(h => h.id === id ? { ...h, done: !h.done } : h);
+            try { await persistLearning(activeStudentKey, d); renderStudentLearning(); } catch (err) { alert(err.message); }
+        }
+        async function removeHomework(id) {
+            if (!activeStudentKey) return;
+            const d = getLearning(activeStudentKey);
+            d.homework = d.homework.filter(h => h.id !== id);
+            try { await persistLearning(activeStudentKey, d); renderStudentLearning(); } catch (err) { alert(err.message); }
+        }
+        async function addGoal() {
+            if (!activeStudentKey) return;
+            const text = (document.getElementById('goalText')?.value || '').trim();
+            if (!text) return alert('Напишите цель.');
+            const d = getLearning(activeStudentKey);
+            d.goals.push({ id: 'g_' + Date.now(), text, level: 0, ts: Date.now() });
+            try { await persistLearning(activeStudentKey, d); document.getElementById('goalText').value = ''; renderStudentLearning(); showTeacherToast('Цель добавлена.'); }
+            catch (err) { alert(err.message || 'Не удалось сохранить цель.'); }
+        }
+        async function setGoalLevel(id, val) {
+            if (!activeStudentKey) return;
+            const d = getLearning(activeStudentKey);
+            d.goals = d.goals.map(g => g.id === id ? { ...g, level: Number(val) } : g);
+            const lbl = document.getElementById('goalLabel-' + id); if (lbl) lbl.innerText = Number(val) + '%';
+            try { await persistLearning(activeStudentKey, d); } catch (err) { alert(err.message); }
+        }
+        async function removeGoal(id) {
+            if (!activeStudentKey) return;
+            const d = getLearning(activeStudentKey);
+            d.goals = d.goals.filter(g => g.id !== id);
+            try { await persistLearning(activeStudentKey, d); renderStudentLearning(); } catch (err) { alert(err.message); }
+        }
+
+        // --- PAYMENTS (cycle-2 round 12): per-lesson paid status + debt ---
+        function getPayment(date, time) { return (siteConfig.payments || {})[lessonKey(date, time)] || { paid: false }; }
+        function isLessonPaid(date, time) { return !!getPayment(date, time).paid; }
+        function paymentStatus(b) { if (isLessonPaid(b.date, b.time)) return 'paid'; return b.date < getIso(0) ? 'overdue' : 'pending'; }
+        function studentDebt(key) { return (teacherBookings || []).filter(b => b && b.entryType === 'booking' && studentKey(b) === key && paymentStatus(b) === 'overdue').reduce((a, b) => a + Number(b.price || 0), 0); }
+        function studentPending(key) { return (teacherBookings || []).filter(b => b && b.entryType === 'booking' && studentKey(b) === key && paymentStatus(b) === 'pending').reduce((a, b) => a + Number(b.price || 0), 0); }
+        function totalDebt() { return (teacherBookings || []).filter(b => b && b.entryType === 'booking' && paymentStatus(b) === 'overdue').reduce((a, b) => a + Number(b.price || 0), 0); }
+        async function toggleLessonPaid(date, time) {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            const map = { ...(siteConfig.payments || {}) };
+            const cur = map[lessonKey(date, time)] || { paid: false };
+            map[lessonKey(date, time)] = { paid: !cur.paid, ts: Date.now() };
+            siteConfig.payments = map;
+            try {
+                await persistProtectionConfig();
+                renderStudentPayments(); renderStudentRoster(); renderTeacherAllBookings(); renderToday();
+                showTeacherToast(!cur.paid ? 'Оплата отмечена.' : 'Отметка оплаты снята.');
+            } catch (err) { alert(err.message || 'Не удалось сохранить оплату.'); }
+        }
+        function renderStudentPayments() {
+            if (!activeStudentKey) return;
+            const debt = studentDebt(activeStudentKey), pend = studentPending(activeStudentKey);
+            const debtEl = document.getElementById('studentDebtBadge'); if (debtEl) debtEl.innerText = 'Долг: ' + debt.toLocaleString('ru-RU') + ' ₽';
+            const pendEl = document.getElementById('studentPendingBadge'); if (pendEl) pendEl.innerText = 'Ожидается: ' + pend.toLocaleString('ru-RU') + ' ₽';
+            const tbody = document.getElementById('studentPaymentTable'); if (!tbody) return;
+            const rows = (teacherBookings || []).filter(b => b && b.entryType === 'booking' && studentKey(b) === activeStudentKey).sort((a, b) => (b.date + b.time).localeCompare(a.date + a.time));
+            if (!rows.length) { tbody.innerHTML = '<tr><td colspan="4" class="py-2 text-slateDark/50">Уроков пока нет.</td></tr>'; return; }
+            tbody.innerHTML = rows.map(b => {
+                const st = paymentStatus(b);
+                const badge = st === 'paid' ? '<span class="px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">оплачено</span>' :
+                    st === 'overdue' ? '<span class="px-1.5 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 text-[10px] font-bold">просрочено</span>' :
+                    '<span class="px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold">ожидается</span>';
+                const btn = `<button type="button" onclick="toggleLessonPaid('${escapeHtml(b.date)}','${escapeHtml(b.time)}')" class="${st === 'paid' ? 'btn-secondary' : 'btn-primary'} px-2 py-1 rounded-lg text-[10px] font-bold">${st === 'paid' ? 'Снять' : 'Оплачен'}</button>`;
+                return `<tr class="border-b border-cream-100">
+                    <td class="py-1.5 pr-2 font-semibold text-slateDark whitespace-nowrap">${formatRuDate(b.date)} ${escapeHtml(b.time)}</td>
+                    <td class="py-1.5 px-2 text-right text-slateDark whitespace-nowrap">${Number(b.price || 0).toLocaleString('ru-RU')} ₽</td>
+                    <td class="py-1.5 px-2">${badge}</td>
+                    <td class="py-1.5 pl-2 text-right">${btn}</td>
+                </tr>`;
+            }).join('');
+        }
+
+        // --- RECURRING LESSONS (cycle-2 round 14): permanent student schedule + bulk generate ---
+        const REC_DOW = [{ d: 1, l: 'Пн' }, { d: 2, l: 'Вт' }, { d: 3, l: 'Ср' }, { d: 4, l: 'Чт' }, { d: 5, l: 'Пт' }, { d: 6, l: 'Сб' }, { d: 0, l: 'Вс' }];
+        function getRecurring(key) { const r = (siteConfig.recurring || {})[key]; return r && typeof r === 'object' ? r : null; }
+        function recurringFormats() {
+            const set = new Set();
+            (teacherBookings || []).forEach(b => { if (b && b.format) set.add(b.format); });
+            getActivePrograms().forEach(p => { if (p && p.title) set.add(p.title); });
+            if (!set.size) set.add('Индивидуальный');
+            return [...set];
+        }
+        function renderRecurringSummary() {
+            const el = document.getElementById('recurringSummary'); if (!el) return;
+            const r = getRecurring(activeStudentKey);
+            if (!r || !Array.isArray(r.dow) || !r.dow.length) { el.innerText = 'шаблон не задан'; return; }
+            const days = r.dow.map(d => (REC_DOW.find(x => x.d === Number(d)) || {}).l).filter(Boolean).join('/');
+            el.innerText = `${days} · ${r.time || ''} · ${r.format || ''}`;
+        }
+        function populateRecurringForm() {
+            if (!activeStudentKey) return;
+            const r = getRecurring(activeStudentKey) || {};
+            const dowBox = document.getElementById('recDow');
+            if (dowBox) {
+                const sel = Array.isArray(r.dow) ? r.dow.map(Number) : [];
+                dowBox.innerHTML = REC_DOW.map(x => `<label class="inline-flex items-center gap-1 px-2 py-1 rounded-lg border border-cream-200 bg-white text-[11px] font-bold cursor-pointer"><input type="checkbox" class="rec-dow" value="${x.d}" ${sel.includes(x.d) ? 'checked' : ''}> ${x.l}</label>`).join('');
+            }
+            const fmt = document.getElementById('recFormat');
+            if (fmt) {
+                const formats = recurringFormats();
+                const cur = r.format || formats[0];
+                fmt.innerHTML = formats.map(f => `<option value="${escapeHtml(f)}" ${f === cur ? 'selected' : ''}>${escapeHtml(f)}</option>`).join('');
+            }
+            const s = buildStudentIndex().find(x => x.key === activeStudentKey);
+            const lastPrice = s && s.bookings.length ? Number(s.bookings[s.bookings.length - 1].price || 0) : 0;
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+            set('recTime', r.time || '16:00');
+            set('recDuration', r.duration || 60);
+            set('recPrice', r.price || lastPrice || 1400);
+            set('recWeeks', r.weeks || 4);
+            renderRecurringSummary();
+        }
+        function readRecurringForm() {
+            const dow = Array.from(document.querySelectorAll('#recDow .rec-dow:checked')).map(c => Number(c.value));
+            const time = (document.getElementById('recTime')?.value || '').trim();
+            const format = document.getElementById('recFormat')?.value || 'Урок математики';
+            const duration = Number(document.getElementById('recDuration')?.value || 60);
+            const price = Number(document.getElementById('recPrice')?.value || 0);
+            const weeks = Math.min(12, Math.max(1, Number(document.getElementById('recWeeks')?.value || 4)));
+            return { dow, time, format, duration, price, weeks };
+        }
+        async function saveRecurringTemplate() {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            if (!activeStudentKey) return;
+            const t = readRecurringForm();
+            if (!t.dow.length) return alert('Выберите хотя бы один день недели.');
+            if (!t.time) return alert('Укажите время урока.');
+            const map = { ...(siteConfig.recurring || {}) }; map[activeStudentKey] = t; siteConfig.recurring = map;
+            try { await persistProtectionConfig(); renderRecurringSummary(); showTeacherToast('Постоянное расписание сохранено в облако.'); }
+            catch (err) { alert(err.message || 'Не удалось сохранить расписание.'); }
+        }
+        async function removeRecurringTemplate() {
+            if (!activeTeacherPin || !activeStudentKey) return;
+            const map = { ...(siteConfig.recurring || {}) }; delete map[activeStudentKey]; siteConfig.recurring = map;
+            try { await persistProtectionConfig(); populateRecurringForm(); showTeacherToast('Шаблон расписания удалён.'); }
+            catch (err) { alert(err.message || 'Не удалось удалить расписание.'); }
+        }
+        async function generateRecurringLessons() {
+            if (!activeTeacherPin) return requestTeacherAccess();
+            if (!activeStudentKey) return;
+            const t = readRecurringForm();
+            if (!t.dow.length) return alert('Выберите хотя бы один день недели.');
+            if (!t.time) return alert('Укажите время урока.');
+            const s = buildStudentIndex().find(x => x.key === activeStudentKey);
+            if (!s) return;
+            const map = { ...(siteConfig.recurring || {}) }; map[activeStudentKey] = t; siteConfig.recurring = map;
+            try { await persistProtectionConfig(); } catch (_) {}
+            const occupied = new Set((teacherBookings || []).filter(b => b && b.entryType === 'booking').map(b => b.date + '|' + b.time));
+            const candidates = [];
+            for (let off = 0; off < t.weeks * 7; off++) {
+                const date = getIso(off);
+                const dow = new Date(date + 'T12:00:00').getDay();
+                if (!t.dow.includes(dow)) continue;
+                const key = date + '|' + t.time;
+                if (occupied.has(key)) continue;
+                occupied.add(key); candidates.push(date);
+            }
+            if (!candidates.length) { renderRecurringSummary(); return showTeacherToast('Все окна на выбранные дни уже заняты — новых уроков не нужно.', true); }
+            let created = 0;
+            try {
+                for (const date of candidates) {
+                    await sbRpc('admin_set_slot_state_v2', {
+                        p_slug: SITE_SLUG, p_pin: activeTeacherPin, p_date: date, p_time: t.time, p_action: 'add_booking',
+                        p_booking: { name: s.name, grade: s.grade || '', phone: s.phone || '—', format: t.format, price: t.price, duration: t.duration, messenger: 'Постоянное расписание' }
+                    });
+                    created++;
+                }
+                await refreshTeacherBundle();
+                if (activeStudentKey) openStudentModalByKey(activeStudentKey);
+                renderRecurringSummary();
+                showTeacherToast(`Создано ${created} ${pluralRu(created, 'урок', 'урока', 'уроков')} на ${t.weeks} ${pluralRu(t.weeks, 'неделю', 'недели', 'недель')} вперёд.`);
+            } catch (err) {
+                await refreshTeacherBundle();
+                alert(err.message || `Создано ${created} уроков, затем ошибка.`);
+            }
+        }
+
+        // --- LESSON REMINDER (cycle-2 round 15): remind parent about today's lesson via messenger ---
+        let lrCurrent = null;
+        function buildLessonReminderText(b) {
+            return `Здравствуйте! Напоминаю: сегодня в ${b.time} у ${b.name} урок математики (${b.format || 'урок'}, ${Number(b.duration || 60)} мин). Если планы изменились — предупредите, пожалуйста, заранее. До встречи! Мария.`;
+        }
+        function openLessonReminder(date, time) {
+            const b = (teacherBookings || []).find(x => x.date === date && x.time === time && x.entryType === 'booking');
+            if (!b) return;
+            lrCurrent = { date, time, name: b.name, phone: b.phone || '' };
+            const sub = document.getElementById('lessonReminderSub'); if (sub) sub.innerText = `${b.name} · сегодня в ${time} · ${b.format || ''}`;
+            const ta = document.getElementById('lessonReminderText'); if (ta) ta.value = buildLessonReminderText(b);
+            const digits = normalizeRuPhone(b.phone, '').replace(/\D/g, '');
+            const text = encodeURIComponent(ta ? ta.value : buildLessonReminderText(b));
+            const tg = document.getElementById('lrTelegram'); if (tg) tg.href = 'https://t.me/share/url?url=' + encodeURIComponent(location.origin + location.pathname) + '&text=' + text;
+            const wa = document.getElementById('lrWhatsApp'); if (wa) wa.href = digits ? ('https://wa.me/' + digits + '?text=' + text) : '#';
+            const mx = document.getElementById('lrMax'); if (mx) mx.href = digits ? ('https://max.ru/u/' + digits) : '#';
+            const modal = document.getElementById('lessonReminderModal'); if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+        }
+        function closeLessonReminder() { const m = document.getElementById('lessonReminderModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
+        function copyLessonReminder() {
+            const ta = document.getElementById('lessonReminderText');
+            copyTextToClipboard(ta ? ta.value : '').then(() => showTeacherToast('Текст напоминания скопирован — отправьте родителю.'));
+        }
+
+        // --- REVIEW REQUEST (cycle-2 round 11): ask parent for a review after a done lesson ---
+        let rrCurrent = null;
+        function reviewFormUrl() { return location.origin + location.pathname + '#reviews'; }
+        function isReviewRequested(date, time) { return !!(siteConfig.review_requests || {})[lessonKey(date, time)]; }
+        function buildReviewRequestText(b) {
+            return `Здравствуйте! Спасибо, что ${b.name} позанимался(ась) ${formatRuDate(b.date)}. Буду очень благодарна, если оставите короткий отзыв о занятиях — это помогает другим родителям выбрать репетитора. Оставить отзыв можно здесь: ${reviewFormUrl()} (форма «Оставить отзыв», 1 минута). Мария.`;
+        }
+        function openReviewRequest(date, time) {
+            const b = (teacherBookings || []).find(x => x.date === date && x.time === time && x.entryType === 'booking');
+            if (!b) return;
+            rrCurrent = { date, time, name: b.name, phone: b.phone || '' };
+            const sub = document.getElementById('reviewRequestSub'); if (sub) sub.innerText = `${b.name} · ${formatRuDate(date)} в ${time}`;
+            const ta = document.getElementById('reviewRequestText'); if (ta) ta.value = buildReviewRequestText(b);
+            const digits = normalizeRuPhone(b.phone, '').replace(/\D/g, '');
+            const text = encodeURIComponent(buildReviewRequestText(b));
+            const link = encodeURIComponent(reviewFormUrl());
+            const tg = document.getElementById('rrTelegram'); if (tg) tg.href = 'https://t.me/share/url?url=' + link + '&text=' + text;
+            const wa = document.getElementById('rrWhatsApp'); if (wa) wa.href = digits ? ('https://wa.me/' + digits + '?text=' + text) : '#';
+            const mx = document.getElementById('rrMax'); if (mx) mx.href = digits ? ('https://max.ru/u/' + digits) : '#';
+            const modal = document.getElementById('reviewRequestModal'); if (modal) { modal.classList.remove('hidden'); modal.classList.add('flex'); }
+        }
+        function closeReviewRequest() { const m = document.getElementById('reviewRequestModal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); } }
+        function markReviewRequested() {
+            if (!rrCurrent || !activeTeacherPin) return;
+            const map = { ...(siteConfig.review_requests || {}) };
+            map[lessonKey(rrCurrent.date, rrCurrent.time)] = { ts: Date.now(), name: rrCurrent.name };
+            siteConfig.review_requests = map;
+            persistProtectionConfig().then(() => renderTeacherAllBookings()).catch(() => {});
+        }
+        function copyReviewRequest() {
+            const t = document.getElementById('reviewRequestText')?.value || '';
+            copyTextToClipboard(t).then(() => { markReviewRequested(); showTeacherToast('Текст запроса отзыва скопирован — отправьте родителю.'); });
+        }
+        function openReviewFormLink() { markReviewRequested(); window.open(reviewFormUrl(), '_blank', 'noopener,noreferrer'); }
 
         function loadStudentNotesMap() {
             let local = {};
@@ -4765,6 +6050,11 @@
                 document.getElementById('manualCustPhone').value = '';
                 closeManualAddModal();
                 await refreshTeacherBundle();
+                if (pendingWaitlistId) {
+                    siteConfig.waitlist = getWaitlist().map(e => e.id === pendingWaitlistId ? { ...e, status: 'booked' } : e);
+                    pendingWaitlistId = null;
+                    try { await persistProtectionConfig(); renderWaitlist(); } catch (_) {}
+                }
                 showTeacherToast('Ученик успешно внесён в облачное расписание!');
             } catch (err) {
                 alert(err.message || 'Ошибка сохранения записи.');
@@ -5115,6 +6405,7 @@
             }
         });
     </script>
+    <div id="printDaySheet" aria-hidden="true"></div>
 </body>
 </html>
 
