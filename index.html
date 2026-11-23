@@ -4792,64 +4792,44 @@
             } catch (_) {}
         }
 
-        const TG_VPN_LINKS = '<a href="https://quattro.app/register?ref=HEmqibBsi5vz1Qz2" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">quattro.app</a> / <a href="https://telegram.me/QuattroVPN_BOT?start=r_HEmqibBsi5vz1Qz2" target="_blank" rel="noopener noreferrer" style="text-decoration:underline">VPN-бот</a>';
-        const TG_HOWTO = '<div style="font-size:12px;line-height:1.6;opacity:.9"><b>Как подключить (2 минуты):</b><ol style="margin:6px 0 0 18px;padding:0">' +
-            '<li>Telegram не открывается? Включи VPN: ' + TG_VPN_LINKS + '.</li>' +
-            '<li>Нажми «Подключить уведомления» ниже.</li>' +
-            '<li>В Telegram нажми «Запустить» (/start).</li>' +
-            '<li>Вернись сюда → «Я подписался — обновить статус». Записи будут приходить сами.</li></ol></div>';
-        const TG_VPN_LINE = '<div style="font-size:11px;opacity:.7">Telegram не открывается? VPN: ' + TG_VPN_LINKS + '</div>';
-
         function renderTelegramCard() {
             const status = document.getElementById('tgNotifyStatus');
             const setup = document.getElementById('tgNotifySetup');
             if (!status || !setup) return;
             const t = (siteConfig && siteConfig.telegram) || {};
             const connected = Boolean(t.chat_id && t.enabled);
-            if (connected) {
-                status.innerText = 'Подключено ✓';
-                status.className = 'text-[11px] font-bold text-emerald-600';
-                const uname = t.bot_username ? '@' + escapeHtml(t.bot_username) : 'бот';
-                setup.innerHTML = `
-                    <div class="text-xs text-slateDark/70">Уведомления приходят в Telegram (${uname}). Новая запись → сообщение само.</div>
-                    ${TG_VPN_LINE}
-                    <div class="flex flex-wrap gap-2">
-                        <button type="button" onclick="refreshTeacherBundle()" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">🔄 Обновить статус</button>
-                        <button type="button" onclick="setTelegramEnabled(false)" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">Выключить</button>
-                    </div>`;
-                return;
-            }
-            status.innerText = 'Не подключено';
-            status.className = 'text-[11px] font-bold text-amber-600';
-            const uname = String(t.bot_username || '').trim();
-            const link = uname ? ('https://t.me/' + encodeURIComponent(uname) + '?start=' + SITE_SLUG) : '';
-            setup.innerHTML = `
-                ${TG_HOWTO}
-                <div class="flex flex-wrap items-end gap-2">
-                    <label class="flex-1 min-w-[180px] text-[11px] font-semibold text-slateDark/70">Username бота (из @BotFather)
-                        <input id="tgBotUsernameInput" type="text" value="${escapeHtml(uname)}" placeholder="например maria_math_bot" class="mt-1 w-full px-3 py-2 rounded-xl border border-cream-200 text-xs text-slateDark bg-white" />
-                    </label>
-                    <button type="button" onclick="saveTelegramBotUsername()" class="btn-secondary px-3 py-2 rounded-xl text-[11px] font-bold flex-shrink-0">Сохранить</button>
-                </div>
-                ${uname ? `
-                    <a href="${link}" target="_blank" rel="noopener noreferrer" class="btn-primary px-4 py-2.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5">🔔 Подключить уведомления</a>
-                    <div class="text-[11px] text-slateDark/60">Нажми кнопку → в Telegram нажми «Запустить» (/start). Потом вернись сюда и нажми «Обновить статус».</div>
-                    <button type="button" onclick="refreshTeacherBundle()" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">🔄 Я подписался — обновить статус</button>
-                ` : `
-                    <div class="text-[11px] text-slateDark/60">Сначала создай бота: в Telegram открой <b>@BotFather</b> → <b>/newbot</b> → придумай имя → скопируй username и впиши сюда.</div>
-                `}`;
-        }
+            const botUser = 'GojoNotifyBot';
+            const link = `https://t.me/${botUser}?start=${SITE_SLUG}`;
 
-        async function saveTelegramBotUsername() {
-            if (!activeTeacherPin) return requestTeacherAccess();
-            const inp = document.getElementById('tgBotUsernameInput');
-            const u = String(inp ? inp.value : '').trim().replace(/^@/, '').replace(/^https?:\/\/t\.me\//i, '').replace(/\/.*$/, '');
-            siteConfig.telegram = { ...(siteConfig.telegram || {}), bot_username: u };
-            try {
-                await persistProtectionConfig();
-                renderTelegramCard();
-                showTeacherToast(u ? ('Бот @' + u + ' сохранён. Нажми «Подключить уведомления».') : 'Username бота очищен.');
-            } catch (err) { alert(err.message || 'Не удалось сохранить username бота.'); }
+            if (connected) {
+                status.innerText = '✓ Подключено';
+                status.className = 'text-[11px] font-bold text-emerald-600';
+                setup.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slateDark/70">
+                        <span>Заявки с сайта автоматически приходят в твой Telegram (@${botUser}).</span>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="refreshTeacherBundle()" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold">🔄 Обновить</button>
+                            <button type="button" onclick="setTelegramEnabled(false)" class="btn-secondary px-3 py-1.5 rounded-xl text-[11px] font-bold text-rose-500 hover:text-rose-700 transition-colors">Отключить</button>
+                        </div>
+                    </div>`;
+            } else {
+                status.innerText = 'Не подключено';
+                status.className = 'text-[11px] font-bold text-amber-600';
+                setup.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <div class="text-[11px] text-slateDark/70 leading-snug">
+                            Бот присылает сообщение в Telegram, как только ученик записывается на сайте.
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <a href="${link}" target="_blank" rel="noopener noreferrer" class="btn-primary px-3.5 py-1.5 rounded-xl text-xs font-bold inline-flex items-center gap-1.5 shadow-sm">
+                                <span>🔔 Подключить бота</span>
+                            </a>
+                            <button type="button" onclick="refreshTeacherBundle()" class="btn-secondary px-3 py-1.5 rounded-xl text-xs font-bold">
+                                🔄 Проверить статус
+                            </button>
+                        </div>
+                    </div>`;
+            }
         }
 
         async function setTelegramEnabled(flag) {
@@ -6582,14 +6562,6 @@
                 var t = b.getAttribute(tabAttr);
                 if (TAB_TEXT[t]) steps.push({ tab: t, title: TAB_TEXT[t][0], text: TAB_TEXT[t][1] });
             });
-            var tgEl = document.getElementById('tgNotifyStatus');
-            if (tgEl) {
-                var tgPanel = tgEl.closest('[id^="teacherTab"],[id^="masterTab"]');
-                var tgTab = tgPanel ? tgPanel.id.replace(/^(teacher|master)Tab/, '').toLowerCase() : null;
-                steps.push({ tab: tgTab, sel: '#tgNotifyStatus', title: 'Уведомления в Telegram', text: 'Новая запись с сайта будет приходить тебе в Telegram сама, со ссылкой сюда. Подключим за пару минут.' });
-                steps.push({ tab: tgTab, sel: '#tgNotifySetup', title: 'Шаг 1 — VPN и кнопка', text: 'Если Telegram не открывается — включи VPN (ссылки в карточке). Потом нажми «Подключить уведомления».' });
-                steps.push({ tab: tgTab, sel: '#tgNotifySetup', title: 'Шаг 2 — Запустить и вернуться', text: 'В Telegram нажми «Запустить». Вернись сюда и нажми «Я подписался — обновить статус». Готово!' });
-            }
             steps.push({ title: 'Готово!', text: 'Забудешь, где что — жми «Пройти обучение заново» сверху, повторим. Изменения сохраняются в облако: зайдёшь с телефона — всё на месте.' });
             return steps;
         }
